@@ -1,0 +1,21 @@
+# 虚拟环境目录
+venv/
+
+# Python 编译文件
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# SQLite 数据库文件
+db.sqlite3
+
+# 媒体文件目录
+media/
+
+# 环境配置文件
+.env
+
+# IDE 配置目录
+.vscode/
+.idea/
