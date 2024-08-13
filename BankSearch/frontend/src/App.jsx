@@ -5,7 +5,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <div className="p-1 text-xs text-white bg-gray-700">powered by 5xCampus</div>
+      <div className="p-1 text-xs text-white bg-gray-700">powered by Sean</div>
       <h1 className="p-4 text-4xl font-bold text-center text-white bg-black">台灣銀行代碼查詢</h1>
       <div className="container flex mx-auto mt-8">
         <div className="w-1/2 pr-4">
@@ -24,6 +24,7 @@ function App() {
               </svg>
             </div>
           </div>
+          <div>可使用下拉選單或直接輸入關鍵字查詢</div>
         </div>
         <div className="w-1/2 pl-4">
           <h2 className="mb-2 text-xl font-semibold">分行名稱</h2>
