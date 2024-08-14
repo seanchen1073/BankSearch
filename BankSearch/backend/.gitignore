@@ -1,21 +1,24 @@
-# 虚拟环境目录
-venv/
+# 虛擬環境目錄
+.venv/
 
-# Python 编译文件
+# Python 編譯文件
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 
-# SQLite 数据库文件
+# SQLite 資料庫文件
 db.sqlite3
 
-# 媒体文件目录
+# 媒體文件目錄
 media/
 
-# 环境配置文件
+# 環境配置文件
 .env
 
-# IDE 配置目录
+# IDE 配置目錄
 .vscode/
 .idea/
+
+# Git 的行結尾轉換配置文件
+*.gitattributes
