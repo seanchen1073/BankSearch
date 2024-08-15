@@ -1,5 +1,5 @@
-# Logs
-logs
+# 日誌檔案
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -7,18 +7,30 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# Node.js 相關目錄
+node_modules/
+dist/
+dist-ssr/
 *.local
 
-# Editor directories and files
-.vscode/*
+# 編輯器和 IDE 相關檔案
+.vscode/
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# 構建產物和臨時文件
+build/
+.cache/
+*.tmp
+*.temp
+*.pid
+*.pid.lock
+
+# 環境配置文件
+.env

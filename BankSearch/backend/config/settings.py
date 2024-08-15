@@ -14,7 +14,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',  # Django REST framework
     'corsheaders',     # 處理跨域請求
-    'api',             # 你的自訂應用程式
+    'bank',             # 你的自訂應用程式
 ]
 
 # 中介軟體
