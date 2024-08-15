@@ -16,17 +16,21 @@ class Migration(migrations.Migration):
             name='Bank',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('code', models.CharField(max_length=10, unique=True)),
-                ('name', models.CharField(max_length=100)),
+                ('code', models.CharField(max_length=20, unique=True, default='000000')),
+                ('name', models.CharField(max_length=20, default='Default Bank Name')),
+                ('address', models.CharField(max_length=255, default='Default Address')),
+                ('tel', models.CharField(max_length=20, default='0000000000')),
             ],
         ),
         migrations.CreateModel(
             name='Branch',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('code', models.CharField(max_length=10)),
-                ('name', models.CharField(max_length=100)),
-                ('bank', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='branches', to='api.bank')),
+                ('code', models.CharField(max_length=10, default='0000000000')),
+                ('name', models.CharField(max_length=100, default='Default Branch Name')),
+                ('address', models.CharField(max_length=255, default='Default Address')),
+                ('tel', models.CharField(max_length=20, default='0000000000')),
+                ('bank', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='branches', to='bank.bank')),
             ],
         ),
     ]
