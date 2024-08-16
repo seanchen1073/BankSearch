@@ -36,7 +36,7 @@ const BranchNameSection = ({ selectedBank }) => (
       <input
         type="text"
         className={`w-full p-2 border rounded-md pr-10 ${!selectedBank ? "bg-gray-200" : ""}`}
-        placeholder="請選擇銀行後輸入分行名稱"
+        placeholder="請選擇分行名稱"
         disabled={!selectedBank}
       />
       <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
