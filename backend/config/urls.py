@@ -1,13 +1,8 @@
-from django.contrib import admin
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from bank.views import BankViewSet, BranchViewSet
-
-router = DefaultRouter()
-router.register(r'banks', BankViewSet)
-router.register(r'branches', BranchViewSet)
+from django.urls import path
+from . import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/', include(router.urls)),
+    path('api/banks/', views.get_banks, name='get_banks'),
+    path('api/branches/<str:bank_code>/', views.get_branches, name='get_branches'),
+    path('api/branch/<str:branch_code>/', views.get_branch_details, name='get_branch_details'),
 ]
