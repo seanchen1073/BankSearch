@@ -1,3 +1,4 @@
+# bank/views.py
 from django.http import JsonResponse
 from .models import Bank, Branch
 

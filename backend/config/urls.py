@@ -1,5 +1,6 @@
+# config/urls.py
 from django.urls import path
-from . import views
+from bank import views  # 從 `bank` 模組導入 `views`
 
 urlpatterns = [
     path('api/banks/', views.get_banks, name='get_banks'),
