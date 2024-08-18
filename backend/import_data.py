@@ -1,7 +1,7 @@
 import os
 import django
 import csv
-import sys
+from phone_utils import format_phone_number  # 引入 phone_utils
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 django.setup()
@@ -26,6 +26,9 @@ def import_data():
                     address = row['地址']
                     tel = row['電話']
 
+                    # 使用 format_phone_number 函數格式化電話號碼
+                    formatted_tel = format_phone_number(tel)
+
                     # 分離銀行名稱和分行名稱
                     bank_name = full_name.split(maxsplit=1)[0]
                     branch_name = full_name[len(bank_name):].strip()
@@ -36,7 +39,7 @@ def import_data():
                         defaults={
                             'name': bank_name,
                             'address': address,
-                            'tel': tel
+                            'tel': formatted_tel  # 使用格式化後的電話號碼
                         }
                     )
 
@@ -46,7 +49,7 @@ def import_data():
                         code=branch_code,
                         name=branch_name,
                         address=address,
-                        tel=tel
+                        tel=formatted_tel  # 使用格式化後的電話號碼
                     )
                     count += 1
                     if count % 100 == 0:
