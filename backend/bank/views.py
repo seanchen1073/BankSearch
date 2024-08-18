@@ -1,6 +1,10 @@
 # bank/views.py
+import json
 from django.http import JsonResponse
-from .models import Bank, Branch
+from pathlib import Path
+
+# 定義 BASE_DIR
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 def get_banks(request):
     banks = Bank.objects.all().values('code', 'name')
@@ -21,3 +25,14 @@ def get_branch_details(request, branch_code):
         'tel': branch.tel
     }
     return JsonResponse(data)
+
+def get_bank_data(request):
+    json_file_path = BASE_DIR / 'bank' / 'bank_data.json'
+    try:
+        with open(json_file_path, 'r', encoding='utf-8') as json_file:
+            data = json.load(json_file)
+        return JsonResponse(data, safe=False)
+    except FileNotFoundError:
+        return JsonResponse({'error': '文件未找到'}, status=404)
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'JSON 解析錯誤'}, status=500)
