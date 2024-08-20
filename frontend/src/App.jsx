@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const Footer = () => <div className="p-1 text-xs text-white bg-gray-700">powered by Sean</div>;
+const Header = () => (
+  <div>
+    <div className="p-1 text-xs text-white bg-gray-700">powered by Sean</div>
+    <h1 className="p-4 text-4xl font-bold text-center text-white bg-black">台灣銀行代碼查詢</h1>
+  </div>
+);
 
-const Header = () => <h1 className="p-4 text-4xl font-bold text-center text-white bg-black">台灣銀行代碼查詢</h1>;
 
 const fetchBankData = async () => {
   try {
@@ -119,7 +123,6 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <Footer />
       <Header />
       <div className="container flex flex-wrap justify-center mx-auto mt-8">
         <BankNameSection handleSearch={handleBankSearch} filteredBanks={filteredBanks} setSelectedBank={setSelectedBank} />
