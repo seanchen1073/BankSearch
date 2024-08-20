@@ -1,10 +1,14 @@
 # config/urls.py
-from django.urls import path
-from bank import views  # 從 `bank` 模組導入 `views`
+from django.contrib import admin
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
-    path('api/banks/', views.get_banks, name='get_banks'),
-    path('api/branches/<str:bank_code>/', views.get_branches, name='get_branches'),
-    path('api/branch/<str:branch_code>/', views.get_branch_details, name='get_branch_details'),
-    path('api/bank-data/', views.get_bank_data, name='get_bank_data'),  # 新增的路由
+    path('admin/', admin.site.urls),
+    path('', include('bank.urls')),  # 包含 bank 应用的 URLs
 ]
+
+# 在开发环境中添加媒体文件的 URL
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
