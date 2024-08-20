@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from pathlib import Path
 from django.core.exceptions import ObjectDoesNotExist
-from .models import Bank, Branch  # 確保你已經導入了這些模型
+from .models import Bank, Branch
 
 # 定義 BASE_DIR
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -48,3 +48,16 @@ def get_bank_data(request):
         return JsonResponse({'error': 'JSON 解析錯誤'}, status=500)
     except Exception as e:
         return JsonResponse({'error': f'發生未知錯誤: {str(e)}'}, status=500)
+
+@require_http_methods(["GET"])
+def get_all_bank_data(request):
+    banks = Bank.objects.prefetch_related('branch_set').all()
+    data = []
+    for bank in banks:
+        bank_data = {
+            'code': bank.code,
+            'name': bank.name,
+            'branches': list(bank.branch_set.values('code', 'name'))
+        }
+        data.append(bank_data)
+    return JsonResponse(data, safe=False)
