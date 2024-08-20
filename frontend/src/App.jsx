@@ -21,11 +21,41 @@ const fetchBankData = async () => {
 };
 
 const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank }) => {
-  const [isDropdownActive, setDropdownActive] = React.useState(false);
+  const [isDropdownActive, setDropdownActive] = useState(false);
+  const [inputWidth, setInputWidth] = useState(""); // 用於設置下拉選單寬度
 
   const handleInputFocus = () => setDropdownActive(true);
-  const handleInputBlur = () => setTimeout(() => setDropdownActive(false), 100);
+  const handleInputBlur = () => setTimeout(() => setDropdownActive(false), 100); // 確保焦點轉移時不會立即隱藏下拉選單
+
   const handleArrowClick = () => setDropdownActive((prev) => !prev);
+
+  // 設定下拉選單寬度
+  useEffect(() => {
+    const updateWidth = () => {
+      const inputElement = document.querySelector("input");
+      if (inputElement) {
+        setInputWidth(inputElement.offsetWidth + "px");
+      }
+    };
+
+    updateWidth(); // 初次渲染時設置寬度
+
+    window.addEventListener("resize", updateWidth); // 當窗口大小改變時更新寬度
+
+    return () => window.removeEventListener("resize", updateWidth);
+  }, []);
+
+  // 點擊外部隱藏下拉選單
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest(".relative")) {
+        setDropdownActive(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <div className="w-full pr-4 mb-4 md:w-1/2 lg:w-1/3 md:mb-0 sm:px-4">
@@ -33,21 +63,27 @@ const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank }) => {
       <div className="relative">
         <input
           type="text"
-          className="w-full p-2 pr-10 border rounded-md"
+          className={`w-full p-2 pr-10 border rounded-md ${isDropdownActive ? "border-blue-500 border-2" : "border-gray-300"}`}
           placeholder="請輸入關鍵字或銀行代碼"
           onChange={(e) => handleSearch(e.target.value)}
           onFocus={handleInputFocus}
           onBlur={handleInputBlur}
         />
-        <div className="absolute inset-y-0 right-0 flex items-center px-2 cursor-pointer" onClick={handleArrowClick}>
-          <div className="w-px h-4 mr-2 bg-gray-300"></div>
+        <div
+          className={`absolute inset-y-0 right-0 flex items-center px-2 cursor-pointer ${isDropdownActive ? "text-black-500" : "text-gray-400"}`}
+          onClick={handleArrowClick}
+        >
+          <div className="w-px h-6 mr-2 bg-gray-300"></div>
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 9l-7 7-7-7"></path>
           </svg>
         </div>
       </div>
       {isDropdownActive && (
-        <ul className="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg">
+        <ul
+          className="absolute z-10 mt-1 bg-white border rounded-md shadow-lg"
+          style={{ width: inputWidth }} // 設置下拉選單寬度
+        >
           {filteredBanks.length > 0 ? (
             filteredBanks.map((bank) => (
               <li key={bank.code} className="p-2 cursor-pointer hover:bg-gray-100" onClick={() => setSelectedBank(`${bank.code} ${bank.name}`)}>
