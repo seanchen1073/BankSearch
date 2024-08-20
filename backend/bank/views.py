@@ -51,13 +51,13 @@ def get_bank_data(request):
 
 @require_http_methods(["GET"])
 def get_all_bank_data(request):
-    banks = Bank.objects.prefetch_related('branch_set').all()
+    banks = Bank.objects.prefetch_related('branches').all()
     data = []
     for bank in banks:
         bank_data = {
             'code': bank.code,
             'name': bank.name,
-            'branches': list(bank.branch_set.values('code', 'name'))
+            'branches': list(bank.branches.values('code', 'name'))
         }
         data.append(bank_data)
     return JsonResponse(data, safe=False)
