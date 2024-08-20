@@ -20,35 +20,52 @@ const fetchBankData = async () => {
   }
 };
 
-const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank }) => (
-  <div className="w-full pr-4 mb-4 md:w-1/2 lg:w-1/3 md:mb-0 sm:px-4">
-    <h2 className="mb-2 text-xl font-semibold">銀行名稱</h2>
-    <div className="relative">
-      <input
-        type="text"
-        className="w-full p-2 pr-10 border rounded-md"
-        placeholder="請輸入關鍵字或銀行代碼"
-        onChange={(e) => handleSearch(e.target.value)}
-      />
-      <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-        <div className="w-px h-4 mr-2 bg-gray-300"></div>
-        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-        </svg>
+const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank }) => {
+  const [isDropdownActive, setDropdownActive] = React.useState(false);
+
+  const handleInputFocus = () => setDropdownActive(true);
+  const handleInputBlur = () => setTimeout(() => setDropdownActive(false), 100);
+  const handleArrowClick = () => setDropdownActive((prev) => !prev);
+
+  return (
+    <div className="w-full pr-4 mb-4 md:w-1/2 lg:w-1/3 md:mb-0 sm:px-4">
+      <h2 className="mb-2 text-xl font-semibold">銀行名稱</h2>
+      <div className="relative">
+        <input
+          type="text"
+          className="w-full p-2 pr-10 border rounded-md"
+          placeholder="請輸入關鍵字或銀行代碼"
+          onChange={(e) => handleSearch(e.target.value)}
+          onFocus={handleInputFocus}
+          onBlur={handleInputBlur}
+        />
+        <div className="absolute inset-y-0 right-0 flex items-center px-2 cursor-pointer" onClick={handleArrowClick}>
+          <div className="w-px h-4 mr-2 bg-gray-300"></div>
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </div>
       </div>
+      {isDropdownActive && (
+        <ul className="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg">
+          {filteredBanks.length > 0 ? (
+            filteredBanks.map((bank) => (
+              <li key={bank.code} className="p-2 cursor-pointer hover:bg-gray-100" onClick={() => setSelectedBank(`${bank.code} ${bank.name}`)}>
+                {bank.code} {bank.name}
+              </li>
+            ))
+          ) : (
+            <li className="p-2 text-gray-500">無資料</li>
+          )}
+        </ul>
+      )}
+      <div>可使用下拉選單或直接輸入關鍵字查詢</div>
     </div>
-    {filteredBanks.length > 0 && (
-      <ul className="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg">
-        {filteredBanks.map((bank) => (
-          <li key={bank.code} className="p-2 cursor-pointer hover:bg-gray-100" onClick={() => setSelectedBank(`${bank.code} ${bank.name}`)}>
-            {bank.code} {bank.name}
-          </li>
-        ))}
-      </ul>
-    )}
-    <div>可使用下拉選單或直接輸入關鍵字查詢</div>
-  </div>
-);
+  );
+};
+
+
+
 
 const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches }) => (
   <div className="w-full pl-4 mb-4 md:w-1/2 lg:w-1/3 md:mb-0">
