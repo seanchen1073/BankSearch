@@ -63,12 +63,13 @@ const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank }) => {
       <div className="relative">
         <input
           type="text"
-          className={`w-full p-2 pr-10 border rounded-md ${isDropdownActive ? "border-blue-500 border-2" : "border-gray-300"}`}
+          className={`w-full p-2 pr-10 border rounded-md ${isDropdownActive ? "border-blue-500 border-2" : "border-gray-300"} focus:outline-none`}
           placeholder="請輸入關鍵字或銀行代碼"
           onChange={(e) => handleSearch(e.target.value)}
           onFocus={handleInputFocus}
           onBlur={handleInputBlur}
         />
+
         <div
           className={`absolute inset-y-0 right-0 flex items-center px-2 cursor-pointer ${isDropdownActive ? "text-black-500" : "text-gray-400"}`}
           onClick={handleArrowClick}
@@ -99,9 +100,6 @@ const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank }) => {
     </div>
   );
 };
-
-
-
 
 const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches }) => (
   <div className="w-full pl-4 mb-4 md:w-1/2 lg:w-1/3 md:mb-0">
