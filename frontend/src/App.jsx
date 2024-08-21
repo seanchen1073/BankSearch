@@ -8,26 +8,36 @@ const Header = () => (
   </div>
 );
 
-
-const fetchBankData = async () => {
-  try {
-    const response = await axios.get("http://localhost:8000/api/all-bank-data/");
-    console.log("API response:", response.data);
-    return response.data || []; // 確保返回空數組以避免進一步錯誤
-  } catch (error) {
-    console.error("Error fetching bank data:", error);
-    return []; // 錯誤時返回空數組
-  }
-};
-
 const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank }) => {
   const [isDropdownActive, setDropdownActive] = useState(false);
   const [inputWidth, setInputWidth] = useState(""); // 用於設置下拉選單寬度
+  const [bankData, setBankData] = useState([]); // 新增 bankData 狀態
 
-  const handleInputFocus = () => setDropdownActive(true);
+  // 修改 fetchBankData 函數，將資料存入狀態
+  const fetchBankData = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/api/all-bank-data/");
+      console.log("API response:", response.data);
+      setBankData(response.data || []); // 確保資料存入 bankData 狀態
+    } catch (error) {
+      console.error("Error fetching bank data:", error);
+      setBankData([]); // 錯誤時設置 bankData 為空數組
+    }
+  };
+
+  // 在元件初次渲染時呼叫 fetchBankData
+  useEffect(() => {
+    fetchBankData();
+  }, [fetchBankData]);
+
   const handleInputBlur = () => setTimeout(() => setDropdownActive(false), 100); // 確保焦點轉移時不會立即隱藏下拉選單
+  const handleArrowClick = () => {
+    setDropdownActive((prev) => !prev); // 切換下拉選單的顯示狀態
+  };
 
-  const handleArrowClick = () => setDropdownActive((prev) => !prev);
+  const handleInputFocus = () => {
+    setDropdownActive(true); // 激活下拉選單
+  };
 
   // 設定下拉選單寬度
   useEffect(() => {
@@ -69,7 +79,6 @@ const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank }) => {
           onFocus={handleInputFocus}
           onBlur={handleInputBlur}
         />
-
         <div
           className={`absolute inset-y-0 right-0 flex items-center px-2 cursor-pointer ${isDropdownActive ? "text-black-500" : "text-gray-400"}`}
           onClick={handleArrowClick}
@@ -85,8 +94,8 @@ const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank }) => {
           className="absolute z-10 mt-1 bg-white border rounded-md shadow-lg"
           style={{ width: inputWidth }} // 設置下拉選單寬度
         >
-          {filteredBanks.length > 0 ? (
-            filteredBanks.map((bank) => (
+          {bankData.length > 0 ? (
+            bankData.map((bank) => (
               <li key={bank.code} className="p-2 cursor-pointer hover:bg-gray-100" onClick={() => setSelectedBank(`${bank.code} ${bank.name}`)}>
                 {bank.code} {bank.name}
               </li>
