@@ -1,55 +1,77 @@
 import os
 import django
 import csv
-from phone_utils import format_phone_number  # 引入 phone_utils
+from phone_utils import format_phone_number
 
+# 設定 Django 環境變數
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 django.setup()
 
 from bank.models import Bank, Branch
 
+# CSV 文件路徑
 CSV_FILE_PATH = r"C:\Users\Joe\BankSearchData\banks.csv"
 
+def remove_company_suffixes(name):
+    """移除名稱中的「股份有限公司」和「有限公司」"""
+    if not name:
+        return ""
+    # 去除「股份有限公司」和「有限公司」，並且確保不會留下多餘的空格
+    return name.replace("股份有限公司", "").replace("有限公司", "").strip()
+
 def import_data():
+    """從 CSV 文件導入數據並處理"""
     count = 0
     try:
+        # 打開 CSV 文件進行讀取
         with open(CSV_FILE_PATH, 'r', encoding='utf-8-sig') as file:
             reader = csv.DictReader(file)
-            
+
             print("CSV 標題:", reader.fieldnames)
 
             for row in reader:
                 try:
+                    # 獲取每一行的數據
                     bank_code = row['銀行代碼']
                     branch_code = row['分行代碼']
                     full_name = row['機構名稱']
                     address = row['地址']
                     tel = row['電話']
 
-                    # 使用 format_phone_number 函數格式化電話號碼
+                    # 格式化電話號碼
                     formatted_tel = format_phone_number(tel)
 
-                    # 分離銀行名稱和分行名稱
-                    bank_name = full_name.split(maxsplit=1)[0]
-                    branch_name = full_name[len(bank_name):].strip()
+                    # 移除「股份有限公司」和「有限公司」
+                    full_name = remove_company_suffixes(full_name)
 
-                    # 獲取或創建銀行
+                    # 分離銀行名稱和分行名稱
+                    if ' ' in full_name:
+                        bank_name, branch_name = full_name.split(maxsplit=1)
+                    else:
+                        bank_name = full_name
+                        branch_name = ""
+
+                    # 再次移除銀行名稱和分行名稱中的公司後綴
+                    bank_name = remove_company_suffixes(bank_name)
+                    branch_name = remove_company_suffixes(branch_name)
+
+                    # 獲取或創建銀行實例
                     bank, created = Bank.objects.get_or_create(
                         code=bank_code,
                         defaults={
                             'name': bank_name,
                             'address': address,
-                            'tel': formatted_tel  # 使用格式化後的電話號碼
+                            'tel': formatted_tel
                         }
                     )
 
-                    # 創建分行
+                    # 創建分行實例
                     Branch.objects.create(
                         bank=bank,
                         code=branch_code,
                         name=branch_name,
                         address=address,
-                        tel=formatted_tel  # 使用格式化後的電話號碼
+                        tel=formatted_tel
                     )
                     count += 1
                     if count % 100 == 0:
@@ -69,4 +91,5 @@ def import_data():
         print(f"總共處理了 {count} 條記錄。")
 
 if __name__ == "__main__":
+    # 導入數據
     import_data()
