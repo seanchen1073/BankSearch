@@ -33,13 +33,8 @@ const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank }) => {
     fetchBankData();
   }, []);
 
-  const handleInputBlur = () => setTimeout(() => setDropdownActive(false), 100); // 確保焦點轉移時不會立即隱藏下拉選單
   const handleArrowClick = () => {
     setDropdownActive((prev) => !prev); // 切換下拉選單的顯示狀態
-  };
-
-  const handleInputFocus = () => {
-    setDropdownActive(true); // 激活下拉選單
   };
 
   // 設定下拉選單寬度
@@ -79,8 +74,7 @@ const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank }) => {
           className={`w-full p-2 pr-10 border rounded-md ${isDropdownActive ? "border-blue-500 border-2" : "border-gray-300"} focus:outline-none`}
           placeholder="請輸入關鍵字或銀行代碼"
           onChange={(e) => handleSearch(e.target.value)}
-          onFocus={handleInputFocus}
-          onBlur={handleInputBlur}
+          onClick={handleArrowClick}
         />
         <div
           className={`absolute inset-y-0 right-0 flex items-center px-2 cursor-pointer ${isDropdownActive ? "text-black-500" : "text-gray-400"}`}
@@ -93,10 +87,7 @@ const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank }) => {
         </div>
       </div>
       {isDropdownActive && (
-        <ul
-          className="absolute z-10 mt-1 overflow-y-auto bg-white border rounded-md shadow-lg"
-          style={{ width: inputWidth, maxHeight: "290px" }}
-        >
+        <ul className="absolute z-10 mt-1 overflow-y-auto bg-white border rounded-md shadow-lg" style={{ width: inputWidth, maxHeight: "290px" }}>
           {isDataLoaded && bankData.length > 0
             ? bankData.map((bank) => (
                 <li key={bank.code} className="p-2 cursor-pointer hover:bg-gray-100" onClick={() => setSelectedBank(`${bank.code} ${bank.name}`)}>
