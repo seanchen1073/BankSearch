@@ -12,6 +12,7 @@ const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank }) => {
   const [isDropdownActive, setDropdownActive] = useState(false);
   const [inputWidth, setInputWidth] = useState(""); // 用於設置下拉選單寬度
   const [bankData, setBankData] = useState([]); // 新增 bankData 狀態
+  const [isDataLoaded, setDataLoaded] = useState(false); // 新增狀態來檢查資料是否已加載
 
   // 修改 fetchBankData 函數，將資料存入狀態
   const fetchBankData = async () => {
@@ -19,16 +20,18 @@ const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank }) => {
       const response = await axios.get("http://localhost:8000/api/all-bank-data/");
       console.log("API response:", response.data);
       setBankData(response.data || []); // 確保資料存入 bankData 狀態
+      setDataLoaded(true); // 資料加載完成
     } catch (error) {
       console.error("Error fetching bank data:", error);
       setBankData([]); // 錯誤時設置 bankData 為空數組
+      setDataLoaded(true); // 即使錯誤也設置資料已加載狀態
     }
   };
 
   // 在元件初次渲染時呼叫 fetchBankData
   useEffect(() => {
     fetchBankData();
-  }, [fetchBankData]);
+  }, []);
 
   const handleInputBlur = () => setTimeout(() => setDropdownActive(false), 100); // 確保焦點轉移時不會立即隱藏下拉選單
   const handleArrowClick = () => {
@@ -91,24 +94,24 @@ const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank }) => {
       </div>
       {isDropdownActive && (
         <ul
-          className="absolute z-10 mt-1 bg-white border rounded-md shadow-lg"
-          style={{ width: inputWidth }} // 設置下拉選單寬度
+          className="absolute z-10 mt-1 overflow-y-auto bg-white border rounded-md shadow-lg"
+          style={{ width: inputWidth, maxHeight: "290px" }}
         >
-          {bankData.length > 0 ? (
-            bankData.map((bank) => (
-              <li key={bank.code} className="p-2 cursor-pointer hover:bg-gray-100" onClick={() => setSelectedBank(`${bank.code} ${bank.name}`)}>
-                {bank.code} {bank.name}
-              </li>
-            ))
-          ) : (
-            <li className="p-2 text-gray-500">無資料</li>
-          )}
+          {isDataLoaded && bankData.length > 0
+            ? bankData.map((bank) => (
+                <li key={bank.code} className="p-2 cursor-pointer hover:bg-gray-100" onClick={() => setSelectedBank(`${bank.code} ${bank.name}`)}>
+                  {bank.code} {bank.name}
+                </li>
+              ))
+            : null}
         </ul>
       )}
+
       <div>可使用下拉選單或直接輸入關鍵字查詢</div>
     </div>
   );
 };
+
 
 const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches }) => (
   <div className="w-full pl-4 mb-4 md:w-1/2 lg:w-1/3 md:mb-0">
