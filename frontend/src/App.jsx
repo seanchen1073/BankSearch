@@ -103,7 +103,6 @@ const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank }) => {
   );
 };
 
-
 const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches }) => (
   <div className="w-full pl-4 mb-4 md:w-1/2 lg:w-1/3 md:mb-0">
     <h2 className="mb-2 text-xl font-semibold">分行名稱</h2>
@@ -146,6 +145,16 @@ function App() {
   const [selectedBank, setSelectedBank] = useState("");
   const [filteredBanks, setFilteredBanks] = useState([]);
   const [filteredBranches, setFilteredBranches] = useState([]);
+
+  const fetchBankData = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/api/all-bank-data/");
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching bank data:", error);
+      return [];
+    }
+  };
 
   useEffect(() => {
     const loadBankData = async () => {
