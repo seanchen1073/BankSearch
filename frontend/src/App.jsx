@@ -8,33 +8,12 @@ const Header = () => (
   </div>
 );
 
-const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank }) => {
+const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank, bankData }) => {
   const [isDropdownActive, setDropdownActive] = useState(false);
-  const [inputWidth, setInputWidth] = useState(""); // 用於設置下拉選單寬度
-  const [bankData, setBankData] = useState([]); // 新增 bankData 狀態
-  const [isDataLoaded, setDataLoaded] = useState(false); // 新增狀態來檢查資料是否已加載
-
-  // 修改 fetchBankData 函數，將資料存入狀態
-  const fetchBankData = async () => {
-    try {
-      const response = await axios.get("http://localhost:8000/api/all-bank-data/");
-      console.log("API response:", response.data);
-      setBankData(response.data || []); // 確保資料存入 bankData 狀態
-      setDataLoaded(true); // 資料加載完成
-    } catch (error) {
-      console.error("Error fetching bank data:", error);
-      setBankData([]); // 錯誤時設置 bankData 為空數組
-      setDataLoaded(true); // 即使錯誤也設置資料已加載狀態
-    }
-  };
-
-  // 在元件初次渲染時呼叫 fetchBankData
-  useEffect(() => {
-    fetchBankData();
-  }, []);
+  const [inputWidth, setInputWidth] = useState("");
 
   const handleArrowClick = () => {
-    setDropdownActive((prev) => !prev); // 切換下拉選單的顯示狀態
+    setDropdownActive((prev) => !prev);
   };
 
   // 設定下拉選單寬度
@@ -46,10 +25,8 @@ const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank }) => {
       }
     };
 
-    updateWidth(); // 初次渲染時設置寬度
-
-    window.addEventListener("resize", updateWidth); // 當窗口大小改變時更新寬度
-
+    updateWidth();
+    window.addEventListener("resize", updateWidth);
     return () => window.removeEventListener("resize", updateWidth);
   }, []);
 
@@ -88,7 +65,7 @@ const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank }) => {
       </div>
       {isDropdownActive && (
         <ul className="absolute z-10 mt-1 overflow-y-auto bg-white border rounded-md shadow-lg" style={{ width: inputWidth, maxHeight: "290px" }}>
-          {isDataLoaded && bankData.length > 0
+          {bankData.length > 0
             ? bankData.map((bank) => (
                 <li key={bank.code} className="p-2 cursor-pointer hover:bg-gray-100" onClick={() => setSelectedBank(`${bank.code} ${bank.name}`)}>
                   {bank.code} {bank.name}
@@ -97,7 +74,6 @@ const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank }) => {
             : null}
         </ul>
       )}
-
       <div>可使用下拉選單或直接輸入關鍵字查詢</div>
     </div>
   );
@@ -128,7 +104,6 @@ const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches }) => 
             key={branch}
             className="p-2 cursor-pointer hover:bg-gray-100"
             onClick={() => {
-              /* 處理分行選擇 */
               console.log("Selected branch:", branch);
             }}
           >
@@ -149,18 +124,26 @@ function App() {
   const fetchBankData = async () => {
     try {
       const response = await axios.get("http://localhost:8000/api/all-bank-data/");
-      return response.data;
+      // 檢查回應狀態碼
+      if (response.status === 200) {
+        return response.data; // 返回資料
+      } else {
+        console.error(`Error: Received status code ${response.status}`);
+        return []; // 如果狀態碼不是 200，返回空數組
+      }
     } catch (error) {
       console.error("Error fetching bank data:", error);
-      return [];
+      return []; // 錯誤時返回空數組
     }
   };
 
   useEffect(() => {
     const loadBankData = async () => {
+      console.log("Loading bank data..."); // 確認函數被呼叫
       const data = await fetchBankData();
       if (data && Array.isArray(data)) {
-        setBankData(data);
+        setBankData(data); // 更新狀態
+        console.log("Bank data loaded successfully:", data); // 確認資料已加載
       } else {
         console.error("Failed to load bank data");
       }
@@ -171,7 +154,6 @@ function App() {
   const handleBankSearch = (searchTerm) => {
     const filtered = bankData.filter((bank) => bank.code.includes(searchTerm) || bank.name.toLowerCase().includes(searchTerm.toLowerCase()));
     setFilteredBanks(filtered);
-    // 更新 selectedBank 應該是基於使用者選擇的銀行
     setSelectedBank(filtered.length > 0 ? filtered[0].code : "");
   };
 
@@ -188,7 +170,12 @@ function App() {
     <div className="min-h-screen bg-gray-100">
       <Header />
       <div className="container flex flex-wrap justify-center mx-auto mt-8">
-        <BankNameSection handleSearch={handleBankSearch} filteredBanks={filteredBanks} setSelectedBank={setSelectedBank} />
+        <BankNameSection
+          handleSearch={handleBankSearch}
+          filteredBanks={filteredBanks}
+          setSelectedBank={setSelectedBank}
+          bankData={bankData} // 傳遞 bankData
+        />
         <BranchNameSection selectedBank={selectedBank} handleSearch={handleBranchSearch} filteredBranches={filteredBranches} />
       </div>
     </div>
