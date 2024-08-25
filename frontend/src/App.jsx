@@ -16,7 +16,6 @@ const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank, bankDat
     setDropdownActive((prev) => !prev);
   };
 
-  // 設定下拉選單寬度
   useEffect(() => {
     const updateWidth = () => {
       const inputElement = document.querySelector("input");
@@ -30,7 +29,6 @@ const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank, bankDat
     return () => window.removeEventListener("resize", updateWidth);
   }, []);
 
-  // 點擊外部隱藏下拉選單
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (!event.target.closest(".relative")) {
@@ -123,8 +121,13 @@ function App() {
 
   const fetchBankData = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api/all-bank-data/");
-      // 檢查回應狀態碼
+      const response = await axios.get("http://localhost:8000/api/all-bank-data/", {
+        headers: {
+          "Cache-Control": "no-cache",
+          Pragma: "no-cache",
+          Expires: "0",
+        },
+      });
       if (response.status === 200) {
         return response.data; // 返回資料
       } else {
