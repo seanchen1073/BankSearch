@@ -1,4 +1,3 @@
-# bank/views.py
 import json
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
@@ -6,21 +5,24 @@ from pathlib import Path
 from django.core.exceptions import ObjectDoesNotExist
 from .models import Bank, Branch
 
-# 定義 BASE_DIR
+# 定義 BASE_DIR 為專案根目錄
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 @require_http_methods(["GET"])
 def get_banks(request):
+    """獲取所有銀行的 API"""
     banks = Bank.objects.all().values('code', 'name')
     return JsonResponse(list(banks), safe=False)
 
 @require_http_methods(["GET"])
 def get_branches(request, bank_code):
+    """根據銀行代碼獲取所有分行的 API"""
     branches = Branch.objects.filter(bank__code=bank_code).values('code', 'name')
     return JsonResponse(list(branches), safe=False)
 
 @require_http_methods(["GET"])
 def get_branch_details(request, branch_code):
+    """根據分行代碼獲取分行詳細資訊的 API"""
     try:
         branch = Branch.objects.select_related('bank').get(code=branch_code)
         data = {
@@ -37,6 +39,7 @@ def get_branch_details(request, branch_code):
 
 @require_http_methods(["GET"])
 def get_bank_data(request):
+    """從 JSON 文件中獲取銀行資料的 API"""
     json_file_path = BASE_DIR / 'bank' / 'bank_data.json'
     try:
         with open(json_file_path, 'r', encoding='utf-8') as json_file:
@@ -51,6 +54,7 @@ def get_bank_data(request):
 
 @require_http_methods(["GET"])
 def get_all_bank_data(request):
+    """獲取所有銀行及其分行資料的 API"""
     banks = Bank.objects.prefetch_related('branches').all()
     data = []
     for bank in banks:
@@ -61,3 +65,19 @@ def get_all_bank_data(request):
         }
         data.append(bank_data)
     return JsonResponse(data, safe=False)
+
+@require_http_methods(["GET"])
+def all_bank_data(request):
+    return get_all_bank_data(request)
+
+def api_root(request):
+    return JsonResponse({
+        "message": "Welcome to the Bank API",
+        "endpoints": {
+            "banks": "/api/banks/",
+            "branches": "/api/branches/<bank_code>/",
+            "branch_details": "/api/branch/<branch_code>/",
+            "bank_data": "/api/bank-data/",
+            "all_bank_data": "/api/all-bank-data/"
+        }
+    })
