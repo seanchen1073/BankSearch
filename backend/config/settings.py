@@ -78,16 +78,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CORS 設定
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
+    "http://localhost:5173",  # 確保這個 URL 是你的前端應用的 URL
     "http://127.0.0.1:5173",
 ]
 
-# 確保允許 'Expires' 和其他標頭
+# 確保允許 'Cache-Control' 和其他必要的標頭
 CORS_ALLOW_HEADERS = list(default_headers) + [
+    'Cache-Control',
     'Expires',
     'Pragma',
-    'Cache-Control',  # 允許 'Cache-Control' 標頭
 ]
+
 
 CORS_ALLOW_METHODS = [
     'GET',
