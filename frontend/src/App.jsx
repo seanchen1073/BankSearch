@@ -49,8 +49,21 @@ const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank, bankDat
     const value = e.target.value;
     setSearchTerm(value); // 更新搜尋關鍵字
     handleSearch(value); // 傳遞搜尋關鍵字進行搜尋
+
+    // 確保下拉選單在輸入時顯示
     if (!isDropdownActive) {
-      setDropdownActive(true); // 確保下拉選單在輸入時顯示
+      setDropdownActive(true);
+    }
+  };
+
+  // 處理輸入框點擊事件，顯示所有資料或切換下拉選單
+  const handleInputClick = () => {
+    if (isDropdownActive) {
+      setDropdownActive(false); // 如果下拉選單已經顯示，則隱藏它
+    } else {
+      setDropdownActive(true); // 否則顯示下拉選單
+      setSearchTerm(""); // 清空搜尋關鍵字
+      handleSearch(""); // 顯示所有銀行資料
     }
   };
 
@@ -64,7 +77,7 @@ const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank, bankDat
           placeholder="請輸入關鍵字或銀行代碼"
           value={searchTerm} // 綁定搜尋關鍵字
           onChange={handleInputChange} // 處理輸入變化
-          onClick={handleArrowClick} // 處理點擊事件
+          onClick={handleInputClick} // 點擊時顯示所有資料或切換下拉選單
         />
         <div
           className={`absolute inset-y-0 right-0 flex items-center px-2 cursor-pointer ${isDropdownActive ? "text-black-500" : "text-gray-400"}`}
@@ -165,6 +178,7 @@ function App() {
       const data = await fetchBankData();
       if (data && Array.isArray(data)) {
         setBankData(data); // 更新狀態
+        setFilteredBanks(data); // 初始顯示所有銀行資料
         console.log("Bank data loaded successfully:", data); // 確認資料已加載
       } else {
         console.error("Failed to load bank data");
