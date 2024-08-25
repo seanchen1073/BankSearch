@@ -189,7 +189,10 @@ function App() {
 
   // 處理銀行搜尋
   const handleBankSearch = (searchTerm) => {
-    const filtered = bankData.filter((bank) => bank.code.includes(searchTerm) || bank.name.toLowerCase().includes(searchTerm.toLowerCase()));
+    const lowerCaseSearchTerm = searchTerm.toLowerCase(); // 將搜尋關鍵字轉換為小寫
+    const filtered = bankData.filter(
+      (bank) => bank.code.toLowerCase().includes(lowerCaseSearchTerm) || bank.name.toLowerCase().includes(lowerCaseSearchTerm)
+    );
     setFilteredBanks(filtered);
     setSelectedBank(filtered.length > 0 ? filtered[0].code : "");
   };
