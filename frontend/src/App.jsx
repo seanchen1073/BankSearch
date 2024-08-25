@@ -9,16 +9,14 @@ const Header = () => (
 );
 
 const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank, bankData }) => {
-  const [isDropdownActive, setDropdownActive] = useState(false); // 控制下拉選單顯示的狀態
-  const [inputWidth, setInputWidth] = useState(""); // 設定輸入框的寬度
-  const [searchTerm, setSearchTerm] = useState(""); // 儲存搜尋關鍵字
+  const [isDropdownActive, setDropdownActive] = useState(false);
+  const [inputWidth, setInputWidth] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
-  // 處理箭頭點擊事件，切換下拉選單顯示狀態
   const handleArrowClick = () => {
     setDropdownActive((prev) => !prev);
   };
 
-  // 更新輸入框寬度
   useEffect(() => {
     const updateWidth = () => {
       const inputElement = document.querySelector("input");
@@ -32,7 +30,6 @@ const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank, bankDat
     return () => window.removeEventListener("resize", updateWidth);
   }, []);
 
-  // 監聽點擊框外部事件，隱藏下拉選單
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (!event.target.closest(".relative")) {
@@ -44,40 +41,37 @@ const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank, bankDat
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // 處理輸入框內容變化
   const handleInputChange = (e) => {
     const value = e.target.value;
-    setSearchTerm(value); // 更新搜尋關鍵字
-    handleSearch(value); // 傳遞搜尋關鍵字進行搜尋
+    setSearchTerm(value);
+    handleSearch(value);
 
-    // 確保下拉選單在輸入時顯示
     if (!isDropdownActive) {
       setDropdownActive(true);
     }
   };
 
-  // 處理輸入框點擊事件，顯示所有資料或切換下拉選單
   const handleInputClick = () => {
     if (isDropdownActive) {
-      setDropdownActive(false); // 如果下拉選單已經顯示，則隱藏它
+      setDropdownActive(false);
     } else {
-      setDropdownActive(true); // 否則顯示下拉選單
-      setSearchTerm(""); // 清空搜尋關鍵字
-      handleSearch(""); // 顯示所有銀行資料
+      setDropdownActive(true);
+      setSearchTerm("");
+      handleSearch("");
     }
   };
 
   return (
-    <div className="w-full pr-4 mb-4 md:w-1/2 lg:w-1/3 md:mb-0 sm:px-4">
+    <div className="relative w-full pr-4 mb-4 md:w-1/2 lg:w-1/3 md:mb-0 sm:px-4">
       <h2 className="mb-2 text-xl font-semibold">銀行名稱</h2>
-      <div className="relative">
+      <div className="relative w-full max-w-md">
         <input
           type="text"
           className={`w-full p-2 pr-10 border rounded-md ${isDropdownActive ? "border-blue-500 border-2" : "border-gray-300"} focus:outline-none`}
           placeholder="請輸入關鍵字或銀行代碼"
-          value={searchTerm} // 綁定搜尋關鍵字
-          onChange={handleInputChange} // 處理輸入變化
-          onClick={handleInputClick} // 點擊時顯示所有資料或切換下拉選單
+          value={searchTerm}
+          onChange={handleInputChange}
+          onClick={handleInputClick}
         />
         <div
           className={`absolute inset-y-0 right-0 flex items-center px-2 cursor-pointer ${isDropdownActive ? "text-black-500" : "text-gray-400"}`}
@@ -102,15 +96,15 @@ const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank, bankDat
           )}
         </ul>
       )}
-      <div>可使用下拉選單或直接輸入關鍵字查詢</div>
+      <div className="text-center">可使用下拉選單或直接輸入關鍵字查詢</div>
     </div>
   );
 };
 
 const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches }) => (
-  <div className="w-full pl-4 mb-4 md:w-1/2 lg:w-1/3 md:mb-0">
+  <div className="relative flex flex-col items-center w-full pl-4 mb-4 md:w-1/2 lg:w-1/3 md:mb-0">
     <h2 className="mb-2 text-xl font-semibold">分行名稱</h2>
-    <div className="relative">
+    <div className="relative w-full max-w-md">
       <input
         type="text"
         className={`w-full p-2 border rounded-md pr-10 ${!selectedBank ? "bg-gray-200" : ""}`}
@@ -118,28 +112,22 @@ const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches }) => 
         disabled={!selectedBank}
         onChange={(e) => handleSearch(e.target.value)}
       />
-      <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-        <div className="w-px h-4 mr-2 bg-gray-300"></div>
-        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-        </svg>
-      </div>
+      {filteredBranches.length > 0 && (
+        <ul className="absolute z-10 mt-1 overflow-y-auto bg-white border rounded-md shadow-lg" style={{ width: "100%" }}>
+          {filteredBranches.map((branch) => (
+            <li
+              key={branch}
+              className="p-2 cursor-pointer hover:bg-gray-100"
+              onClick={() => {
+                console.log("Selected branch:", branch);
+              }}
+            >
+              {branch}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
-    {filteredBranches.length > 0 && (
-      <ul className="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg">
-        {filteredBranches.map((branch) => (
-          <li
-            key={branch}
-            className="p-2 cursor-pointer hover:bg-gray-100"
-            onClick={() => {
-              console.log("Selected branch:", branch);
-            }}
-          >
-            {branch}
-          </li>
-        ))}
-      </ul>
-    )}
   </div>
 );
 
@@ -149,7 +137,6 @@ function App() {
   const [filteredBanks, setFilteredBanks] = useState([]);
   const [filteredBranches, setFilteredBranches] = useState([]);
 
-  // 從 API 獲取銀行資料
   const fetchBankData = async () => {
     try {
       const response = await axios.get("http://localhost:8000/api/all-bank-data/", {
@@ -160,26 +147,25 @@ function App() {
         },
       });
       if (response.status === 200) {
-        return response.data; // 返回資料
+        return response.data;
       } else {
         console.error(`Error: Received status code ${response.status}`);
-        return []; // 如果狀態碼不是 200，返回空數組
+        return [];
       }
     } catch (error) {
       console.error("Error fetching bank data:", error);
-      return []; // 錯誤時返回空數組
+      return [];
     }
   };
 
-  // 載入銀行資料
   useEffect(() => {
     const loadBankData = async () => {
-      console.log("Loading bank data..."); // 確認函數被呼叫
+      console.log("Loading bank data...");
       const data = await fetchBankData();
       if (data && Array.isArray(data)) {
-        setBankData(data); // 更新狀態
-        setFilteredBanks(data); // 初始顯示所有銀行資料
-        console.log("Bank data loaded successfully:", data); // 確認資料已加載
+        setBankData(data);
+        setFilteredBanks(data);
+        console.log("Bank data loaded successfully:", data);
       } else {
         console.error("Failed to load bank data");
       }
@@ -187,9 +173,8 @@ function App() {
     loadBankData();
   }, []);
 
-  // 處理銀行搜尋
   const handleBankSearch = (searchTerm) => {
-    const lowerCaseSearchTerm = searchTerm.toLowerCase(); // 將搜尋關鍵字轉換為小寫
+    const lowerCaseSearchTerm = searchTerm.toLowerCase();
     const filtered = bankData.filter(
       (bank) => bank.code.toLowerCase().includes(lowerCaseSearchTerm) || bank.name.toLowerCase().includes(lowerCaseSearchTerm)
     );
@@ -197,7 +182,6 @@ function App() {
     setSelectedBank(filtered.length > 0 ? filtered[0].code : "");
   };
 
-  // 處理分行搜尋
   const handleBranchSearch = (searchTerm) => {
     if (!selectedBank) return;
     const selectedBankData = bankData.find((bank) => bank.code === selectedBank.split(" ")[0]);
@@ -211,7 +195,7 @@ function App() {
     <div className="min-h-screen bg-gray-100">
       <Header />
       <div className="container px-4 py-8 mx-auto">
-        <div className="flex flex-wrap">
+        <div className="flex flex-wrap justify-center">
           <BankNameSection handleSearch={handleBankSearch} filteredBanks={filteredBanks} setSelectedBank={setSelectedBank} bankData={bankData} />
           <BranchNameSection selectedBank={selectedBank} handleSearch={handleBranchSearch} filteredBranches={filteredBranches} />
         </div>
