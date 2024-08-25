@@ -87,7 +87,15 @@ const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank, bankDat
         <ul className="absolute z-10 mt-1 overflow-y-auto bg-white border rounded-md shadow-lg" style={{ width: inputWidth, maxHeight: "290px" }}>
           {filteredBanks.length > 0 ? (
             filteredBanks.map((bank) => (
-              <li key={bank.code} className="p-2 cursor-pointer hover:bg-gray-100" onClick={() => setSelectedBank(`${bank.code} ${bank.name}`)}>
+              <li
+                key={bank.code}
+                className="p-2 cursor-pointer hover:bg-gray-100"
+                onClick={() => {
+                  setSelectedBank(`${bank.code} ${bank.name}`); // 設置選擇的銀行
+                  setSearchTerm(`${bank.code} ${bank.name}`); // 將選擇的銀行名稱設置到輸入框
+                  setDropdownActive(false); // 關閉下拉選單
+                }}
+              >
                 {bank.code} {bank.name}
               </li>
             ))
@@ -166,7 +174,10 @@ const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches }) => 
         </div>
       </div>
       {isDropdownActive && (
-        <ul className="absolute left-0 right-0 z-10 mt-1 overflow-y-auto bg-white border rounded-md shadow-lg" style={{ maxHeight: "290px" }}>
+        <ul
+          className="absolute left-0 right-0 z-10 mt-1 overflow-y-auto bg-white border rounded-md shadow-lg"
+          style={{ width: "100%", maxHeight: "290px" }}
+        >
           {filteredBranches.length > 0 ? (
             filteredBranches.map((branch) => (
               <li
