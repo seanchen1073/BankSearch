@@ -112,11 +112,11 @@ const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank, bankDat
 const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches }) => {
   const [isDropdownActive, setDropdownActive] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [isFocused, setIsFocused] = useState(false); // 用於追蹤焦點狀態
+  const [isFocused, setIsFocused] = useState(false);
 
   const handleArrowClick = () => {
     setDropdownActive((prev) => !prev);
-    setIsFocused((prev) => !prev); // 切換焦點狀態
+    setIsFocused((prev) => !prev);
   };
 
   const handleInputChange = (e) => {
@@ -126,21 +126,20 @@ const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches }) => 
 
     if (!isDropdownActive) {
       setDropdownActive(true);
-      setIsFocused(true); // 當輸入框被點擊時設置為焦點
+      setIsFocused(true);
     }
   };
 
   const handleInputClick = () => {
     setDropdownActive((prev) => !prev);
-    setIsFocused((prev) => !prev); // 切換焦點狀態
+    setIsFocused((prev) => !prev);
   };
 
-  // 監聽點擊事件以取消選取
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (!event.target.closest(".relative")) {
         setDropdownActive(false);
-        setIsFocused(false); // 點擊外部時移除焦點樣式
+        setIsFocused(false);
       }
     };
 
@@ -148,6 +147,19 @@ const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches }) => 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
+  }, []);
+
+  useEffect(() => {
+    const updateWidth = () => {
+      const inputElement = document.querySelector(".branch-input");
+      if (inputElement) {
+        setInputWidth(inputElement.offsetWidth + "px");
+      }
+    };
+
+    updateWidth();
+    window.addEventListener("resize", updateWidth);
+    return () => window.removeEventListener("resize", updateWidth);
   }, []);
 
   return (
@@ -172,31 +184,28 @@ const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches }) => 
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 9l-7 7-7-7"></path>
           </svg>
         </div>
+        {isDropdownActive && (
+          <ul className="absolute left-0 right-0 z-10 mt-1 overflow-y-auto bg-white border rounded-md shadow-lg" style={{ maxHeight: "290px" }}>
+            {filteredBranches.length > 0 ? (
+              filteredBranches.map((branch) => (
+                <li
+                  key={branch}
+                  className="p-2 cursor-pointer hover:bg-gray-100"
+                  onClick={() => {
+                    setSearchTerm(branch);
+                    setDropdownActive(false);
+                    setIsFocused(false);
+                  }}
+                >
+                  {branch}
+                </li>
+              ))
+            ) : (
+              <li className="p-2 text-center text-gray-500">無相關資料</li>
+            )}
+          </ul>
+        )}
       </div>
-      {isDropdownActive && (
-        <ul
-          className="absolute left-0 right-0 z-10 mt-1 overflow-y-auto bg-white border rounded-md shadow-lg"
-          style={{ width: "100%", maxHeight: "290px" }}
-        >
-          {filteredBranches.length > 0 ? (
-            filteredBranches.map((branch) => (
-              <li
-                key={branch}
-                className="p-2 cursor-pointer hover:bg-gray-100"
-                onClick={() => {
-                  setSearchTerm(branch);
-                  setDropdownActive(false);
-                  setIsFocused(false); // 點選後關閉下拉選單並移除焦點
-                }}
-              >
-                {branch}
-              </li>
-            ))
-          ) : (
-            <li className="p-2 text-center text-gray-500">無相關資料</li>
-          )}
-        </ul>
-      )}
     </div>
   );
 };
