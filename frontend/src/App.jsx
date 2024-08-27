@@ -251,7 +251,7 @@ function App() {
 
   const fetchBankData = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api/all-bank-data/", {
+      const response = await axios.get("http://localhost:8000/api/bank_data.json", {
         headers: {
           "Cache-Control": "no-cache",
           Pragma: "no-cache",
