@@ -16,14 +16,13 @@ def remove_company_suffixes(name):
     """移除名稱中的「股份有限公司」和「有限公司」"""
     if not name:
         return ""
-    # 去除「股份有限公司」和「有限公司」，並且確保不會留下多餘的空格
     return name.replace("股份有限公司", "").replace("有限公司", "").strip()
 
 def import_data():
     """從 CSV 文件導入數據並處理"""
     count = 0
+    branch_keywords = ["銀行", "合作社", "處理中心", "辦事處"]  # 定義分行關鍵字
     try:
-        # 打開 CSV 文件進行讀取
         with open(CSV_FILE_PATH, 'r', encoding='utf-8-sig') as file:
             reader = csv.DictReader(file)
 
@@ -45,11 +44,18 @@ def import_data():
                     full_name = remove_company_suffixes(full_name)
 
                     # 分離銀行名稱和分行名稱
-                    if ' ' in full_name:
-                        bank_name, branch_name = full_name.split(maxsplit=1)
+                    bank_name = ""
+                    branch_name = ""
+
+                    # 根據關鍵字分離銀行名稱和分行名稱
+                    for keyword in branch_keywords:
+                        if keyword in full_name:
+                            parts = full_name.split(keyword, 1)  # 只分割一次
+                            bank_name = parts[0].strip()
+                            branch_name = parts[1].strip() if len(parts) > 1 else ""  # 確保分行名稱存在
+                            break
                     else:
-                        bank_name = full_name
-                        branch_name = ""
+                        bank_name = full_name  # 如果沒有找到關鍵字，則全名作為銀行名稱
 
                     # 再次移除銀行名稱和分行名稱中的公司後綴
                     bank_name = remove_company_suffixes(bank_name)
