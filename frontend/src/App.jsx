@@ -113,6 +113,37 @@ const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches }) => 
   const [isDropdownActive, setDropdownActive] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [isFocused, setIsFocused] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+
+  const handleKeyDown = (e) => {
+    if (!isDropdownActive) return;
+
+    switch (e.key) {
+      case "ArrowDown":
+        e.preventDefault();
+        setSelectedIndex((prevIndex) => (prevIndex < filteredBranches.length - 1 ? prevIndex + 1 : prevIndex));
+        break;
+      case "ArrowUp":
+        e.preventDefault();
+        setSelectedIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0));
+        break;
+      case "Enter":
+        e.preventDefault();
+        if (selectedIndex >= 0 && selectedIndex < filteredBranches.length) {
+          setSearchTerm(filteredBranches[selectedIndex]);
+          setDropdownActive(false);
+          setIsFocused(false);
+          setSelectedIndex(-1);
+        }
+        break;
+      case "Escape":
+        setDropdownActive(false);
+        setSelectedIndex(-1);
+        break;
+      default:
+        break;
+    }
+  };
 
   const handleArrowClick = () => {
     setDropdownActive((prev) => !prev);
@@ -173,6 +204,7 @@ const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches }) => 
           value={searchTerm}
           onChange={handleInputChange}
           onClick={handleInputClick}
+          onKeyDown={handleKeyDown}
           disabled={!selectedBank}
         />
         <div
@@ -187,14 +219,15 @@ const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches }) => 
         {isDropdownActive && (
           <ul className="absolute left-0 right-0 z-10 mt-1 overflow-y-auto bg-white border rounded-md shadow-lg" style={{ maxHeight: "290px" }}>
             {filteredBranches.length > 0 ? (
-              filteredBranches.map((branch) => (
+              filteredBranches.map((branch, index) => (
                 <li
                   key={branch}
-                  className="p-2 cursor-pointer hover:bg-gray-100"
+                  className={`p-2 cursor-pointer hover:bg-gray-100 ${index === selectedIndex ? "bg-gray-200" : ""}`}
                   onClick={() => {
                     setSearchTerm(branch);
                     setDropdownActive(false);
                     setIsFocused(false);
+                    setSelectedIndex(-1);
                   }}
                 >
                   {branch}
