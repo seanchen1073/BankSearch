@@ -40,7 +40,7 @@ def get_branch_details(request, branch_code):
 @require_http_methods(["GET"])
 def get_bank_data(request):
     """從 JSON 文件中獲取銀行資料的 API"""
-    json_file_path = BASE_DIR / 'bank' / 'bank_data.json'
+    json_file_path = Path(__file__).resolve().parent / 'bank_data.json'  # 修改這行
     try:
         with open(json_file_path, 'r', encoding='utf-8') as json_file:
             data = json.load(json_file)
@@ -78,6 +78,7 @@ def api_root(request):
             "branches": "/api/branches/<bank_code>/",
             "branch_details": "/api/branch/<branch_code>/",
             "bank_data": "/api/bank-data/",
-            "all_bank_data": "/api/all-bank-data/"
+            "all_bank_data": "/api/all-bank-data/",
+            "bank_data_json": "/api/bank_data.json"  # 新增這行
         }
     })

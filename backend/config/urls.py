@@ -6,7 +6,7 @@ from django.views.generic import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('bank.urls')),
+    path('api/', include('bank.urls')),  # 這裡確保指向 bank.urls
     path('', RedirectView.as_view(url='/api/', permanent=False)),
 ]
 
