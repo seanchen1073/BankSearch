@@ -29,6 +29,7 @@ def process_csv_data(csv_file_path):
     branch_keywords = ["銀行", "合作社", "處理中心", "辦事處"]
     skipped_records = []
     duplicate_records = set()
+    empty_values = []
 
     with open(csv_file_path, 'r', encoding='utf-8-sig') as file:
         reader = csv.DictReader(file)
@@ -40,6 +41,12 @@ def process_csv_data(csv_file_path):
                 full_name = row['機構名稱']
                 address = row['地址']
                 tel = row['電話']
+
+                # 檢查空值
+                if not bank_code or not full_name:
+                    empty_values.append({'code': bank_code, 'name': full_name, 'type': 'bank', 'line': count})
+                if not branch_code or not full_name:
+                    empty_values.append({'code': branch_code, 'name': full_name, 'type': 'branch', 'line': count})
 
                 # 檢查重複記錄
                 record_key = f"{bank_code}_{branch_code}"
@@ -98,6 +105,13 @@ def process_csv_data(csv_file_path):
     print(f"生成了 {len(banks_data)} 個銀行對象")
     print(f"跳過了 {len(skipped_records)} 條記錄")
     print(f"發現 {len(duplicate_records) - len(banks_data)} 條重複記錄")
+
+    if empty_values:
+        print("找到以下空值項目:")
+        for item in empty_values:
+            print(f"{item['type']} - code: {item['code']}, name: {item['name']}, line: {item['line']}")
+    else:
+        print("沒有找到空值項目。")
 
     return list(banks_data.values())
 
