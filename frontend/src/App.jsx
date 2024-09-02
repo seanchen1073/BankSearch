@@ -91,9 +91,9 @@ const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank }) => {
                 key={bank.code}
                 className="p-2 cursor-pointer hover:bg-gray-100"
                 onClick={() => {
-                  setSelectedBank(`${bank.code} ${bank.name}`); // 設置選擇的銀行
-                  setSearchTerm(`${bank.code} ${bank.name}`); // 將選擇的銀行名稱設置到輸入框
-                  setDropdownActive(false); // 關閉下拉選單
+                  setSelectedBank(`${bank.code} ${bank.name}`);
+                  setSearchTerm(`${bank.code} ${bank.name}`);
+                  setDropdownActive(false);
                 }}
               >
                 {bank.code} {bank.name}
@@ -130,7 +130,7 @@ const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches }) => 
       case "Enter":
         e.preventDefault();
         if (selectedIndex >= 0 && selectedIndex < filteredBranches.length) {
-          setSearchTerm(filteredBranches[selectedIndex]);
+          setSearchTerm(filteredBranches[selectedIndex].name); // 使用分行名稱
           setDropdownActive(false);
           setIsFocused(false);
           setSelectedIndex(-1);
@@ -205,19 +205,19 @@ const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches }) => 
         </div>
         {isDropdownActive && (
           <ul className="absolute left-0 right-0 z-10 mt-1 overflow-y-auto bg-white border rounded-md shadow-lg" style={{ maxHeight: "290px" }}>
-            {filteredBranches.length > 0 ? (
+            {filteredBranches && filteredBranches.length > 0 ? (
               filteredBranches.map((branch, index) => (
                 <li
-                  key={branch}
+                  key={branch.code}
                   className={`p-2 cursor-pointer hover:bg-gray-100 ${index === selectedIndex ? "bg-gray-200" : ""}`}
                   onClick={() => {
-                    setSearchTerm(branch);
+                    setSearchTerm(branch.name); // 使用分行名稱
                     setDropdownActive(false);
                     setIsFocused(false);
                     setSelectedIndex(-1);
                   }}
                 >
-                  {branch}
+                  {branch.code} {branch.name}
                 </li>
               ))
             ) : (
@@ -232,7 +232,7 @@ const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches }) => 
 
 function App() {
   const [bankData, setBankData] = useState([]);
-  const [selectedBank, setSelectedBank] = useState("");
+  const [selectedBank, setSelectedBank] = useState(null);
   const [filteredBanks, setFilteredBanks] = useState([]);
   const [filteredBranches, setFilteredBranches] = useState([]);
 
@@ -246,7 +246,7 @@ function App() {
         },
       });
       if (response.status === 200) {
-        return response.data.banks; // 確保返回的數據是 banks 陣列
+        return response.data.banks;
       } else {
         console.error(`Error: Received status code ${response.status}`);
         return [];
@@ -278,16 +278,25 @@ function App() {
       (bank) => bank.code.toLowerCase().includes(lowerCaseSearchTerm) || bank.name.toLowerCase().includes(lowerCaseSearchTerm)
     );
     setFilteredBanks(filtered);
-    setSelectedBank(filtered.length > 0 ? filtered[0].code : "");
   };
+
+  useEffect(() => {
+    if (selectedBank) {
+      const selectedBankData = bankData.find((bank) => bank.code === selectedBank.split(" ")[0]);
+      if (selectedBankData) {
+        setFilteredBranches(selectedBankData.branches);
+      } else {
+        setFilteredBranches([]);
+      }
+    } else {
+      setFilteredBranches([]);
+    }
+  }, [selectedBank, bankData]);
 
   const handleBranchSearch = (searchTerm) => {
     if (!selectedBank) return;
-    const selectedBankData = bankData.find((bank) => bank.code === selectedBank.split(" ")[0]);
-    if (selectedBankData) {
-      const filtered = selectedBankData.branches.filter((branch) => branch.toLowerCase().includes(searchTerm.toLowerCase()));
-      setFilteredBranches(filtered);
-    }
+    const filtered = filteredBranches.filter((branch) => branch.name.toLowerCase().includes(searchTerm.toLowerCase()));
+    setFilteredBranches(filtered);
   };
 
   return (
