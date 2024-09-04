@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from "react";
 
-const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank }) => {
-    const [isDropdownActive, setDropdownActive] = useState(false);
+const BankNameSection = ({ handleSearch, filteredBanks, selectedBank, setSelectedBank, isDropdownActive, setActiveDropdown }) => {
     const [inputWidth, setInputWidth] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
-
-    const handleArrowClick = () => {
-        setDropdownActive((prev) => !prev);
-    };
 
     useEffect(() => {
         const updateWidth = () => {
@@ -23,31 +18,21 @@ const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank }) => {
     }, []);
 
     useEffect(() => {
-        const handleClickOutside = (event) => {
-        if (!event.target.closest(".relative")) {
-            setDropdownActive(false);
+        if (selectedBank) {
+        setSearchTerm(selectedBank);
         }
-        };
-
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
+    }, [selectedBank]);
 
     const handleInputChange = (e) => {
         const value = e.target.value;
         setSearchTerm(value);
         handleSearch(value);
-
-        if (!isDropdownActive) {
-        setDropdownActive(true);
-        }
+        setActiveDropdown("bank");
     };
 
     const handleInputClick = () => {
-        if (isDropdownActive) {
-        setDropdownActive(false);
-        } else {
-        setDropdownActive(true);
+        setActiveDropdown(isDropdownActive ? null : "bank");
+        if (!isDropdownActive) {
         setSearchTerm("");
         handleSearch("");
         }
@@ -67,7 +52,7 @@ const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank }) => {
             />
             <div
             className={`absolute inset-y-0 right-0 flex items-center px-2 cursor-pointer ${isDropdownActive ? "text-black-500" : "text-gray-400"}`}
-            onClick={handleArrowClick}
+            onClick={handleInputClick}
             >
             <div className="w-px h-6 mr-2 bg-gray-300"></div>
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -84,8 +69,7 @@ const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank }) => {
                     className="p-2 cursor-pointer hover:bg-gray-100"
                     onClick={() => {
                     setSelectedBank(`${bank.code} ${bank.name}`);
-                    setSearchTerm(`${bank.code} ${bank.name}`);
-                    setDropdownActive(false);
+                    setActiveDropdown(null);
                     }}
                 >
                     {bank.code} {bank.name}
@@ -99,6 +83,6 @@ const BankNameSection = ({ handleSearch, filteredBanks, setSelectedBank }) => {
         <div className="text-center">可使用下拉選單或直接輸入關鍵字查詢</div>
         </div>
     );
-    };
+};
 
 export default BankNameSection;

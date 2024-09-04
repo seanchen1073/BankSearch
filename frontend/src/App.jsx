@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Header from "./components/Header";
-import BankNameSection from "./components/BankNameSection";
-import BranchNameSection from "./components/BranchNameSection";
+import BankingForm from "./components/BankingForm";
 
 function App() {
   const [bankData, setBankData] = useState([]);
@@ -77,10 +76,14 @@ function App() {
     <div className="min-h-screen bg-gray-100">
       <Header />
       <div className="container px-4 py-8 mx-auto">
-        <div className="flex flex-wrap justify-center">
-          <BankNameSection handleSearch={handleBankSearch} filteredBanks={filteredBanks} setSelectedBank={setSelectedBank} />
-          <BranchNameSection selectedBank={selectedBank} handleSearch={handleBranchSearch} filteredBranches={filteredBranches} />
-        </div>
+        <BankingForm
+          handleBankSearch={handleBankSearch}
+          handleBranchSearch={handleBranchSearch}
+          filteredBanks={filteredBanks}
+          filteredBranches={filteredBranches}
+          selectedBank={selectedBank}
+          setSelectedBank={setSelectedBank}
+        />
       </div>
     </div>
   );
