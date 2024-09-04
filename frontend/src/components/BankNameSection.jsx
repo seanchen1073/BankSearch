@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 const BankNameSection = ({ handleSearch, filteredBanks, selectedBank, setSelectedBank, isDropdownActive, setActiveDropdown }) => {
     const [inputWidth, setInputWidth] = useState("");
-    const [searchTerm, setSearchTerm] = useState("");
+    const [searchTerm, setSearchTerm] = useState(selectedBank || "");
 
     useEffect(() => {
         const updateWidth = () => {
@@ -18,9 +18,7 @@ const BankNameSection = ({ handleSearch, filteredBanks, selectedBank, setSelecte
     }, []);
 
     useEffect(() => {
-        if (selectedBank) {
-        setSearchTerm(selectedBank);
-        }
+        setSearchTerm(selectedBank || "");
     }, [selectedBank]);
 
     const handleInputChange = (e) => {
@@ -32,10 +30,12 @@ const BankNameSection = ({ handleSearch, filteredBanks, selectedBank, setSelecte
 
     const handleInputClick = () => {
         setActiveDropdown(isDropdownActive ? null : "bank");
-        if (!isDropdownActive) {
-        setSearchTerm("");
-        handleSearch("");
-        }
+    };
+
+    const handleBankSelect = (bank) => {
+        setSelectedBank(bank);
+        setSearchTerm(bank);
+        setActiveDropdown(null);
     };
 
     return (
@@ -64,14 +64,7 @@ const BankNameSection = ({ handleSearch, filteredBanks, selectedBank, setSelecte
             <ul className="absolute z-10 mt-1 overflow-y-auto bg-white border rounded-md shadow-lg" style={{ width: inputWidth, maxHeight: "290px" }}>
             {filteredBanks.length > 0 ? (
                 filteredBanks.map((bank) => (
-                <li
-                    key={bank.code}
-                    className="p-2 cursor-pointer hover:bg-gray-100"
-                    onClick={() => {
-                    setSelectedBank(`${bank.code} ${bank.name}`);
-                    setActiveDropdown(null);
-                    }}
-                >
+                <li key={bank.code} className="p-2 cursor-pointer hover:bg-gray-100" onClick={() => handleBankSelect(`${bank.code} ${bank.name}`)}>
                     {bank.code} {bank.name}
                 </li>
                 ))
