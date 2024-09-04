@@ -6582,16 +6582,10 @@
         },
         {
             "code": "009",
-            "name": "彰銀商業銀行",
-            "address": "中國江蘇省南京市建鄴區江東中路371號",
-            "tel": "86-025-88811000",
+            "name": "彰化商業銀行",
+            "address": "臺北市中山區中山北路2段57號12樓",
+            "tel": "02-25362951#2270",
             "branches": [
-                {
-                    "code": "0090888",
-                    "name": "",
-                    "address": "中國江蘇省南京市建鄴區江東中路371號",
-                    "tel": "86-025-88811000"
-                },
                 {
                     "code": "0091094",
                     "name": "信託處",
@@ -10986,7 +10980,7 @@
                 },
                 {
                     "code": "0139054",
-                    "name": "",
+                    "name": "世越銀行",
                     "address": "97A Nguyen Van Troi Street， Ward 11， Phu Nhuan District， Ho Chi Minh City， Vietnam",
                     "tel": "84-28-3942-1042"
                 },
@@ -11802,7 +11796,7 @@
                 },
                 {
                     "code": "0170251",
-                    "name": "",
+                    "name": "國際金融業務分行",
                     "address": "台北市中山區吉林路100號10樓",
                     "tel": "02-25633156"
                 },
@@ -11826,7 +11820,7 @@
                 },
                 {
                     "code": "0170295",
-                    "name": "",
+                    "name": "桃園國際機場分行",
                     "address": "桃園市大園區航站南路15號桃園國際機場航站大廈",
                     "tel": "03-3982200 -3"
                 },
@@ -12036,7 +12030,7 @@
                 },
                 {
                     "code": "0170664",
-                    "name": "",
+                    "name": "高雄國際機場分行",
                     "address": "高雄市小港區中山四路2號高雄國際航空站新國際航廈",
                     "tel": "07-8067866"
                 },
@@ -12132,7 +12126,7 @@
                 },
                 {
                     "code": "0170860",
-                    "name": "",
+                    "name": "駐外交部簡易型分行",
                     "address": "台北市中正區凱達格蘭大道2號129室",
                     "tel": "02-23482066"
                 },
@@ -12144,7 +12138,7 @@
                 },
                 {
                     "code": "0171166",
-                    "name": "",
+                    "name": "高雄漁港簡易型分行",
                     "address": "高雄市前鎮區漁港東二路3號",
                     "tel": "07-8219630"
                 },
@@ -12540,7 +12534,7 @@
                 },
                 {
                     "code": "0178947",
-                    "name": "",
+                    "name": "兆豐國際商業銀行吉隆坡行銷辦事處",
                     "address": "Suite 12-04， Level 12，Wisma Goldhill 67，Jalan Raja Chulan，50200 Kuala Lumpur，Malaysia",
                     "tel": "603-20266966-67"
                 },
@@ -13826,7 +13820,7 @@
                 },
                 {
                     "code": "0521060",
-                    "name": "",
+                    "name": "三多分行",
                     "address": "高雄市前鎮區中山二路262號1樓",
                     "tel": "07-9666499"
                 },
@@ -15053,12 +15047,6 @@
                     "name": "崇德分行",
                     "address": "臺中市北屯區崇德路二段172、176號",
                     "tel": "04-36036377"
-                },
-                {
-                    "code": "0819994",
-                    "name": "",
-                    "address": "台北市南港區忠孝東路7段369號10樓、11樓",
-                    "tel": "02-66166000"
                 }
             ]
         },
@@ -18013,12 +18001,6 @@
                     "name": "越南河內代表人辦事處",
                     "address": "越南河內市還劍郡李常傑路83B號Pacific Place大樓11樓1104室",
                     "tel": "84-24-37265223"
-                },
-                {
-                    "code": "8039002",
-                    "name": "",
-                    "address": "香港干諾道中200號信德中心西座35樓18室",
-                    "tel": "852-25211678"
                 }
             ]
         },
@@ -19316,31 +19298,31 @@
                 },
                 {
                     "code": "8069016",
-                    "name": "",
+                    "name": "Yuanta Savings Bank Philippines， Inc.",
                     "address": "Ground Floor， Chatham House Building， 116 Valero corner Rufino Streets， Salcedo Village， Makati City， Philippines",
                     "tel": "63-2-88453838"
                 },
                 {
                     "code": "8069049",
-                    "name": "",
+                    "name": "Yuanta Commercial Bank Co.， Ltd. (Yangon Representative Office)",
                     "address": "Suite 09-07， 422/426，Corner of Strand Road and Botahtaung Pagoda Road， Botahtaung Township， Yangon， Myanmar",
                     "tel": "95-1-202051"
                 },
                 {
                     "code": "8069050",
-                    "name": "",
+                    "name": "Yuanta Savings Bank Korea Co.， Ltd.",
                     "address": "542， Gangnam-daero， Gangnam-gu， Seoul， Korea",
                     "tel": "82-2-6022-3700"
                 },
                 {
                     "code": "8069061",
-                    "name": "",
+                    "name": "Yuanta Savings Bank Korea Co.， Ltd.(Euljiro Branch)",
                     "address": "International Building 13F， 109， Namdaemun-ro， Jung-gu， Seoul， Korea",
                     "tel": "+82 2-6022-3700 ext. 3"
                 },
                 {
                     "code": "8069072",
-                    "name": "",
+                    "name": "Yuanta Commercial Bank Co.， Ltd.(Hong Kong Branch)",
                     "address": "香港金鐘夏愨道18號海富中心1座25樓2508室",
                     "tel": "852-2511-1719"
                 }
@@ -20149,18 +20131,6 @@
                     "name": "洛杉磯分行",
                     "address": "177 E. Colorado Boulevard，10th floor， Suite 1068， Pasadena， California 91105， USA.",
                     "tel": "1-213-4374800"
-                },
-                {
-                    "code": "8079660",
-                    "name": "",
-                    "address": "香港九龍尖沙咀北京道一號12A樓03-06室",
-                    "tel": "852-36558688"
-                },
-                {
-                    "code": "8079671",
-                    "name": "(中國)",
-                    "address": "江蘇省南京市建鄴區廬山路248號4號樓3501室、3601室",
-                    "tel": "86-25-88866000"
                 },
                 {
                     "code": "8079718",
@@ -21084,7 +21054,7 @@
                 },
                 {
                     "code": "8088000",
-                    "name": "",
+                    "name": "聯合商業銀行",
                     "address": "N°441， Preah Monivong Blvd.， Sangkat Boeng Proluet， Khan Prampir Meakkakra， Phnom Penh， Cambodia",
                     "tel": "855-2391-1313"
                 },
@@ -21706,7 +21676,7 @@
                 },
                 {
                     "code": "8100434",
-                    "name": "",
+                    "name": "信託業務專責部門",
                     "address": "臺北市內湖區瑞光路333號12樓/ 臺北市內湖區瑞光路399號13樓 / 臺北市中山德惠街9號9樓",
                     "tel": "02-66129415"
                 },
@@ -23074,1219 +23044,1219 @@
                 },
                 {
                     "code": "8220048",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - Head Office",
                     "address": "1 Q. House Lumpini Building G， 1st， 5th， 6th and 32nd Floor， South Sathon Rd.， Thungmahamek， Sathon， Bangkok 10120",
                     "tel": "+66 2 359 0000"
                 },
                 {
                     "code": "8220059",
-                    "name": "台南分行",
+                    "name": "LH Financial Group Public Company Limited",
                     "address": "台南市中西區府前路1段159號1至4樓",
                     "tel": "06-2152345"
                 },
                 {
                     "code": "8220060",
-                    "name": "三重分行",
+                    "name": "Land and Houses Bank Public Company Limited - THE MALL BANGKAPI BRANCH",
                     "address": "新北市三重區正義北路208號地下1樓至2樓，204號1樓，2樓，206號1樓，2樓",
                     "tel": "02-29828121"
                 },
                 {
                     "code": "8220071",
-                    "name": "城東分行",
+                    "name": "Land and Houses Bank Public Company Limited - THE OLD SIAM BRANCH",
                     "address": "台北市中山區南京東路二段88號地下一樓、一樓",
                     "tel": "02-25677377"
                 },
                 {
                     "code": "8220082",
-                    "name": "嘉義分行",
+                    "name": "Land and Houses Bank Public Company Limited - MAHBOONKRONG CENTER BR.",
                     "address": "嘉義市西區民生北路241號1、2、3、4樓",
                     "tel": "05-2286600"
                 },
                 {
                     "code": "8220093",
-                    "name": "中崙分行",
+                    "name": "Land and Houses Bank Public Company Limited - BIG C BANGNA BRANCH",
                     "address": "台北市松山區八德路四段85號1、2樓",
                     "tel": "02-27672669"
                 },
                 {
                     "code": "8220107",
-                    "name": "城中分行",
+                    "name": "Land and Houses Bank Public Company Limited - THE MALL BANGKHAE BRANCH",
                     "address": "台北市中正區重慶南路一段83號1樓、2樓、4樓、地下室一樓",
                     "tel": "02-23818740"
                 },
                 {
                     "code": "8220118",
-                    "name": "三民分行",
+                    "name": "Land and Houses Bank Public Company Limited - HOME PRO CHONBURI BRANCH",
                     "address": "高雄市三民區九如二路366號1樓，2樓",
                     "tel": "07-3161155"
                 },
                 {
                     "code": "8220129",
-                    "name": "中壢分行",
+                    "name": "Land and Houses Bank Public Company Limited - BIG C HANGDONG BRANCH",
                     "address": "桃園市中壢區延平路500號地下層之1、1樓、2樓之2及2樓之3",
                     "tel": "03-4223131"
                 },
                 {
                     "code": "8220130",
-                    "name": "雙和分行",
+                    "name": "Land and Houses Bank Public Company Limited - FUTURE PARK RANGSIT BR.",
                     "address": "新北市永和區中正路588號地下1樓至2樓",
                     "tel": "02-29233333"
                 },
                 {
                     "code": "8220141",
-                    "name": "中山分行",
+                    "name": "Land and Houses Bank Public Company Limited - THE MALL THAPRA BRANCH",
                     "address": "臺北市中山區中山北路二段102號、102號2樓及106之2號1樓",
                     "tel": "02-25235222"
                 },
                 {
                     "code": "8220152",
-                    "name": "仁愛分行",
+                    "name": "Land and Houses Bank Public Company Limited - SRIRACHA BRANCH",
                     "address": "台北市大安區仁愛路四段337號、339號、341號及343號",
                     "tel": "02-27754600"
                 },
                 {
                     "code": "8220163",
-                    "name": "敦南分行",
+                    "name": "Land and Houses Bank Public Company Limited - YAOWARAJ BRANCH",
                     "address": "臺北市大安區敦化南路2段68號、70號、70號2樓、70號2樓之1、70號2樓之2、70號2樓之3及四維路143號、145號",
                     "tel": "02-23253616"
                 },
                 {
                     "code": "8220174",
-                    "name": "板橋分行",
+                    "name": "Land and Houses Bank Public Company Limited - BIG C RATTANATHIBETH BR.",
                     "address": "新北市板橋區文化路一段187號",
                     "tel": "02-29606600"
                 },
                 {
                     "code": "8220185",
-                    "name": "忠孝分行",
+                    "name": "Land and Houses Bank Public Company Limited - THE MALL NGAMWONGWAN BR.",
                     "address": "台北市大安區忠孝東路四段71號、73之14號及75之14號",
                     "tel": "02-27520310"
                 },
                 {
                     "code": "8220196",
-                    "name": "新興分行",
+                    "name": "Land and Houses Bank Public Company Limited - LOTUS PHUKET BRANCH",
                     "address": "高雄市新興區民生一路206號1樓、2樓、地下一樓",
                     "tel": "07-2262325"
                 },
                 {
                     "code": "8220200",
-                    "name": "南京東路分行",
+                    "name": "Land and Houses Bank Public Company Limited - BANGRAK BRANCH",
                     "address": "台北市中山區南京東路一段16號1樓、地下1樓、18號1樓",
                     "tel": "02-25232238"
                 },
                 {
                     "code": "8220211",
-                    "name": "信託部",
+                    "name": "Land and Houses Bank Public Company Limited - BIG C ONNUT BRANCH",
                     "address": "台北市南港區經貿二路168號6、11、15樓、台北市中正區重慶南路1段77號4、5樓，83號3至5樓、台北市中正區懷寧街70號1至4樓",
                     "tel": "02-23818890"
                 },
                 {
                     "code": "8220222",
-                    "name": "西台南分行",
+                    "name": "Land and Houses Bank Public Company Limited - SAPHANKHWAI BRANCH",
                     "address": "台南市中西區金華路四段212號1樓、2樓、成功路457號6樓",
                     "tel": "06-2263636"
                 },
                 {
                     "code": "8220233",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - TALAT WAROROT BRANCH",
                     "address": "1 Q. House Lumpini Building， 5 th Floor， South Sathon Road， Thungmahamek， Sathon， Bangkok Thailand 10120",
                     "tel": "+66 2 359 0000"
                 },
                 {
                     "code": "8220244",
-                    "name": "國際金融業務分行",
+                    "name": "Land and Houses Bank Public Company Limited - WORACHAK   BRANCH",
                     "address": "台北市南港區經貿二路168號",
                     "tel": "02-33277777"
                 },
                 {
                     "code": "8220255",
-                    "name": "松山分行",
+                    "name": "Land and Houses Bank Public Company Limited - TERMINAL 21 PATTAYA  BR.",
                     "address": "台北市信義區忠孝東路五段550號1樓、2樓",
                     "tel": "02-23466711"
                 },
                 {
                     "code": "8220266",
-                    "name": "新莊分行",
+                    "name": "Land and Houses Bank Public Company Limited - KHONKAEN BRANCH",
                     "address": "新北市新莊區中正路320號",
                     "tel": "02-29929696"
                 },
                 {
                     "code": "8220277",
-                    "name": "桃園分行",
+                    "name": "Land and Houses Bank Public Company Limited - THE CIRCLE RATCHAPRUK BR",
                     "address": "桃園市桃園區成功路一段32號1樓、2樓",
                     "tel": "03-3373266"
                 },
                 {
                     "code": "8220288",
-                    "name": "中港分行",
+                    "name": "Land and Houses Bank Public Company Limited - TERMINAL 21 BRANCH",
                     "address": "台中市西區臺灣大道二段536號1、2樓",
                     "tel": "04-23149999"
                 },
                 {
                     "code": "8220299",
-                    "name": "新竹分行",
+                    "name": "Land and Houses Bank Public Company Limited - PATONG BRANCH",
                     "address": "新竹市北區中正路158號地下一樓、1、2樓",
                     "tel": "03-5222687"
                 },
                 {
                     "code": "8220303",
-                    "name": "蘆洲分行",
+                    "name": "Land and Houses Bank Public Company Limited - SAMUTSAKHON BRANCH",
                     "address": "新北市蘆洲區中山一路211號1樓、2樓之2",
                     "tel": "02-28482008"
                 },
                 {
                     "code": "8220314",
-                    "name": "新店分行",
+                    "name": "Land and Houses Bank Public Company Limited - CENTRAL RAMA 9 BRANCH",
                     "address": "新北市新店區北新路一段148、150號1~2樓",
                     "tel": "02-29129988"
                 },
                 {
                     "code": "8220325",
-                    "name": "員林分行",
+                    "name": "Land and Houses Bank Public Company Limited - SUKSAWAT BRANCH",
                     "address": "彰化縣員林市中正路372號1、2樓",
                     "tel": "04-8368676"
                 },
                 {
                     "code": "8220336",
-                    "name": "東新竹分行",
+                    "name": "Land and Houses Bank Public Company Limited - PARK LANE (EKKAMAI) BR.",
                     "address": "新竹市東區建中路32、36號",
                     "tel": "03-5749190"
                 },
                 {
                     "code": "8220347",
-                    "name": "公館分行",
+                    "name": "Land and Houses Bank Public Company Limited - SURATTHANI BRANCH",
                     "address": "台北市大安區羅斯福路三段311、313、315號及309號2樓之1、2樓之2",
                     "tel": "02-23623377"
                 },
                 {
                     "code": "8220358",
-                    "name": "永康分行",
+                    "name": "Land and Houses Bank Public Company Limited - LOTUS RAMA 4 BRANCH",
                     "address": "台南市永康區中華路425號1至2樓",
                     "tel": "06-2025787"
                 },
                 {
                     "code": "8220369",
-                    "name": "土城分行",
+                    "name": "Land and Houses Bank Public Company Limited - NAKHONPATHOM  BRANCH",
                     "address": "新北市土城區中央路二段286號1~2樓、286-1號與288號1樓",
                     "tel": "02-22630888"
                 },
                 {
                     "code": "8220370",
-                    "name": "頭份分行",
+                    "name": "Land and Houses Bank Public Company Limited - HUA HIN BRANCH",
                     "address": "苗栗縣頭份市中華路951號1、2樓",
                     "tel": "037-695678"
                 },
                 {
                     "code": "8220381",
-                    "name": "基隆分行",
+                    "name": "Land and Houses Bank Public Company Limited - CENTRAL PINKLAO BRANCH",
                     "address": "基隆市信義區信一路150號1至2樓",
                     "tel": "02-24221166"
                 },
                 {
                     "code": "8220392",
-                    "name": "豐原分行",
+                    "name": "Land and Houses Bank Public Company Limited - RAYONG BRANCH",
                     "address": "臺中市豐原區中正路545號",
                     "tel": "04-25201010"
                 },
                 {
                     "code": "8220406",
-                    "name": "天母分行",
+                    "name": "Land and Houses Bank Public Company Limited - CENTRAL  KHONKAEN BRANCH",
                     "address": "台北市士林區中山北路六段90號1樓、2樓",
                     "tel": "02-28322888"
                 },
                 {
                     "code": "8220417",
-                    "name": "板新分行",
+                    "name": "Land and Houses Bank Public Company Limited - BIG C HATYAI 2 BRANCH",
                     "address": "新北市板橋區中山路一段293之1號1樓、2樓",
                     "tel": "02-89611500"
                 },
                 {
                     "code": "8220428",
-                    "name": "彰化分行",
+                    "name": "Land and Houses Bank Public Company Limited - PHITSANULOK BRANCH",
                     "address": "彰化縣彰化市曉陽路76號",
                     "tel": "04-7279933"
                 },
                 {
                     "code": "8220439",
-                    "name": "東高雄分行",
+                    "name": "Land and Houses Bank Public Company Limited - HATYAI BRANCH",
                     "address": "高雄市苓雅區青年一路29號1樓",
                     "tel": "07-5351885"
                 },
                 {
                     "code": "8220440",
-                    "name": "中華分行",
+                    "name": "Land and Houses Bank Public Company Limited - UBON RATCHATHANI  BRANCH",
                     "address": "台南市東區中華東路二段195號1、2樓",
                     "tel": "06-3353535"
                 },
                 {
                     "code": "8220451",
-                    "name": "內湖分行",
+                    "name": "Land and Houses Bank Public Company Limited - NAKHONSAWAN BRANCH",
                     "address": "台北市內湖區成功路四段358號",
                     "tel": "02-27938668"
                 },
                 {
                     "code": "8220462",
-                    "name": "斗六分行",
+                    "name": "Land and Houses Bank Public Company Limited - HOMEPRO KANCHANABURI BR.",
                     "address": "雲林縣斗六市興華街2號1樓、3樓",
                     "tel": "05-5360099"
                 },
                 {
                     "code": "8220473",
-                    "name": "文心分行",
+                    "name": "Land and Houses Bank Public Company Limited-LOTUS RUAMCHOK (CHIANGMAI)",
                     "address": "臺中市北屯區文心路四段875號1樓",
                     "tel": "04-22469988"
                 },
                 {
                     "code": "8220484",
-                    "name": "重陽分行",
+                    "name": "Land and Houses Bank Public Company Limited - CENTRAL SALAYA BRANCH",
                     "address": "新北市三重區重陽路1段66號1樓、68號1樓、三陽路2號1樓",
                     "tel": "02-89881199"
                 },
                 {
                     "code": "8220495",
-                    "name": "南東分行",
+                    "name": "Land and Houses Bank Public Company Limited - HOMEPRO CHUMPHON BRANCH",
                     "address": "台北市中山區南京東路一段108號",
                     "tel": "02-81811918"
                 },
                 {
                     "code": "8220509",
-                    "name": "高美館分行",
+                    "name": "Land and Houses Bank Public Company Limited - HOMEPRO SARABURI BRANCH",
                     "address": "高雄市鼓山區明誠四路25號",
                     "tel": "07-5500850"
                 },
                 {
                     "code": "8220510",
-                    "name": "南崁分行",
+                    "name": "Land and Houses Bank Public Company Limited - HOMEPRO CHACHOENGSAO BR.",
                     "address": "桃園市蘆竹區中正路257號1至3樓",
                     "tel": "03-3212211"
                 },
                 {
                     "code": "8220521",
-                    "name": "永和分行",
+                    "name": "Land and Houses Bank Public Company Limited - HOMEPRO TRANG BRANCH",
                     "address": "新北市永和區中山路一段215號地下一樓、1樓、217號1樓、219號1樓",
                     "tel": "02-89235008"
                 },
                 {
                     "code": "8220532",
-                    "name": "太平分行",
+                    "name": "Land and Houses Bank Public Company Limited - HOMEPRO CHAIYAPHUM BR.",
                     "address": "臺中市太平區育賢路500號",
                     "tel": "04-23958285"
                 },
                 {
                     "code": "8220543",
-                    "name": "市府分行",
+                    "name": "Land and Houses Bank Public Company Limited - NAKHON SI THAMMARAT BR.",
                     "address": "台北市信義區松高路9號、9號2樓",
                     "tel": "02-27221668"
                 },
                 {
                     "code": "8220554",
-                    "name": "六家庄分行",
+                    "name": "Land and Houses Bank Public Company Limited - HOMEPRO ROIET BRANCH",
                     "address": "新竹縣竹北市文興路二段36號及36號4樓",
                     "tel": "03-5506789"
                 },
                 {
                     "code": "8220565",
-                    "name": "右昌分行",
+                    "name": "Land and Houses Bank Public Company Limited - ROBINSON RATCHABURI BR.",
                     "address": "高雄市楠梓區後昌路803之3號",
                     "tel": "07-3681699"
                 },
                 {
                     "code": "8220576",
-                    "name": "江翠分行",
+                    "name": "Land and Houses Bank Public Company Limited - HOMEPRO BURIRAM BRANCH",
                     "address": "新北市板橋區文化路二段242號",
                     "tel": "02-22578999"
                 },
                 {
                     "code": "8220587",
-                    "name": "東湖分行",
+                    "name": "Land and Houses Bank Public Company Limited - PHUKET BRANCH",
                     "address": "台北市內湖區成功路五段460號",
                     "tel": "02-26312288"
                 },
                 {
                     "code": "8220598",
-                    "name": "中原分行",
+                    "name": "Land and Houses Bank Public Company Limited - KRABI BRANCH",
                     "address": "桃園市中壢區中北路二段203、205號1~2樓",
                     "tel": "03-4662211"
                 },
                 {
                     "code": "8220602",
-                    "name": "大安分行",
+                    "name": "Land and Houses Bank Public Company Limited - LOTUS SAMUI BRANCH",
                     "address": "台北市中正區羅斯福路二段102號1樓、2樓及2樓之1",
                     "tel": "02-33651988"
                 },
                 {
                     "code": "8220613",
-                    "name": "北高雄分行",
+                    "name": "Land and Houses Bank Public Company Limited - LOTUS SRINAKARIN BRANCH",
                     "address": "高雄市三民區明誠二路52號",
                     "tel": "07-3461199"
                 },
                 {
                     "code": "8220624",
-                    "name": "承德分行",
+                    "name": "Land and Houses Bank Public Company Limited - THANON CHAN BRANCH",
                     "address": "台北市大同區承德路一段17號1樓、2樓、2樓之1、3樓、3樓之1、2、3、4樓之3、5樓、5樓之5",
                     "tel": "02-25562088"
                 },
                 {
                     "code": "8220635",
-                    "name": "復興分行",
+                    "name": "Land and Houses Bank Public Company Limited - CHIANGRAI BRANCH",
                     "address": "台北市大安區敦化南路1段251號1、2樓",
                     "tel": "02-27771988"
                 },
                 {
                     "code": "8220646",
-                    "name": "石牌分行",
+                    "name": "Land and Houses Bank Public Company Limited - HOMEPRO LAMPANG BRANCH",
                     "address": "台北市北投區石牌路二段46號1樓、2樓、3樓、4樓",
                     "tel": "02-28213366"
                 },
                 {
                     "code": "8220657",
-                    "name": "城北分行",
+                    "name": "Land and Houses Bank Public Company Limited - Q. HOUSE SATHORN BRANCH",
                     "address": "台北市中山區松江路218號1樓、220號2樓",
                     "tel": "02-25623789"
                 },
                 {
                     "code": "8220668",
-                    "name": "萬華分行",
+                    "name": "Land and Houses Bank Public Company Limited - HOMEPRO SURIN BRANCH",
                     "address": "台北市萬華區長沙街2段92、96號1樓",
                     "tel": "02-23898188"
                 },
                 {
                     "code": "8220679",
-                    "name": "西松分行",
+                    "name": "Land and Houses Bank Public Company Limited - UD TOWN UDONTHANI BRANCH",
                     "address": "台北市松山區南京東路五段241號1、2樓",
                     "tel": "02-37655588"
                 },
                 {
                     "code": "8220680",
-                    "name": "北投分行",
+                    "name": "Land and Houses Bank Public Company Limited - HOMEPRO SUVARNABHUMI BR.",
                     "address": "台北市北投區光明路217號1樓及地下1樓",
                     "tel": "02-28983039"
                 },
                 {
                     "code": "8220691",
-                    "name": "安和分行",
+                    "name": "Land and Houses Bank Public Company Limited - HOMEPRO PHETCHABURI BR.",
                     "address": "台北市大安區安和路二段193號、195號1、2樓",
                     "tel": "02-27386171"
                 },
                 {
                     "code": "8220705",
-                    "name": "西湖分行",
+                    "name": "Land and Houses Bank Public Company Limited - AYUTTHAYA CITY PARK BR.",
                     "address": "台北市內湖區內湖路一段244號1樓",
                     "tel": "02-27999588"
                 },
                 {
                     "code": "8220716",
-                    "name": "瑞光分行",
+                    "name": "Land and Houses Bank Public Company Limited-THE PASEO MALL(LADKRABANG)",
                     "address": "台北市內湖區內湖路一段514號、516號",
                     "tel": "02-27985600"
                 },
                 {
                     "code": "8220727",
-                    "name": "宜蘭分行",
+                    "name": "Land and Houses Bank Public Company Limited - PAK CHONG BRANCH",
                     "address": "宜蘭縣宜蘭市中山路二段271號",
                     "tel": "03-9351122"
                 },
                 {
                     "code": "8220738",
-                    "name": "民生分行",
+                    "name": "Land and Houses Bank Public Company Limited - TERMINAL 21 KORAT BRANCH",
                     "address": "台北市中山區民生東路一段58號1、2樓",
                     "tel": "02-25641818"
                 },
                 {
                     "code": "8220749",
-                    "name": "中和分行",
+                    "name": "Land and Houses Bank Public Company Limited - PARADISE PARK BRANCH",
                     "address": "新北市中和區中山路二段261號1樓",
                     "tel": "02-22452277"
                 },
                 {
                     "code": "8220750",
-                    "name": "重新分行",
+                    "name": "Land and Houses Bank Public Company Limited-THE CRYSTAL EKAMAIRAMINDRA",
                     "address": "新北市三重區重新路二段42-1號",
                     "tel": "02-89726189"
                 },
                 {
                     "code": "8220761",
-                    "name": "丹鳳分行",
+                    "name": "Land and Houses Advisory Company Limited - Headquarter",
                     "address": "新北市新莊區中正路879之15號、879之16號2樓",
                     "tel": "02-29066888"
                 },
                 {
                     "code": "8220772",
-                    "name": "北新店分行",
+                    "name": "Land and Houses Fund Management Company Limited - Headquarter",
                     "address": "新北市新店區民權路25號1樓",
                     "tel": "02-29135000"
                 },
                 {
                     "code": "8220783",
-                    "name": "汐止分行",
+                    "name": "Land and Houses Securities Public Company Limited - Headquarter",
                     "address": "新北市汐止區大同路二段210、212、216、218、220號1樓，210、218號2樓",
                     "tel": "02-26489699"
                 },
                 {
                     "code": "8220794",
-                    "name": "金城分行",
+                    "name": "Land and Houses Securities Public Company Limited - Udonthani",
                     "address": "新北市土城區金城路3段14號1、2樓、16號1、2樓",
                     "tel": "02-22601177"
                 },
                 {
                     "code": "8220808",
-                    "name": "樹林分行",
+                    "name": "Land and Houses Securities Public Company Limited - Nakhon Pathom",
                     "address": "新北市樹林區中山路一段122號1-2樓、124號1-2樓、126號2樓",
                     "tel": "02-26812345"
                 },
                 {
                     "code": "8220819",
-                    "name": "南勢角分行",
+                    "name": "Land and Houses Securities Public Company Limited -  Chiangmai",
                     "address": "新北市永和區中正路63號、65號一至二樓",
                     "tel": "02-29498838"
                 },
                 {
                     "code": "8220820",
-                    "name": "北新莊分行",
+                    "name": "Land and Houses Securities Public Company Limited - Phetchaburi",
                     "address": "新北市新莊區中華路二段57號1樓、2樓",
                     "tel": "02-22776789"
                 },
                 {
                     "code": "8220831",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Chumphon",
                     "address": "1 Q. HOUSE LUMPINI Bld. G Floor， SOUTH SATHORN Rd.， THUNGMAHAMEK， SATHORN， BANGKOK 10120",
                     "tel": "+66 2 359 0000 ext. 4801"
                 },
                 {
                     "code": "8220842",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Saraburi",
                     "address": "587， 589， 589/7-9 FASHION ISLAND B Floor， RAMINDRA Rd.， KHANNAYAO， KHANNAYAO， BANGKOK 10230",
                     "tel": "+66 2 947 5588"
                 },
                 {
                     "code": "8220853",
-                    "name": "南桃園分行",
+                    "name": "Land and Houses Securities Public Company Limited - Ratchaburi",
                     "address": "桃園市桃園區中山路845號、845號2樓",
                     "tel": "03-3600533"
                 },
                 {
                     "code": "8220864",
-                    "name": "北桃園分行",
+                    "name": "Land and Houses Securities Public Company Limited - Lamphun",
                     "address": "桃園市桃園區經國路124號、126號、128號1樓",
                     "tel": "03-3150566"
                 },
                 {
                     "code": "8220875",
-                    "name": "竹科分行",
+                    "name": "Land and Houses Securities Public Company Limited - Bang khae",
                     "address": "新竹市東區金山街2號1、2樓",
                     "tel": "03-5638080"
                 },
                 {
                     "code": "8220886",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Nakhonratchasima",
                     "address": "3522 THE MALL BANGKAPI 2nd Floor， LATPHRAO Rd.， KLONGJAN， BANGKAPI， BANGKOK 10240",
                     "tel": "+66 2 363 3489"
                 },
                 {
                     "code": "8220897",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Khon Kaen",
                     "address": "12 THE OLD SIAM PLAZA， 1st Floor， TREEPHET Rd.， WANG BURAPHA PHIROM， PHRA NAKHON BANGKOK 10200",
                     "tel": "+66 2 223 9866"
                 },
                 {
                     "code": "8220901",
-                    "name": "營業部",
+                    "name": "Land and Houses Securities Public Company Limited - Krabi",
                     "address": "台北市南港區經貿二路168號1樓、2樓、7樓、8樓及188號12樓",
                     "tel": "02-33277777"
                 },
                 {
                     "code": "8220912",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Samutsakhon",
                     "address": "444 MBK CENTER BUILDING 4th Floor，PRAYATHAI Rd.， WANGMAI， PATHUMWAN BANGKOK 10330",
                     "tel": "+66 2 853 3930"
                 },
                 {
                     "code": "8220923",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Chiang Rai",
                     "address": "111 BIG C BANGNA 1st Floor，  BANGNA-TRAD Rd.， BANGNA， BANGNA， BANGKOK 10260",
                     "tel": "+66 2 361 6324"
                 },
                 {
                     "code": "8220945",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Ubon Ratchathan",
                     "address": "518 THE MALL BANGKHAE 3rd Floor  PETCHKASEM Rd.， BANGKHAE NUA， BANGKHAE， BANGKOK  10160",
                     "tel": "+66 2 454 9204"
                 },
                 {
                     "code": "8220956",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Phitsanulok",
                     "address": "15/16 MOO 3， HOME PRO CHONBURI 2nd Floor， SUKHUMVIT Rd.， HUYKAPI， MUANGCHONBURI， CHONBURI 20000",
                     "tel": "+66 38 387 924"
                 },
                 {
                     "code": "8220967",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - BIG C HANGDONG BRANCH",
                     "address": "433/4 MOO 7 BIG C HANGDONG 1st Floor， MAE HIA， MUANGCHIANGMAI， CHIANGMAI 50100",
                     "tel": "+66 53 447 855"
                 },
                 {
                     "code": "8220978",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - FUTURE PARK RANGSIT BR.",
                     "address": "94 FUTURE PARK RANGSIT 2 nd Floor， PAHONYOTHIN Rd.， PRACHATHIPAT， THANYABURI， PATUMTHANEE 12130",
                     "tel": "+66 2 958 5271"
                 },
                 {
                     "code": "8220989",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - THE MALL THAPRA BRANCH",
                     "address": "99 THE MALL THAPRA B Floor， RATCHADAPISEK Rd.， BUKKARO， THONBURI， BANGKOK 10600",
                     "tel": "+66 2 477 9525"
                 },
                 {
                     "code": "8220990",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - SRIRACHA BRANCH",
                     "address": "28 SRIRACHANAKORN 2 Rd.， SRIRACHA， CHONBURI 20110",
                     "tel": "+66 38 325 793"
                 },
                 {
                     "code": "8221001",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - YAOWARAJ BRANCH",
                     "address": "106 PADUNGDAO Rd.， SAMPHANTAWONG， BANGKOK 10100",
                     "tel": "+66 2 221 4600"
                 },
                 {
                     "code": "8221012",
-                    "name": "八德分行",
+                    "name": "Land and Houses Bank Public Company Limited - BIG C RATTANATHIBETH BR.",
                     "address": "桃園市八德區介壽路1段965號1樓、2樓之1、2樓之2，介壽路1段947巷10弄16號1樓",
                     "tel": "03-3716565"
                 },
                 {
                     "code": "8221023",
-                    "name": "林口分行",
+                    "name": "Land and Houses Bank Public Company Limited - THE MALL NGAMWONGWAN BR.",
                     "address": "桃園市龜山區復興一路233號",
                     "tel": "03-3962777"
                 },
                 {
                     "code": "8221034",
-                    "name": "竹北分行",
+                    "name": "Land and Houses Bank Public Company Limited - LOTUS PHUKET BRANCH",
                     "address": "新竹縣竹北市光明六路47號1至2樓、49號1至2樓",
                     "tel": "03-6560222"
                 },
                 {
                     "code": "8221045",
-                    "name": "南屯分行",
+                    "name": "Land and Houses Bank Public Company Limited - BANGRAK BRANCH",
                     "address": "台中市南屯區五權西路二段166、168、170號",
                     "tel": "04-24712268"
                 },
                 {
                     "code": "8221056",
-                    "name": "大里分行",
+                    "name": "Land and Houses Bank Public Company Limited - BIG C ONNUT BRANCH",
                     "address": "台中市大里區國光路二段201號",
                     "tel": "04-24073777"
                 },
                 {
                     "code": "8221067",
-                    "name": "洲際分行",
+                    "name": "Land and Houses Bank Public Company Limited - SAPHANKHWAI BRANCH",
                     "address": "台中市北屯區崇德路三段418號",
                     "tel": "04-24229391"
                 },
                 {
                     "code": "8221078",
-                    "name": "南投分行",
+                    "name": "Land and Houses Bank Public Company Limited - TALAT WAROROT BRANCH",
                     "address": "南投縣南投市中山街220號1、2樓",
                     "tel": "049-2207711"
                 },
                 {
                     "code": "8221089",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - WORACHAK   BRANCH",
                     "address": "6 MOO 6， BIG C RATTANATHIBETH 1st Floor，  SAOTHONGTHIN，  BANGYAI，  NONTHABURI   11140",
                     "tel": "+66 2 594 2618"
                 },
                 {
                     "code": "8221090",
-                    "name": "仁德分行",
+                    "name": "Land and Houses Bank Public Company Limited - TERMINAL 21 PATTAYA  BR.",
                     "address": "台南市仁德區仁義里中山路478號",
                     "tel": "06-2798099"
                 },
                 {
                     "code": "8221104",
-                    "name": "中台南分行",
+                    "name": "Land and Houses Bank Public Company Limited - KHONKAEN BRANCH",
                     "address": "台南市中西區民生路一段167號1樓、2樓",
                     "tel": "06-2412318"
                 },
                 {
                     "code": "8221115",
-                    "name": "東台南分行",
+                    "name": "Land and Houses Bank Public Company Limited - THE CIRCLE RATCHAPRUK BR",
                     "address": "台南市東區長榮路2段290號1 、2、3樓",
                     "tel": "06-2085522"
                 },
                 {
                     "code": "8221126",
-                    "name": "臺東分行",
+                    "name": "Land and Houses Bank Public Company Limited - TERMINAL 21 BRANCH",
                     "address": "臺東縣臺東市中山路279號1樓、2樓、3樓",
                     "tel": "089-339898"
                 },
                 {
                     "code": "8221137",
-                    "name": "南台南分行",
+                    "name": "Land and Houses Bank Public Company Limited - PATONG BRANCH",
                     "address": "台南市南區健康路二段236號1、2、3樓",
                     "tel": "06-2919999"
                 },
                 {
                     "code": "8221148",
-                    "name": "新營分行",
+                    "name": "Land and Houses Bank Public Company Limited - SAMUTSAKHON BRANCH",
                     "address": "台南市新營區中山路137號1、2樓",
                     "tel": "06-6336789"
                 },
                 {
                     "code": "8221159",
-                    "name": "科博館分行",
+                    "name": "Land and Houses Bank Public Company Limited - CENTRAL RAMA 9 BRANCH",
                     "address": "台中市西區臺灣大道二段239號",
                     "tel": "04-23101258"
                 },
                 {
                     "code": "8221160",
-                    "name": "西屯分行",
+                    "name": "Land and Houses Bank Public Company Limited - SUKSAWAT BRANCH",
                     "address": "台中市西屯區臺灣大道四段859號1樓",
                     "tel": "04-23551000"
                 },
                 {
                     "code": "8221171",
-                    "name": "民族分行",
+                    "name": "Land and Houses Bank Public Company Limited - PARK LANE (EKKAMAI) BR.",
                     "address": "高雄市新興區民族二路97號B1、1樓、2樓、3樓",
                     "tel": "07-2386567"
                 },
                 {
                     "code": "8221182",
-                    "name": "南高雄分行",
+                    "name": "Land and Houses Bank Public Company Limited - SURATTHANI BRANCH",
                     "address": "高雄市前鎮區一心二路21號1樓，2樓",
                     "tel": "07-3366768"
                 },
                 {
                     "code": "8221193",
-                    "name": "九如分行",
+                    "name": "Land and Houses Bank Public Company Limited - LOTUS RAMA 4 BRANCH",
                     "address": "高雄市三民區九如一路551號1樓",
                     "tel": "07-3805558"
                 },
                 {
                     "code": "8221207",
-                    "name": "屏東分行",
+                    "name": "Land and Houses Bank Public Company Limited - NAKHONPATHOM  BRANCH",
                     "address": "屏東縣屏東市自由路450號1、2樓",
                     "tel": "08-7383000"
                 },
                 {
                     "code": "8221218",
-                    "name": "復北分行",
+                    "name": "Land and Houses Bank Public Company Limited - HUA HIN BRANCH",
                     "address": "台北市松山區復興北路363號",
                     "tel": "02-87705566"
                 },
                 {
                     "code": "8221229",
-                    "name": "鳳山分行",
+                    "name": "Land and Houses Bank Public Company Limited - CENTRAL PINKLAO BRANCH",
                     "address": "高雄市鳳山區中山路85之1號1至2樓、85之2號1、2樓",
                     "tel": "07-7451199"
                 },
                 {
                     "code": "8221230",
-                    "name": "五甲分行",
+                    "name": "Land and Houses Bank Public Company Limited - RAYONG BRANCH",
                     "address": "高雄市鳳山區五甲二路699號1、2、3樓",
                     "tel": "07-8215101"
                 },
                 {
                     "code": "8221241",
-                    "name": "延吉分行",
+                    "name": "Land and Houses Bank Public Company Limited - CENTRAL  KHONKAEN BRANCH",
                     "address": "台北市大安區忠孝東路4段284，286，288，290，292，294，296，298，300號",
                     "tel": "02-27716000"
                 },
                 {
                     "code": "8221252",
-                    "name": "信義分行",
+                    "name": "Land and Houses Bank Public Company Limited - BIG C HATYAI 2 BRANCH",
                     "address": "台北市大安區信義路4段236號1樓",
                     "tel": "02-27079977"
                 },
                 {
                     "code": "8221263",
-                    "name": "青年分行",
+                    "name": "Land and Houses Bank Public Company Limited - PHITSANULOK BRANCH",
                     "address": "高雄市鳳山區青年路二段315號1樓、2樓",
                     "tel": "07-7777668"
                 },
                 {
                     "code": "8221274",
-                    "name": "岡山分行",
+                    "name": "Land and Houses Bank Public Company Limited - HATYAI BRANCH",
                     "address": "高雄市岡山區岡山路388號1、2、3樓",
                     "tel": "07-6235500"
                 },
                 {
                     "code": "8221285",
-                    "name": "士林分行",
+                    "name": "Land and Houses Bank Public Company Limited - UBON RATCHATHANI  BRANCH",
                     "address": "臺北市士林區中正路307號1、2樓，309號1、2樓，311號1、2樓",
                     "tel": "02-28839900"
                 },
                 {
                     "code": "8221296",
-                    "name": "東民生分行",
+                    "name": "Land and Houses Bank Public Company Limited - NAKHONSAWAN BRANCH",
                     "address": "台北市中山區民生東路3段51號",
                     "tel": "02-25093656"
                 },
                 {
                     "code": "8221300",
-                    "name": "文山分行",
+                    "name": "Land and Houses Bank Public Company Limited - HOMEPRO KANCHANABURI BR.",
                     "address": "台北市文山區辛亥路四段248、250號1樓、2樓，地下1樓",
                     "tel": "02-29335358"
                 },
                 {
                     "code": "8221311",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited-LOTUS RUAMCHOK (CHIANGMAI)",
                     "address": "30/39-50  MOO  2， THE MALL NGAMWONGWAN 1st Floor， BANGKHEN， MUANGNONTHABURI， NONTHABURI 11000",
                     "tel": "+66 2 550 0987"
                 },
                 {
                     "code": "8221322",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - CENTRAL SALAYA BRANCH",
                     "address": "104 MOO 5 LOTUS PHUKET G Floor， CHAROEMPRAKIAT ROR 9 Rd.，  RATSADA， MUANGPHUKET， PHUKET  83000",
                     "tel": "+66 76 304 113"
                 },
                 {
                     "code": "8221333",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - HOMEPRO CHUMPHON BRANCH",
                     "address": "1445  CHAROENKRUNG RD.，  SILOM， BANGRAK， BANGKOK 10500",
                     "tel": "+66 2 235 7050"
                 },
                 {
                     "code": "8221344",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - HOMEPRO SARABURI BRANCH",
                     "address": "114  BIG C ONNUT 3rd Floor， SOI SUKHUMVIT 77 (ONNUT)， SUKHUMVIT RD.， PHRAKHANONG NUA， WATTANA，  BANGKOK  10250",
                     "tel": "+66 2 331 6471"
                 },
                 {
                     "code": "8221355",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - HOMEPRO CHACHOENGSAO BR.",
                     "address": "552/4  PHAHONYOTHIN Rd.， SAMSENNAI  PHAYATHAI， BANGKOK 10400",
                     "tel": "+66 2 278 1855"
                 },
                 {
                     "code": "8221366",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - HOMEPRO TRANG BRANCH",
                     "address": "167  WICHAYANONT Rd.， CHANG MOI， MUANG CHIANGMAI， CHIANGMAI  50300",
                     "tel": "+66 53 252 223"
                 },
                 {
                     "code": "8221377",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - HOMEPRO CHAIYAPHUM BR.",
                     "address": "104  WORACHAK Rd.， BANBAT， POMPRAP SATTRUPHAI， BANGKOK  10100",
                     "tel": "+66 2 221 6946"
                 },
                 {
                     "code": "8221388",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - NAKHON SI THAMMARAT BR.",
                     "address": "777 TERMINAL 21 PATTAYA 1st. Floor， MOO 6， PATTAYA NUA Rd.，  NA KLUA， BANGLAMUNG， CHONBURI  20150",
                     "tel": "+66 33 252 021"
                 },
                 {
                     "code": "8221399",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - HOMEPRO ROIET BRANCH",
                     "address": "425-429  SRI CHAN Rd.， NAI MUANG， MUANG KHONKAEN， KHONKAEN  40000",
                     "tel": "+66 43 235 844"
                 },
                 {
                     "code": "8221403",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - ROBINSON RATCHABURI BR.",
                     "address": "39 THE CIRCLE RATCHAPRUK， RATCHAPRUK Rd.， BANGRAMAT，  TALING CHAN， BANGKOK  10170",
                     "tel": "+66 2 863 8757"
                 },
                 {
                     "code": "8221414",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - HOMEPRO BURIRAM BRANCH",
                     "address": "2， 88 TERMINAL 21 LG Floor SUKHUMVIT  SOI 19 (WATTANA)， SUKHUMVIT Rd. KLONGTOEY NUA， WATTANA， BANGKOK 10110",
                     "tel": "+66 2 254 0045"
                 },
                 {
                     "code": "8221425",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - PHUKET BRANCH",
                     "address": "121，123 RAT UTHIT 200 YEARS Rd.， PATONG， KATHU， PHUKET  83150",
                     "tel": "+66 76 340 870"
                 },
                 {
                     "code": "8221436",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - KRABI BRANCH",
                     "address": "923/140 SETTHAKIT 1 Rd.， MAHARCHAI， MUANG SAMUTSAKHON， SAMUTSAKHON 74000",
                     "tel": "+66 34 870 737"
                 },
                 {
                     "code": "8221447",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - LOTUS SAMUI BRANCH",
                     "address": "9/9 CENTRAL PLAZA RAMA 9 5th Floor， RAMA 9 Rd.， HUAIKHWANG， HUAIKHWANG， BANGKOK 10310",
                     "tel": "+66 2 160 3866"
                 },
                 {
                     "code": "8221458",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - LOTUS SRINAKARIN BRANCH",
                     "address": "105/6， 105/7 MOO 10 SUKSAWAT Rd.， BANGKHRU PHRA PRADAENG， SAMUTPRAKAN 10130",
                     "tel": "+66 2 462 8764"
                 },
                 {
                     "code": "8221469",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - THANON CHAN BRANCH",
                     "address": "18 PARK LANE COMMUNITY MALL 1st Floor， SOI SUKHUMVIT 61 (SETTHABUT)， KHLONG TAN NUA， WATTANA， BANGKOK 10110",
                     "tel": "+66 2 381 6573"
                 },
                 {
                     "code": "8221481",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - CHIANGRAI BRANCH",
                     "address": "88 MOO 10， CENTRAL PLAZA SURATTHANI 3rd Floor，WAT PARDU， MUANG SURATTHANI， SURATTHANI 84000",
                     "tel": "+66 77 602 711"
                 },
                 {
                     "code": "8221492",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - HOMEPRO LAMPANG BRANCH",
                     "address": "3300 LOTUS RAMA 4  2nd Floor RAMA 4 Rd.  KHLONGTAN， KHLONGTOEI，  BANGKOK  10110",
                     "tel": "+66 2 249 5758"
                 },
                 {
                     "code": "8221506",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - Q. HOUSE SATHORN BRANCH",
                     "address": "141/23  RATCHAWITHI Rd.，  PHRA PATHOM CHEDI，  MUANG NAKHONPATHOM， NAKHONPATHOM  73000",
                     "tel": "+66 34 271 981"
                 },
                 {
                     "code": "8221517",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - HOMEPRO SURIN BRANCH",
                     "address": "26/52  PETCHKASEM Rd.， HUAHIN， HUAHIN PRACHUAPKHIRIKHAN  77110",
                     "tel": "+66 32 513 420"
                 },
                 {
                     "code": "8221528",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - UD TOWN UDONTHANI BRANCH",
                     "address": "7/222  CENTRAL PLAZA PINKLAO， 4th Floor BOROM  RACHACHONNANEE Rd.， ARUNAMARIN， BANGKOK NOI， BANGKOK 10700",
                     "tel": "+66 2 433 1352"
                 },
                 {
                     "code": "8221539",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - HOMEPRO SUVARNABHUMI BR.",
                     "address": "144/31-32 SUKHUMVIT Rd.， THA PRADU， MUANG RAYONG， RAYONG 21000",
                     "tel": "+66 38 619 434"
                 },
                 {
                     "code": "8221540",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - HOMEPRO PHETCHABURI BR.",
                     "address": "99  CENTRAL PLAZA KHONKAEN， 2nd Floor， SRICHAN Rd.， NAI MUANG， MUANG KHONKAEN， KHONKAEN  40000",
                     "tel": "+66 43 288 540"
                 },
                 {
                     "code": "8221551",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - AYUTTHAYA CITY PARK BR.",
                     "address": "677  BIG C HATYAI 2， 1st Floor， PETCHKASEM Rd.， HATYAI， HATYAI， SONGKHLA 90110",
                     "tel": "+66 74 555 211"
                 },
                 {
                     "code": "8221562",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited-THE PASEO MALL(LADKRABANG)",
                     "address": "113  BOROMTRAILOKANAT Rd.， And 27-28 PHAYALITHAI Rd. NAIMUANG， MUANG PHITSANULOK， PHITSANULOK 65000",
                     "tel": "+66 55 258 051"
                 },
                 {
                     "code": "8221573",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - PAK CHONG BRANCH",
                     "address": "55 NIPATUTID 2  Rd. HATYAI，  HATYAI， SONGKHLA  90110",
                     "tel": "+66 74 225 522"
                 },
                 {
                     "code": "8221595",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - TERMINAL 21 KORAT BRANCH",
                     "address": "343-345 CHAYANGKUL Rd， NAIMUANG， MUANG UBON RATCHATHANI， UBON RATCHATHANI， 34000",
                     "tel": "+66 45 242 684"
                 },
                 {
                     "code": "8221609",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - PARADISE PARK BRANCH",
                     "address": "232/12-13  SAWANVITEE Rd， PAKNAMPHO， MUANG NAKHONSAWAN， NAKHONSAWAN 60000",
                     "tel": "+66 56 228 521"
                 },
                 {
                     "code": "8221610",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited-THE CRYSTAL EKAMAIRAMINDRA",
                     "address": "15 MOO 1 HOMEPRO KANCHANABURI 1st Floor， THA LO， THA MUANG， KANCHANABURI 71000",
                     "tel": "+66 34 602 695"
                 },
                 {
                     "code": "8221621",
-                    "name": "",
+                    "name": "Land and Houses Advisory Company Limited - Headquarter",
                     "address": "6 MOO 6 LOTUS RUAMCHOK 2nd Floor， FAHAAM， MUANG CHIANGMAI， CHIANGMAI 50000",
                     "tel": "+66 53 014 154"
                 },
                 {
                     "code": "8221632",
-                    "name": "",
+                    "name": "Land and Houses Fund Management Company Limited - Headquarter",
                     "address": "198 MOO 1 HOME PRO PHUTTHAMONTHON SAI 5，   1st Floor， BANG TOEI， SAM PHRAN，  NAKHONPATHOM 73210",
                     "tel": "+66 2 444 5583"
                 },
                 {
                     "code": "8221643",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Headquarter",
                     "address": "63 MOO 11， HOMEPRO CHUMPHON 1st Floor， WANG PHAI，  MUANG CHUMPHON， CHUMPHON 86000",
                     "tel": "+66 77 658 863"
                 },
                 {
                     "code": "8221654",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Udonthani",
                     "address": "24/3 MOO 2  HOMEPRO SARABURI 1st Floor， TAKUD， MUANG SASABURI， SASABURI 18000",
                     "tel": "+66 36 224 471"
                 },
                 {
                     "code": "8221665",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Nakhon Pathom",
                     "address": "187/9 HOMEPRO CHACHOENGSAO 1st Floor， CHACHOENGSAO-BANGPAKONG Rd.， NAMUANG， MUANG CHACHOENGSAO， CHACHOENGSAO 24000",
                     "tel": "+66 38 513 428"
                 },
                 {
                     "code": "8221687",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited -  Chiangmai",
                     "address": "196 MOO 4， HOMEPRO TRANG 1st Floor， BAN KAUN ， MUANG TRANG， TRANG 92000",
                     "tel": "+66 75 502 276"
                 },
                 {
                     "code": "8221698",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Phetchaburi",
                     "address": "164 MOO 7， HOMEPRO CHAIYAPHUM 1st Floor， NONGNASAENG， MUANG CHAIYAPHUM， CHAIYAPHUM 36000",
                     "tel": "+66 44 051 842"
                 },
                 {
                     "code": "8221702",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Chumphon",
                     "address": "73/120 PATTANAKARN-KHUKHWANG Rd， THAWANG， MUANG NAKHON SI THAMMARAT， NAKHON SI THAMMARAT 80000",
                     "tel": "+66 75 357 617"
                 },
                 {
                     "code": "8221713",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Saraburi",
                     "address": "116 MOO 3， HOMEPRO ROIET 1st Floor， DONG LAN ， MUANG ROIET， ROIET 45000",
                     "tel": "+66 43 516 859"
                 },
                 {
                     "code": "8221724",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Ratchaburi",
                     "address": "265 ROBINSON DEPARTMENT STORE RATCHABURI 1st Floor， SRISURIYAWONG Rd.，  NA MUANG， MUANG RATCHABURI， RATCHABURI 70000",
                     "tel": "+66 32 328 025"
                 },
                 {
                     "code": "8221735",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Lamphun",
                     "address": "499 MOO 9， HOMEPRO BURIRAM 1st Floor， ISAN， MUANG BURIRAM， BURIRAM 31000",
                     "tel": "+66 44 690 490"
                 },
                 {
                     "code": "8221746",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Bang khae",
                     "address": "156/46 PHANG-NGA Rd.， TALAT YAI， MUANG PHUKET， PHUKET 83000",
                     "tel": "+66 76 355 305"
                 },
                 {
                     "code": "8221757",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Nakhonratchasima",
                     "address": "6 MAHARAJ Rd.， PAKNAM， MUANG KRABI， KRABI 81000",
                     "tel": "+66 75 620 292"
                 },
                 {
                     "code": "8221768",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Khon Kaen",
                     "address": "1/7 MOO 6 LOTUS SAMUI 1st. Floor， BOPHUT， KOH SAMUI， SURATTHANI 84320",
                     "tel": "+66 77 447 888"
                 },
                 {
                     "code": "8221779",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Krabi",
                     "address": "9 MOO 6， LOTUS SRINAKARIN 2nd. Floor， BANGMUANGMAI， MUANG SAMUTPRAKAN，   SAMUTPRAKAN 10270",
                     "tel": "+66 2 175 7722"
                 },
                 {
                     "code": "8221780",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Samutsakhon",
                     "address": "368，370 CHAN ROAD， TUNGWATDON， SATHON， BANGKOK 10120",
                     "tel": "+66 2 212 8634"
                 },
                 {
                     "code": "8221791",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Chiang Rai",
                     "address": "673/9-10  THANALAI Rd.，  WIANG， MUANG CHIANGRAI， CHIANGRAI  57000",
                     "tel": "+66 53 717 873"
                 },
                 {
                     "code": "8221805",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Ubon Ratchathan",
                     "address": "224 HOMEPRO LAMPANG 1st Floor， HIGHWAY-LAMPANG-NGAO Rd.， PRABAT， MUANG LAMPANG， LAMPANG 52000",
                     "tel": "+66 54 811 481"
                 },
                 {
                     "code": "8221816",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Phitsanulok",
                     "address": "11 Q. HOUSE SATHORN Bld. G Floor， SOUTH SATHORN Rd.， THUNGMAHAMEK， SATHORN， BANGKOK 10120",
                     "tel": "+66 2 286 2646"
                 },
                 {
                     "code": "8221827",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - HOMEPRO SURIN BRANCH",
                     "address": "188 HOMEPRO SURIN 1st Floor， MOO 6， NOKMUANG， MUANG SURIN， SURIN 32000",
                     "tel": "+66 44 519 902"
                 },
                 {
                     "code": "8221838",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - UD TOWN UDONTHANI BRANCH",
                     "address": "45/5 UD TOWN 1st. Floor， THONG YAI Rd.， MAK KHAENG， MUEANG UDONTHANI， UDONTHANI 41000",
                     "tel": "+66 42 136 154"
                 },
                 {
                     "code": "8221849",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - HOMEPRO SUVARNABHUMI BR.",
                     "address": "99/29 HOMEPRO SUVARNABHUMI 3rd Floor， MOO 1， RACHATAWA， BANGPLEE， SAMUTPRAKAN  10540",
                     "tel": "+66 2 316 6701"
                 },
                 {
                     "code": "8221850",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - HOMEPRO PHETCHABURI BR.",
                     "address": "526 HOMEPRO PHETCHABURI 1st Floor， MOO 6， BAN MO， MUANG PHETCHABURI， PHETCHABURI 76000",
                     "tel": "+66 32 474 575"
                 },
                 {
                     "code": "8221872",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - AYUTTHAYA CITY PARK BR.",
                     "address": "126 MOO 3， AYUTTHAYA CITY PARK 1st Floor， ASIA ROAD， KLONG  SUAN  PLU， AYUTTHAYA， AYUTTHAYA 13000",
                     "tel": "+66 35 801 939"
                 },
                 {
                     "code": "8221894",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited-THE PASEO MALL(LADKRABANG)",
                     "address": "318/5 THE PASEO MALL， LADKRABANG Rd.， LADKRABANG， BANGKOK 10520",
                     "tel": "+66 2 346 4211"
                 },
                 {
                     "code": "8221908",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - PAK CHONG BRANCH",
                     "address": "461，463 MITTRAPHAP Rd.， PAK CHONG， PAK CHONG， NAKHON RATCHASIMA 30130",
                     "tel": "+66 44 314 882"
                 },
                 {
                     "code": "8221919",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - TERMINAL 21 KORAT BRANCH",
                     "address": "99 TERMINAL 21 KORAT 2nd Floor， MITTRAPHAP-NONG KHAI Rd.， NAI MUANG， MUANG NAKHONRATCHASIMA， NAKHONRATCHASIMA 30000",
                     "tel": "+66 44 498 511"
                 },
                 {
                     "code": "8221920",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited - PARADISE PARK BRANCH",
                     "address": "61 PARADISE PARK 2nd Floor， SRINAKARIN Rd.， NONGBON， PRAWET BANGKOK 10250",
                     "tel": "+66 2 780 2290"
                 },
                 {
                     "code": "8221931",
-                    "name": "",
+                    "name": "Land and Houses Bank Public Company Limited-THE CRYSTAL EKAMAIRAMINDRA",
                     "address": "41 HOME PRO EKAMAI-RAMINDRA 1st Floor， PRADIT MANUTHAM Rd.， LATPHRAO， BANGKOK 10310",
                     "tel": "+66 2 514 9112"
                 },
                 {
                     "code": "8221942",
-                    "name": "",
+                    "name": "Land and Houses Advisory Company Limited - Headquarter",
                     "address": "11 Q.House Sathon Bldg.， 10 Fl.， South Sathon Rd.， Thungmahamek， Sathon， Bangkok， 10120",
                     "tel": "+66 2 352 5100"
                 },
                 {
                     "code": "8221953",
-                    "name": "",
+                    "name": "Land and Houses Fund Management Company Limited - Headquarter",
                     "address": "11  Q House Sathon Building  South Sathon road ，Thung Maha Mek， Sathon， Bangkok Thailand 10120",
                     "tel": "+66 2 286 3464"
                 },
                 {
                     "code": "8221964",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Headquarter",
                     "address": "11 Q.House Sathon Bldg.， M， 10 Fl.， South Sathon Rd.， Thungmahamek， Sathon， Bangkok Thailand 10120",
                     "tel": "+66 2 352 5100"
                 },
                 {
                     "code": "8221975",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Udonthani",
                     "address": "45/5 UD Town 1 st. Floor， Thong Yai Rd.， Mak Khaeng .， Mueang Udonthani ， Udonthani 41000",
                     "tel": "+66 42 241 237"
                 },
                 {
                     "code": "8221986",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Nakhon Pathom",
                     "address": "99 Phiphitprasat Rd.， Phra Pathom Chedi， Mueang ， Nakhon Pathom 73000",
                     "tel": "+66 34 272 800"
                 },
                 {
                     "code": "8221997",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited -  Chiangmai",
                     "address": "6 Moo 6， Lotus Ruamchok 2nd Floor， FaHam， Muang Chiangmai， Chiangmai 50000",
                     "tel": "+66 53 245 064"
                 },
                 {
                     "code": "8222008",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Phetchaburi",
                     "address": "399 Moo 1， Rai Som， Mueang， Phetchaburi 76000",
                     "tel": "+66 32 400 941"
                 },
                 {
                     "code": "8222019",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Chumphon",
                     "address": "1/9 Taweesinkar Rd.， Tha Taphao， Mueang， Chumphon 86000",
                     "tel": "+66 77 512 114"
                 },
                 {
                     "code": "8222020",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Saraburi",
                     "address": "591/19 Paholyothin Rd.， Pak Phriao， Mueang， Saraburi 18000",
                     "tel": "+66 36 220 890"
                 },
                 {
                     "code": "8222031",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Ratchaburi",
                     "address": "99/49-50 Songpol Rd.， Ban Pong， Ban Pong， Ratchaburi 70110",
                     "tel": "+66 32 301 201"
                 },
                 {
                     "code": "8222053",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Lamphun",
                     "address": "12/5 Mukda Rd.， Nai Mueang.， Mueang Lamphun.， Lamphun 51000",
                     "tel": "+66 53 510 500"
                 },
                 {
                     "code": "8222064",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Bang khae",
                     "address": "518 The Mall Tower Bang khae， 6 Fl.， Petkasem Rd.， Bang Khae Nuea， Bang Khae， Bangkok 10160",
                     "tel": "+66 2 454 9088"
                 },
                 {
                     "code": "8222075",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Nakhonratchasima",
                     "address": "99 Terminal 21 Korat 2nd Floor， Mittraphap-NongKhai.，Rd NaiMueang， MueangNakhonratchasima， Nakhonratchasima 30000",
                     "tel": "+66 44 012 741"
                 },
                 {
                     "code": "8222086",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Khon Kaen",
                     "address": "425-429 Srichan Road.， Nai Mueang， Mueang Khon Kaen， Khon Kaen 40000",
                     "tel": "+66 43 235 124"
                 },
                 {
                     "code": "8222097",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Krabi",
                     "address": "6 Maharaj Rd， Pak Nam， MueangKrabi ，Krabi 81000",
                     "tel": "+66 75 622 084"
                 },
                 {
                     "code": "8222101",
-                    "name": "淡水分行",
+                    "name": "Land and Houses Securities Public Company Limited - Samutsakhon",
                     "address": "新北市淡水區中山路123號",
                     "tel": "02-86318822"
                 },
                 {
                     "code": "8222112",
-                    "name": "民安分行",
+                    "name": "Land and Houses Securities Public Company Limited - Chiang Rai",
                     "address": "新北市新莊區民安路179號1樓",
                     "tel": "02-22068887"
                 },
                 {
                     "code": "8222123",
-                    "name": "二重埔分行",
+                    "name": "Land and Houses Securities Public Company Limited - Ubon Ratchathan",
                     "address": "新北市三重區光復路一段70號2樓及70之1號1、2樓",
                     "tel": "02-29959876"
                 },
                 {
                     "code": "8222134",
-                    "name": "富錦分行",
+                    "name": "Land and Houses Securities Public Company Limited - Phitsanulok",
                     "address": "台北市松山區民生東路5段165號、165之3號、165之4號及165號地下之一",
                     "tel": "02-27602766"
                 },
@@ -24388,25 +24358,25 @@
                 },
                 {
                     "code": "8222307",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Samutsakhon",
                     "address": "923 Setthakit 1 Rd.， Mahachai， Mueang Samutsakhon， Samutsakhon 74000",
                     "tel": "+66 34 450 323"
                 },
                 {
                     "code": "8222318",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Chiang Rai",
                     "address": "673/9-10， Thanalai Rd.， Wiang， Meuang Chiang Rai， Chiang Rai 57000",
                     "tel": "+66 53 719 029"
                 },
                 {
                     "code": "8222329",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Ubon Ratchathan",
                     "address": "343-345 Chayangkul Rd.， Nai Meuang， Meuang Ubon Ratchathani， Ubon Ratchani 34000",
                     "tel": "+66 45 240 613"
                 },
                 {
                     "code": "8222330",
-                    "name": "",
+                    "name": "Land and Houses Securities Public Company Limited - Phitsanulok",
                     "address": "113 Baromatrilokanart Rd.， and 27-28 Phayalithai Rd.， Naimuang， Muang， Phitsanulok 65000",
                     "tel": "+66 55 258 245"
                 },
@@ -25030,7 +25000,7 @@
                 },
                 {
                     "code": "8229362",
-                    "name": "",
+                    "name": "CTBC Capital Corp.",
                     "address": "Suite 2300， 801 S. Figueroa Street， Los Angeles， CA 90017， U.S.A.",
                     "tel": "1-310-7912828"
                 },
@@ -25216,67 +25186,67 @@
                 },
                 {
                     "code": "8229797",
-                    "name": "-Flushing",
+                    "name": "美國中信銀行-Flushing",
                     "address": "41-99 Main St.， Flushing， NY 11355， U.S.A.",
                     "tel": "1-718-886-5600"
                 },
                 {
                     "code": "8229823",
-                    "name": "-Brooklyn",
+                    "name": "美國中信銀行-Brooklyn",
                     "address": "5418 8th Ave.， Brooklyn， NY11220， U.S.A.",
                     "tel": "1-718-854-2228"
                 },
                 {
                     "code": "8229834",
-                    "name": "-Edison",
+                    "name": "美國中信銀行-Edison",
                     "address": "1753 Route 27， Edison， NJ08817， U.S.A.",
                     "tel": "1-732-650-1160"
                 },
                 {
                     "code": "8229845",
-                    "name": "-Los Angeles",
+                    "name": "美國中信銀行-Los Angeles",
                     "address": "Suite 2300， 801 S. Figueroa Street， Los Angeles， CA 90017， U.S.A.",
                     "tel": "1-310-7912828"
                 },
                 {
                     "code": "8229856",
-                    "name": "-City of Industry",
+                    "name": "美國中信銀行-City of Industry",
                     "address": "18645 E. Gale Ave. 150， City of Industry， CA 91748， U.S.A.",
                     "tel": "1-626-839-3300"
                 },
                 {
                     "code": "8229867",
-                    "name": "-San Marino",
+                    "name": "美國中信銀行-San Marino",
                     "address": "2956 Huntington Dr.， San Marino， CA 91108， U.S.A.",
                     "tel": "1-626-287-0716"
                 },
                 {
                     "code": "8229878",
-                    "name": "-Cupertino",
+                    "name": "美國中信銀行-Cupertino",
                     "address": "Suite 160， 19620 Stevens Creek Blvd， Cupertino， CA 95014， U.S.A.",
                     "tel": "1-408-873-3288"
                 },
                 {
                     "code": "8229889",
-                    "name": "-Monterey Park",
+                    "name": "美國中信銀行-Monterey Park",
                     "address": "638 S. Atlantic Blvd.， Monterey Park， CA 91754， U.S.A.",
                     "tel": "1-626-289-6283"
                 },
                 {
                     "code": "8229904",
-                    "name": "-Milpitas",
+                    "name": "美國中信銀行-Milpitas",
                     "address": "258 Barber Court， Milpitas， CA 95035， U.S.A.",
                     "tel": "1-408-955-7288"
                 },
                 {
                     "code": "8229915",
-                    "name": "",
+                    "name": "中國信託(菲律賓)商業銀行",
                     "address": "16th to 19th Floors， Fort Legend Towers， 31st Street corner 3rd Avenue， Bonifacio Global City， Taguig City， Philippines",
                     "tel": "63-2-8988-9287"
                 },
                 {
                     "code": "8229926",
-                    "name": "(加拿大)",
+                    "name": "中國信託商業銀行(加拿大)",
                     "address": "Suite #350-2608 Granville Street， Vancouver， B.C.， V6H 3V3， Canada",
                     "tel": "1-778-3096800"
                 },
@@ -25288,7 +25258,7 @@
                 },
                 {
                     "code": "8229948",
-                    "name": "",
+                    "name": "美國中信銀行",
                     "address": "Suite 2300 (22F and  23F)， 801 S. Figueroa Street， Los Angeles， CA 90017， U.S.A.",
                     "tel": "1-310-7912828"
                 },
@@ -26770,7 +26740,7 @@
                 },
                 {
                     "code": "1320118",
-                    "name": "",
+                    "name": "光華簡易型分社",
                     "address": "新竹市北區光華東街54號",
                     "tel": "03-5429555"
                 },
@@ -26788,7 +26758,7 @@
                 },
                 {
                     "code": "1320145",
-                    "name": "",
+                    "name": "六家簡易型分社",
                     "address": "新竹縣竹北市六家里嘉興路120、122號",
                     "tel": "03-5509055"
                 },
@@ -27108,7 +27078,7 @@
                 },
                 {
                     "code": "1620030",
-                    "name": "",
+                    "name": "觀音亭口分社",
                     "address": "彰化縣彰化市民族路520號",
                     "tel": "04-7242192"
                 },
@@ -27690,7 +27660,7 @@
                 },
                 {
                     "code": "2150114",
-                    "name": "",
+                    "name": "永康分社",
                     "address": "台南市永康區中山南路583.583-1號",
                     "tel": "06-2318811"
                 },
