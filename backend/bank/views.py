@@ -22,10 +22,10 @@ def get_branches(request, bank_code):
     return JsonResponse(list(branches), safe=False)
 
 @require_http_methods(["GET"])
-def get_branch_details(request, branch_code):
-    """根據分行代碼獲取分行詳細資訊的 API"""
+def get_branch_details(request, bank_code, branch_code):
+    """根據銀行代碼和分行代碼獲取分行詳細資訊的 API"""
     try:
-        branch = Branch.objects.select_related('bank').get(code=branch_code)
+        branch = Branch.objects.select_related('bank').get(bank__code=bank_code, code=branch_code)
         data = {
             'bank_name': branch.bank.name,
             'bank_code': branch.bank.code,
@@ -36,12 +36,12 @@ def get_branch_details(request, branch_code):
         }
         return JsonResponse(data)
     except ObjectDoesNotExist:
-        return JsonResponse({'error': '分行不存在'}, status=404)
+        return JsonResponse({'error': '銀行或分行不存在'}, status=404)
 
 @require_http_methods(["GET"])
 def get_bank_data(request):
     """從 JSON 文件中獲取銀行資料的 API"""
-    json_file_path = Path(__file__).resolve().parent / 'bank_data.json'  # 修改這行
+    json_file_path = Path(__file__).resolve().parent / 'bank_data.json'
     try:
         with open(json_file_path, 'r', encoding='utf-8') as json_file:
             data = json.load(json_file)
@@ -77,7 +77,7 @@ def api_root(request):
         "endpoints": {
             "banks": "/api/banks/",
             "branches": "/api/branches/<bank_code>/",
-            "branch_details": "/api/branch/<branch_code>/",
+            "branch_details": "/api/<bank_code>/<branch_code>/",
             "bank_data": "/api/bank-data/",
             "all_bank_data": "/api/all-bank-data/",
             "bank_data_json": "/api/bank_data.json",
