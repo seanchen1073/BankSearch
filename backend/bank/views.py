@@ -1,4 +1,5 @@
 import json
+from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from pathlib import Path
@@ -79,6 +80,30 @@ def api_root(request):
             "branch_details": "/api/branch/<branch_code>/",
             "bank_data": "/api/bank-data/",
             "all_bank_data": "/api/all-bank-data/",
-            "bank_data_json": "/api/bank_data.json"  # 新增這行
+            "bank_data_json": "/api/bank_data.json",
+            "bank_branch_detail": "/<bank_code>/<branch_code>/<bank_name>-<branch_name>.html"
         }
     })
+
+@require_http_methods(["GET"])
+def bank_branch_detail(request, bank_code, branch_code, bank_name, branch_name):
+    """處理特定銀行和分行的詳細資訊頁面"""
+    try:
+        bank = Bank.objects.get(code=bank_code)
+        branch = Branch.objects.get(code=branch_code, bank=bank)
+        
+        if bank.name != bank_name or branch.name != branch_name:
+            return JsonResponse({'error': '銀行或分行名稱不匹配'}, status=400)
+        
+        context = {
+            'bank_code': bank_code,
+            'branch_code': branch_code,
+            'bank_name': bank.name,
+            'branch_name': branch.name,
+            'address': branch.address,
+            'tel': branch.tel
+        }
+        return render(request, 'bank_branch_detail.html', context)
+    
+    except (Bank.DoesNotExist, Branch.DoesNotExist):
+        return JsonResponse({'error': '銀行或分行不存在'}, status=404)
