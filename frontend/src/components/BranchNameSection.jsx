@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches, isDropdownActive, setActiveDropdown }) => {
+const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches, isDropdownActive, setActiveDropdown, handleBranchSelect }) => {
     const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
@@ -52,6 +52,7 @@ const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches, isDro
                     onClick={() => {
                         setSearchTerm(branch.name);
                         setActiveDropdown(null);
+                        handleBranchSelect(branch); // 調用父組件的函數
                     }}
                     >
                     {branch.code} {branch.name}

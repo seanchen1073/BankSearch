@@ -24,20 +24,22 @@ const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filt
 
   const handleBankSelect = (bank) => {
     setSelectedBank(bank);
+    setSelectedBranch(null); // 清空之前選擇的分行
     setActiveDropdown(null);
   };
 
-const handleBranchSelect = (branch) => {
-  setSelectedBranch(branch);
-  setActiveDropdown(null);
+  const handleBranchSelect = (branch) => {
+    setSelectedBranch(branch);
+    setActiveDropdown(null);
 
-  if (selectedBank && branch) {
-    const bankCode = selectedBank.split(" ")[0];
-    const bankName = selectedBank.split(" ").slice(1).join(" ");
-    const url = `/${bankCode}/${branch.code}/${encodeURIComponent(bankName)}-${encodeURIComponent(branch.name)}.html`;
-    navigate(url);
-  }
-};
+    if (selectedBank && branch) {
+      const bankCode = selectedBank.split(" ")[0]; // 銀行代碼
+      const bankName = selectedBank.split(" ").slice(1).join(" "); // 銀行名稱
+      const url = `/${bankCode}/${branch.code}/${encodeURIComponent(bankName)}-${encodeURIComponent(branch.name)}.html`;
+      console.log(url); // 打印生成的 URL
+      navigate(url);
+    }
+  };
 
   const handleDropdownToggle = (dropdownName) => {
     setActiveDropdown((prevDropdown) => (prevDropdown === dropdownName ? null : dropdownName));
@@ -50,6 +52,7 @@ const handleBranchSelect = (branch) => {
         filteredBanks={filteredBanks}
         selectedBank={selectedBank}
         setSelectedBank={handleBankSelect}
+        setSelectedBranch={setSelectedBranch} // 確保這一行存在
         isDropdownActive={activeDropdown === "bank"}
         setActiveDropdown={() => handleDropdownToggle("bank")}
       />

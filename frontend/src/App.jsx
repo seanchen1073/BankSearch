@@ -8,6 +8,7 @@ import BankBranchDetail from "./components/BankBranchDetail";
 function App() {
   const [bankData, setBankData] = useState([]);
   const [selectedBank, setSelectedBank] = useState(null);
+  const [selectedBranch, setSelectedBranch] = useState(null);
   const [filteredBanks, setFilteredBanks] = useState([]);
   const [filteredBranches, setFilteredBranches] = useState([]);
 
@@ -90,10 +91,21 @@ function App() {
                   filteredBranches={filteredBranches}
                   selectedBank={selectedBank}
                   setSelectedBank={setSelectedBank}
+                  setSelectedBranch={setSelectedBranch} // 傳遞 setSelectedBranch
                 />
               }
             />
-            <Route path="/:bankCode/:branchCode/:bankName-:branchName.html" element={<BankBranchDetail />} />
+            <Route
+              path="/:bankCode/:branchCode/:bankName-:branchName.html"
+              element={
+                <BankBranchDetail
+                  selectedBank={selectedBank}
+                  setSelectedBank={setSelectedBank}
+                  selectedBranch={selectedBranch}
+                  setSelectedBranch={setSelectedBranch}
+                />
+              }
+            />
           </Routes>
         </div>
       </div>
