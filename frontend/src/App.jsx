@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import BankingForm from "./components/BankingForm";
+import BankBranchDetail from "./components/BankBranchDetail";
 
 function App() {
   const [bankData, setBankData] = useState([]);
@@ -73,19 +75,29 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <Header />
-      <div className="container px-4 py-8 mx-auto">
-        <BankingForm
-          handleBankSearch={handleBankSearch}
-          handleBranchSearch={handleBranchSearch}
-          filteredBanks={filteredBanks}
-          filteredBranches={filteredBranches}
-          selectedBank={selectedBank}
-          setSelectedBank={setSelectedBank}
-        />
+    <Router>
+      <div className="min-h-screen bg-gray-100">
+        <Header />
+        <div className="container px-4 py-8 mx-auto">
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <BankingForm
+                  handleBankSearch={handleBankSearch}
+                  handleBranchSearch={handleBranchSearch}
+                  filteredBanks={filteredBanks}
+                  filteredBranches={filteredBranches}
+                  selectedBank={selectedBank}
+                  setSelectedBank={setSelectedBank}
+                />
+              }
+            />
+            <Route path="/:bankCode/:branchCode/:bankName-:branchName.html" element={<BankBranchDetail />} />
+          </Routes>
+        </div>
       </div>
-    </div>
+    </Router>
   );
 }
 

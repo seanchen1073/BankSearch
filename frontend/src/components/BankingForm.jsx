@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import BankNameSection from "./BankNameSection";
 import BranchNameSection from "./BranchNameSection";
 
 const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filteredBranches, selectedBank, setSelectedBank }) => {
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const [selectedBranch, setSelectedBranch] = useState(null);
   const formRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -23,6 +26,18 @@ const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filt
     setSelectedBank(bank);
     setActiveDropdown(null);
   };
+
+const handleBranchSelect = (branch) => {
+  setSelectedBranch(branch);
+  setActiveDropdown(null);
+
+  if (selectedBank && branch) {
+    const bankCode = selectedBank.split(" ")[0];
+    const bankName = selectedBank.split(" ").slice(1).join(" ");
+    const url = `/${bankCode}/${branch.code}/${encodeURIComponent(bankName)}-${encodeURIComponent(branch.name)}.html`;
+    navigate(url);
+  }
+};
 
   const handleDropdownToggle = (dropdownName) => {
     setActiveDropdown((prevDropdown) => (prevDropdown === dropdownName ? null : dropdownName));
@@ -44,6 +59,7 @@ const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filt
         filteredBranches={filteredBranches}
         isDropdownActive={activeDropdown === "branch"}
         setActiveDropdown={() => handleDropdownToggle("branch")}
+        handleBranchSelect={handleBranchSelect}
       />
     </div>
   );
