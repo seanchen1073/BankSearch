@@ -6,6 +6,7 @@ import BankingForm from "./BankingForm";
 const BankBranchDetail = ({ selectedBank, setSelectedBank, selectedBranch, setSelectedBranch }) => {
     const { bankCode, branchCode, bankName, branchName } = useParams();
     const [branchDetails, setBranchDetails] = useState(null);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchBranchDetails = async () => {
@@ -14,20 +15,34 @@ const BankBranchDetail = ({ selectedBank, setSelectedBank, selectedBranch, setSe
             const decodedBankName = decodeURIComponent(bankName);
             const decodedBranchName = decodeURIComponent(branchName);
 
-            const response = await axios.get(
-            `http://localhost:8000/api/${bankCode}/${branchCode}/${encodeURIComponent(decodedBankName)}-${encodeURIComponent(decodedBranchName)}.html`
-            );
+            // 確保 API 路徑正確
+            const apiUrl = `http://localhost:8000/api/${bankCode}/${branchCode}/${encodeURIComponent(decodedBankName)}-${encodeURIComponent(
+            decodedBranchName
+            )}.html`;
+
+            console.log("Fetching data from:", apiUrl); // 調試用
+
+            const response = await axios.get(apiUrl);
+            if (response.status === 200) {
             setBranchDetails(response.data);
+            } else {
+            setError("分行資料未找到");
+            }
         } catch (error) {
             console.error("Error fetching branch details:", error);
+            setError("資料載入失敗");
         }
         };
 
         fetchBranchDetails();
     }, [bankCode, branchCode, bankName, branchName]);
 
+    if (error) {
+        return <div className="px-8 pt-6 pb-8 mb-4 text-red-500 bg-white rounded shadow-md">{error}</div>;
+    }
+
     if (!branchDetails) {
-        return <div>Loading...</div>;
+        return <div className="px-8 pt-6 pb-8 mb-4 bg-white rounded shadow-md">Loading...</div>;
     }
 
     return (
@@ -47,7 +62,6 @@ const BankBranchDetail = ({ selectedBank, setSelectedBank, selectedBranch, setSe
         <p>
             <strong>電話：</strong> {branchDetails.tel}
         </p>
-        {/* 在這裡添加 BankingForm 組件 */}
         <BankingForm
             selectedBank={selectedBank}
             setSelectedBank={setSelectedBank}

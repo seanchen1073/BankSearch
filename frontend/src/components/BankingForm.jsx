@@ -45,6 +45,22 @@ const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filt
     setActiveDropdown((prevDropdown) => (prevDropdown === dropdownName ? null : dropdownName));
   };
 
+  const renderBranchDetails = () => {
+    if (!selectedBank || !selectedBranch) return null;
+
+    const bankCode = selectedBank.split(" ")[0]; // 銀行代碼
+    const bankName = selectedBank.split(" ").slice(1).join(" "); // 銀行名稱
+
+    return (
+      <div className="p-4 mt-4 bg-green-100 rounded-lg shadow-md">
+        <h2 className="text-2xl font-bold">{`${bankName} (${bankCode}) - ${selectedBranch.name}`}</h2>
+        <p>分行代碼：{selectedBranch.code}</p>
+        <p>地址：{selectedBranch.address}</p>
+        <p>電話：{selectedBranch.tel}</p>
+      </div>
+    );
+  };
+
   return (
     <div className="flex flex-wrap justify-center" ref={formRef}>
       <BankNameSection
@@ -52,7 +68,6 @@ const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filt
         filteredBanks={filteredBanks}
         selectedBank={selectedBank}
         setSelectedBank={handleBankSelect}
-        setSelectedBranch={setSelectedBranch} // 確保這一行存在
         isDropdownActive={activeDropdown === "bank"}
         setActiveDropdown={() => handleDropdownToggle("bank")}
       />
@@ -64,6 +79,7 @@ const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filt
         setActiveDropdown={() => handleDropdownToggle("branch")}
         handleBranchSelect={handleBranchSelect}
       />
+      {renderBranchDetails()} {/* 顯示選擇的銀行和分行資訊 */}
     </div>
   );
 };
