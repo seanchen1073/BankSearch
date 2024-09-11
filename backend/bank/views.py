@@ -89,7 +89,7 @@ def api_root(request):
 def bank_branch_detail(request, bank_code, branch_code, bank_name, branch_name):
     """處理特定銀行和分行的詳細資訊頁面"""
     try:
-        bank = Bank.objects.get(code=bank_code)  # 獲取銀行
+        bank = Bank.objects.filter(code=bank_code).first()  # 使用 filter() 獲取銀行
         branch = Branch.objects.filter(code=branch_code, bank=bank).first()  # 使用 filter() 獲取分行
 
         if not branch:
