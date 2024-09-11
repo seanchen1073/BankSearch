@@ -91,6 +91,7 @@ function App() {
                   filteredBranches={filteredBranches}
                   selectedBank={selectedBank}
                   setSelectedBank={setSelectedBank}
+                  selectedBranch={selectedBranch}
                   setSelectedBranch={setSelectedBranch}
                 />
               }

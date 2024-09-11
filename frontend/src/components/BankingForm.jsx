@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import BankNameSection from "./BankNameSection";
 import BranchNameSection from "./BranchNameSection";
+import BranchDetails from "./BranchDetails";
 
 const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filteredBranches, selectedBank, setSelectedBank }) => {
   const [activeDropdown, setActiveDropdown] = useState(null);
@@ -24,7 +25,7 @@ const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filt
 
   const handleBankSelect = (bank) => {
     setSelectedBank(bank);
-    setSelectedBranch(null); // 清空之前選擇的分行
+    setSelectedBranch(null);
     setActiveDropdown(null);
   };
 
@@ -33,32 +34,16 @@ const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filt
     setActiveDropdown(null);
 
     if (selectedBank && branch) {
-      const bankCode = selectedBank.split(" ")[0]; // 銀行代碼
-      const bankName = selectedBank.split(" ").slice(1).join(" "); // 銀行名稱
+      const bankCode = selectedBank.split(" ")[0];
+      const bankName = selectedBank.split(" ").slice(1).join(" ");
       const url = `/${bankCode}/${branch.code}/${encodeURIComponent(bankName)}-${encodeURIComponent(branch.name)}.html`;
-      console.log(url); // 打印生成的 URL
+      console.log(url);
       navigate(url);
     }
   };
 
   const handleDropdownToggle = (dropdownName) => {
     setActiveDropdown((prevDropdown) => (prevDropdown === dropdownName ? null : dropdownName));
-  };
-
-  const renderBranchDetails = () => {
-    if (!selectedBank || !selectedBranch) return null;
-
-    const bankCode = selectedBank.split(" ")[0]; // 銀行代碼
-    const bankName = selectedBank.split(" ").slice(1).join(" "); // 銀行名稱
-
-    return (
-      <div className="p-4 mt-4 bg-green-100 rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold">{`${bankName} (${bankCode}) - ${selectedBranch.name}`}</h2>
-        <p>分行代碼：{selectedBranch.code}</p>
-        <p>地址：{selectedBranch.address}</p>
-        <p>電話：{selectedBranch.tel}</p>
-      </div>
-    );
   };
 
   return (
@@ -79,7 +64,7 @@ const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filt
         setActiveDropdown={() => handleDropdownToggle("branch")}
         handleBranchSelect={handleBranchSelect}
       />
-      {renderBranchDetails()} {/* 顯示選擇的銀行和分行資訊 */}
+      <BranchDetails selectedBank={selectedBank} selectedBranch={selectedBranch} />
     </div>
   );
 };
