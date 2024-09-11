@@ -89,12 +89,15 @@ def api_root(request):
 def bank_branch_detail(request, bank_code, branch_code, bank_name, branch_name):
     """處理特定銀行和分行的詳細資訊頁面"""
     try:
-        bank = Bank.objects.get(code=bank_code)
-        branch = Branch.objects.get(code=branch_code, bank=bank)
-        
+        bank = Bank.objects.get(code=bank_code)  # 獲取銀行
+        branch = Branch.objects.filter(code=branch_code, bank=bank).first()  # 使用 filter() 獲取分行
+
+        if not branch:
+            return JsonResponse({'error': '分行不存在'}, status=404)
+
         if bank.name != bank_name or branch.name != branch_name:
             return JsonResponse({'error': '銀行或分行名稱不匹配'}, status=400)
-        
+
         context = {
             'bank_code': bank_code,
             'branch_code': branch_code,
@@ -105,5 +108,5 @@ def bank_branch_detail(request, bank_code, branch_code, bank_name, branch_name):
         }
         return render(request, 'bank_branch_detail.html', context)
     
-    except (Bank.DoesNotExist, Branch.DoesNotExist):
-        return JsonResponse({'error': '銀行或分行不存在'}, status=404)
+    except Bank.DoesNotExist:
+        return JsonResponse({'error': '銀行不存在'}, status=404)
