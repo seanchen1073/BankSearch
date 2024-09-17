@@ -12,9 +12,14 @@ function App() {
   const [filteredBanks, setFilteredBanks] = useState([]);
   const [filteredBranches, setFilteredBranches] = useState([]);
 
-  const fetchBankData = async () => {
+  // 抓取銀行資料的函數，bankCode 可選參數，用於抓取特定銀行或所有銀行
+  const fetchBankData = async (bankCode = null) => {
     try {
-      const response = await axios.get("http://localhost:8000/api/bank_data.json", {
+      let apiUrl = "http://localhost:8000/api/banks/";
+      if (bankCode) {
+        apiUrl += `${bankCode}`;
+      }
+      const response = await axios.get(apiUrl, {
         headers: {
           "Cache-Control": "no-cache",
           Pragma: "no-cache",
@@ -22,32 +27,34 @@ function App() {
         },
       });
       if (response.status === 200) {
-        return response.data.banks;
+        return response.data;
       } else {
-        console.error(`Error: Received status code ${response.status}`);
+        console.error(`錯誤：收到狀態碼 ${response.status}`);
         return [];
       }
     } catch (error) {
-      console.error("Error fetching bank data:", error);
+      console.error("抓取銀行資料時發生錯誤：", error);
       return [];
     }
   };
 
+  // 使用 useEffect 在組件掛載時抓取所有銀行資料
   useEffect(() => {
     const loadBankData = async () => {
-      console.log("Loading bank data...");
-      const data = await fetchBankData();
+      console.log("載入銀行資料中...");
+      const data = await fetchBankData(); // 初次載入頁面時抓取所有銀行資料
       if (data && Array.isArray(data)) {
         setBankData(data);
-        setFilteredBanks(data);
-        console.log("Bank data loaded successfully:", data);
+        setFilteredBanks(data); // 預設將 filteredBanks 設置為完整的銀行列表
+        console.log("銀行資料載入成功：", data);
       } else {
-        console.error("Failed to load bank data");
+        console.error("無法載入銀行資料");
       }
     };
     loadBankData();
-  }, []);
+  }, []); // 依賴陣列為空，代表只在組件首次掛載時執行
 
+  // 根據使用者輸入的搜尋字詞過濾銀行列表
   const handleBankSearch = (searchTerm) => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
     const filtered = bankData.filter(
@@ -56,6 +63,7 @@ function App() {
     setFilteredBanks(filtered);
   };
 
+  // 當選擇某個銀行時，抓取該銀行的分行資料
   useEffect(() => {
     if (selectedBank) {
       const selectedBankData = bankData.find((bank) => bank.code === selectedBank.split(" ")[0]);
@@ -69,6 +77,7 @@ function App() {
     }
   }, [selectedBank, bankData]);
 
+  // 根據使用者輸入的搜尋字詞過濾分行列表
   const handleBranchSearch = (searchTerm) => {
     if (!selectedBank) return;
     const filtered = filteredBranches.filter((branch) => branch.name.toLowerCase().includes(searchTerm.toLowerCase()));
