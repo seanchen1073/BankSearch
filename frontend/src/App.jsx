@@ -91,7 +91,8 @@ function App() {
                   filteredBranches={filteredBranches}
                   selectedBank={selectedBank}
                   setSelectedBank={setSelectedBank}
-                  setSelectedBranch={setSelectedBranch} // 傳遞 setSelectedBranch
+                  selectedBranch={selectedBranch}
+                  setSelectedBranch={setSelectedBranch}
                 />
               }
             />

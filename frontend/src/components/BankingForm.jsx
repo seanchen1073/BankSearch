@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import BankNameSection from "./BankNameSection";
 import BranchNameSection from "./BranchNameSection";
+import BranchDetails from "./BranchDetails";
 
 const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filteredBranches, selectedBank, setSelectedBank }) => {
   const [activeDropdown, setActiveDropdown] = useState(null);
@@ -24,7 +25,7 @@ const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filt
 
   const handleBankSelect = (bank) => {
     setSelectedBank(bank);
-    setSelectedBranch(null); // 清空之前選擇的分行
+    setSelectedBranch(null);
     setActiveDropdown(null);
   };
 
@@ -33,10 +34,10 @@ const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filt
     setActiveDropdown(null);
 
     if (selectedBank && branch) {
-      const bankCode = selectedBank.split(" ")[0]; // 銀行代碼
-      const bankName = selectedBank.split(" ").slice(1).join(" "); // 銀行名稱
+      const bankCode = selectedBank.split(" ")[0];
+      const bankName = selectedBank.split(" ").slice(1).join(" ");
       const url = `/${bankCode}/${branch.code}/${encodeURIComponent(bankName)}-${encodeURIComponent(branch.name)}.html`;
-      console.log(url); // 打印生成的 URL
+      console.log(url);
       navigate(url);
     }
   };
@@ -52,7 +53,6 @@ const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filt
         filteredBanks={filteredBanks}
         selectedBank={selectedBank}
         setSelectedBank={handleBankSelect}
-        setSelectedBranch={setSelectedBranch} // 確保這一行存在
         isDropdownActive={activeDropdown === "bank"}
         setActiveDropdown={() => handleDropdownToggle("bank")}
       />
@@ -64,6 +64,7 @@ const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filt
         setActiveDropdown={() => handleDropdownToggle("branch")}
         handleBranchSelect={handleBranchSelect}
       />
+      <BranchDetails selectedBank={selectedBank} selectedBranch={selectedBranch} />
     </div>
   );
 };

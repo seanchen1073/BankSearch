@@ -2,7 +2,7 @@ from django.db import models
 
 class Bank(models.Model):
     name = models.CharField(max_length=20, default='Default Bank Name')
-    code = models.CharField(max_length=20, default='000000')
+    code = models.CharField(max_length=20, unique=True, default='000000')  # 確保銀行代碼唯一
     address = models.CharField(max_length=255, blank=False, null=False, default='Default Address')
     tel = models.CharField(max_length=20, default='0000000000')
 
@@ -24,3 +24,4 @@ class Branch(models.Model):
 
     class Meta:
         ordering = ['code']
+        unique_together = ('code', 'bank')  # 確保分行代碼在同一銀行內唯一

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const BankNameSection = ({ handleSearch, filteredBanks, selectedBank, setSelectedBank, setSelectedBranch, isDropdownActive, setActiveDropdown }) => {
+const BankNameSection = ({ handleSearch, filteredBanks, selectedBank, setSelectedBank, isDropdownActive, setActiveDropdown }) => {
     const [inputWidth, setInputWidth] = useState("");
     const [searchTerm, setSearchTerm] = useState(selectedBank || "");
 
@@ -34,8 +34,7 @@ const BankNameSection = ({ handleSearch, filteredBanks, selectedBank, setSelecte
 
     const handleBankSelect = (bank) => {
         setSelectedBank(bank);
-        setSelectedBranch(null); // 清空之前選擇的分行
-        setSearchTerm(bank);
+        // 选择银行时清空之前选择的分行
         setActiveDropdown(null);
     };
 

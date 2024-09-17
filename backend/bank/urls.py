@@ -9,6 +9,5 @@ urlpatterns = [
     path('bank-data/', views.get_bank_data, name='get_bank_data'),
     path('all-bank-data/', views.all_bank_data, name='all_bank_data'),
     path('bank_data.json', views.get_bank_data, name='get_bank_data_json'),
-    # 支援帶有 HTML 結尾的 bank_branch_detail
     path('<str:bank_code>/<str:branch_code>/<str:bank_name>-<str:branch_name>.html', views.bank_branch_detail, name='bank_branch_detail'),
 ]
