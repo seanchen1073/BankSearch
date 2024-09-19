@@ -10,4 +10,7 @@ export default defineConfig({
       input: "index.html",
     },
   },
+  server: {
+    historyApiFallback: true, // 支援 React Router 的 URL 重寫
+  },
 });

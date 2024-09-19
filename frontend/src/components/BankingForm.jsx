@@ -39,7 +39,8 @@ const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filt
       const bankName = selectedBank.split(" ").slice(1).join(" ");
       const url = `/${bankCode}/${branch.code}/${encodeURIComponent(bankName)}-${encodeURIComponent(branch.name)}.html`;
       console.log(url);
-      navigate(url); // 導航至選擇的銀行和分行詳細頁
+      // 只更新網址，不跳轉頁面
+      window.history.pushState({}, "", url);
     }
   };
 
