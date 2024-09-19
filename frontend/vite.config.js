@@ -11,6 +11,13 @@ export default defineConfig({
     },
   },
   server: {
-    historyApiFallback: true, // 支援 React Router 的 URL 重寫
+    historyApiFallback: true,
+    proxy: {
+      "/api": {
+        target: "http://localhost:8000",
+        changeOrigin: true,
+        secure: false,
+      },
+    },
   },
 });
