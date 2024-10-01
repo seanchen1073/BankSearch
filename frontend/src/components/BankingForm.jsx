@@ -7,6 +7,7 @@ import BranchDetails from "./BranchDetails";
 const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filteredBranches, selectedBank, setSelectedBank }) => {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [selectedBranch, setSelectedBranch] = useState(null);
+  const [branchSearchTerm, setBranchSearchTerm] = useState("");
   const formRef = useRef(null);
   const navigate = useNavigate();
 
@@ -26,13 +27,12 @@ const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filt
   const handleBankSelect = (bank) => {
     if (bank !== selectedBank) {
       setSelectedBank(bank);
-      setSelectedBranch(null); // 清空選擇的分行
-      // 清空渲染的頁面結果（更新URL）
+      setSelectedBranch(null);
+      setBranchSearchTerm(""); // 清空分行搜索詞
+      handleBranchSearch(""); // 重置分行搜索
       window.history.pushState({}, "", "/");
-      // 重置分行搜索
-      handleBranchSearch("");
     }
-    setActiveDropdown(null);
+    setActiveDropdown(null); // 確保下拉選單收起來
   };
 
   const handleBranchSelect = (branch) => {
@@ -44,7 +44,6 @@ const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filt
       const bankName = selectedBank.split(" ").slice(1).join(" ");
       const url = `/${bankCode}/${branch.code}/${encodeURIComponent(bankName)}-${encodeURIComponent(branch.name)}.html`;
       console.log(url);
-      // 只更新網址，不跳轉頁面
       window.history.pushState({}, "", url);
     }
   };
@@ -61,15 +60,17 @@ const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filt
         selectedBank={selectedBank}
         setSelectedBank={handleBankSelect}
         isDropdownActive={activeDropdown === "bank"}
-        setActiveDropdown={() => handleDropdownToggle("bank")}
+        setActiveDropdown={setActiveDropdown}
       />
       <BranchNameSection
         selectedBank={selectedBank}
         handleSearch={handleBranchSearch}
         filteredBranches={filteredBranches}
         isDropdownActive={activeDropdown === "branch"}
-        setActiveDropdown={() => handleDropdownToggle("branch")}
+        setActiveDropdown={setActiveDropdown}
         handleBranchSelect={handleBranchSelect}
+        searchTerm={branchSearchTerm}
+        setSearchTerm={setBranchSearchTerm}
       />
       <BranchDetails selectedBank={selectedBank} selectedBranch={selectedBranch} />
     </div>

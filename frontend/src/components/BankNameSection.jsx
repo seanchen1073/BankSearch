@@ -43,7 +43,7 @@ const BankNameSection = ({ handleSearch, filteredBanks, selectedBank, setSelecte
     const handleBankSelect = (bank) => {
         setSelectedBank(bank);
         setSearchTerm(bank);
-        setActiveDropdown(null);
+        setActiveDropdown(null); // 確保下拉選單收起來
     };
 
     return (

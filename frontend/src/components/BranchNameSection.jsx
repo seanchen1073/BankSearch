@@ -1,27 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 
-const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches, isDropdownActive, setActiveDropdown, handleBranchSelect }) => {
-    const [searchTerm, setSearchTerm] = useState("");
-    const [inputWidth, setInputWidth] = useState("");
+const BranchNameSection = ({selectedBank, handleSearch, filteredBranches, isDropdownActive, setActiveDropdown, handleBranchSelect, searchTerm, setSearchTerm, }) => {
     const inputRef = useRef(null);
 
     useEffect(() => {
-        if (!selectedBank) {
+        // 當選擇的銀行改變時，清空搜索詞
         setSearchTerm("");
-        }
-    }, [selectedBank]);
-
-    useEffect(() => {
-        const updateWidth = () => {
-        if (inputRef.current) {
-            setInputWidth(inputRef.current.offsetWidth + "px");
-        }
-        };
-
-        updateWidth();
-        window.addEventListener("resize", updateWidth);
-        return () => window.removeEventListener("resize", updateWidth);
-    }, []);
+    }, [selectedBank, setSearchTerm]);
 
     const handleInputChange = (e) => {
         const value = e.target.value;
@@ -31,7 +16,7 @@ const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches, isDro
     };
 
     const handleInputClick = () => {
-        setActiveDropdown(isDropdownActive ? null : "branch");
+        setActiveDropdown("branch");
     };
 
     return (
@@ -61,12 +46,12 @@ const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches, isDro
             </div>
         </div>
         {isDropdownActive && (
-            <ul className="absolute z-10 mt-1 overflow-y-auto bg-white border rounded-md shadow-lg" style={{ width: inputWidth, maxHeight: "290px" }}>
+            <ul className="absolute z-10 w-full mt-1 overflow-y-auto bg-white border rounded-md shadow-lg max-h-60">
             {filteredBranches && filteredBranches.length > 0 ? (
                 filteredBranches.map((branch) => (
                 <li
                     key={branch.code}
-                    className={`p-2 cursor-pointer hover:bg-gray-100`}
+                    className="p-2 cursor-pointer hover:bg-gray-100"
                     onClick={() => {
                     setSearchTerm(branch.name);
                     setActiveDropdown(null);
