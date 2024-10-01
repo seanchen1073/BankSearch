@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches, isDropdownActive, setActiveDropdown, handleBranchSelect }) => {
     const [searchTerm, setSearchTerm] = useState("");
+    const [inputWidth, setInputWidth] = useState("");
+    const inputRef = useRef(null);
 
     useEffect(() => {
         if (!selectedBank) {
@@ -9,15 +11,27 @@ const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches, isDro
         }
     }, [selectedBank]);
 
+    useEffect(() => {
+        const updateWidth = () => {
+        if (inputRef.current) {
+            setInputWidth(inputRef.current.offsetWidth + "px");
+        }
+        };
+
+        updateWidth();
+        window.addEventListener("resize", updateWidth);
+        return () => window.removeEventListener("resize", updateWidth);
+    }, []);
+
     const handleInputChange = (e) => {
         const value = e.target.value;
         setSearchTerm(value);
-        handleSearch(value); // 調用父組件的搜尋函數
-        setActiveDropdown("branch"); // 顯示下拉選單
+        handleSearch(value);
+        setActiveDropdown("branch");
     };
 
     const handleInputClick = () => {
-        setActiveDropdown(isDropdownActive ? null : "branch"); // 切換下拉選單顯示狀態
+        setActiveDropdown(isDropdownActive ? null : "branch");
     };
 
     return (
@@ -25,6 +39,7 @@ const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches, isDro
         <h2 className="mb-2 text-xl font-semibold">分行名稱</h2>
         <div className="relative w-full max-w-md">
             <input
+            ref={inputRef}
             type="text"
             id="branch-selection"
             name="branch"
@@ -33,7 +48,7 @@ const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches, isDro
             value={searchTerm}
             onChange={handleInputChange}
             onClick={handleInputClick}
-            disabled={!selectedBank} // 沒有選擇銀行時禁用
+            disabled={!selectedBank}
             />
             <div
             className={`absolute inset-y-0 right-0 flex items-center px-2 cursor-pointer ${isDropdownActive ? "text-black-500" : "text-gray-400"}`}
@@ -46,7 +61,7 @@ const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches, isDro
             </div>
         </div>
         {isDropdownActive && (
-            <ul className="absolute left-0 right-0 z-10 mt-1 overflow-y-auto bg-white border rounded-md shadow-lg" style={{ maxHeight: "290px" }}>
+            <ul className="absolute z-10 mt-1 overflow-y-auto bg-white border rounded-md shadow-lg" style={{ width: inputWidth, maxHeight: "290px" }}>
             {filteredBranches && filteredBranches.length > 0 ? (
                 filteredBranches.map((branch) => (
                 <li
@@ -55,7 +70,7 @@ const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches, isDro
                     onClick={() => {
                     setSearchTerm(branch.name);
                     setActiveDropdown(null);
-                    handleBranchSelect(branch); // 調用父組件的函數
+                    handleBranchSelect(branch);
                     }}
                 >
                     {branch.code} {branch.name}

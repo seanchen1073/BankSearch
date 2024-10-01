@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 
 const BankNameSection = ({ handleSearch, filteredBanks, selectedBank, setSelectedBank, isDropdownActive, setActiveDropdown }) => {
     const [inputWidth, setInputWidth] = useState("");
-    const [searchTerm, setSearchTerm] = useState(selectedBank || "");
+    const [searchTerm, setSearchTerm] = useState("");
+    const [displayedBanks, setDisplayedBanks] = useState(filteredBanks);
 
     useEffect(() => {
-        // 更新輸入框的寬度
         const updateWidth = () => {
         const inputElement = document.querySelector("input");
         if (inputElement) {
@@ -19,24 +19,31 @@ const BankNameSection = ({ handleSearch, filteredBanks, selectedBank, setSelecte
     }, []);
 
     useEffect(() => {
-        setSearchTerm(selectedBank || "");
+        if (selectedBank) {
+        setSearchTerm(selectedBank);
+        }
     }, [selectedBank]);
+
+    useEffect(() => {
+        setDisplayedBanks(filteredBanks);
+    }, [filteredBanks]);
 
     const handleInputChange = (e) => {
         const value = e.target.value;
         setSearchTerm(value);
-        handleSearch(value); // 調用父組件的搜尋函數
-        setActiveDropdown("bank"); // 顯示下拉選單
+        handleSearch(value);
+        setActiveDropdown("bank");
     };
 
     const handleInputClick = () => {
-        handleSearch(searchTerm); // 在點擊輸入框時重新執行搜索
-        setActiveDropdown("bank"); // 顯示下拉選單
+        setActiveDropdown("bank");
+        setDisplayedBanks(filteredBanks);
     };
 
     const handleBankSelect = (bank) => {
         setSelectedBank(bank);
-        setActiveDropdown(null); // 選擇銀行後隱藏下拉選單
+        setSearchTerm(bank);
+        setActiveDropdown(null);
     };
 
     return (
@@ -65,8 +72,8 @@ const BankNameSection = ({ handleSearch, filteredBanks, selectedBank, setSelecte
         </div>
         {isDropdownActive && (
             <ul className="absolute z-10 mt-1 overflow-y-auto bg-white border rounded-md shadow-lg" style={{ width: inputWidth, maxHeight: "290px" }}>
-            {filteredBanks.length > 0 ? (
-                filteredBanks.map((bank) => (
+            {displayedBanks.length > 0 ? (
+                displayedBanks.map((bank) => (
                 <li key={bank.code} className="p-2 cursor-pointer hover:bg-gray-100" onClick={() => handleBankSelect(`${bank.code} ${bank.name}`)}>
                     {bank.code} {bank.name}
                 </li>

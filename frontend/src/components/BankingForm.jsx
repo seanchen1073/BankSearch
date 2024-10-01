@@ -11,7 +11,6 @@ const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filt
   const navigate = useNavigate();
 
   useEffect(() => {
-    // 處理點擊外部時關閉下拉選單
     const handleClickOutside = (event) => {
       if (formRef.current && !formRef.current.contains(event.target)) {
         setActiveDropdown(null);
@@ -25,8 +24,14 @@ const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filt
   }, []);
 
   const handleBankSelect = (bank) => {
-    setSelectedBank(bank);
-    setSelectedBranch(null); // 清空選擇的分行
+    if (bank !== selectedBank) {
+      setSelectedBank(bank);
+      setSelectedBranch(null); // 清空選擇的分行
+      // 清空渲染的頁面結果（更新URL）
+      window.history.pushState({}, "", "/");
+      // 重置分行搜索
+      handleBranchSearch("");
+    }
     setActiveDropdown(null);
   };
 
@@ -45,7 +50,7 @@ const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filt
   };
 
   const handleDropdownToggle = (dropdownName) => {
-    setActiveDropdown((prevDropdown) => (prevDropdown === dropdownName ? null : dropdownName)); // 切換下拉選單顯示狀態
+    setActiveDropdown((prevDropdown) => (prevDropdown === dropdownName ? null : dropdownName));
   };
 
   return (
