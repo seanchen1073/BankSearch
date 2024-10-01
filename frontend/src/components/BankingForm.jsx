@@ -60,14 +60,14 @@ const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filt
         selectedBank={selectedBank}
         setSelectedBank={handleBankSelect}
         isDropdownActive={activeDropdown === "bank"}
-        setActiveDropdown={setActiveDropdown}
+        setActiveDropdown={handleDropdownToggle}
       />
       <BranchNameSection
         selectedBank={selectedBank}
         handleSearch={handleBranchSearch}
         filteredBranches={filteredBranches}
         isDropdownActive={activeDropdown === "branch"}
-        setActiveDropdown={setActiveDropdown}
+        setActiveDropdown={handleDropdownToggle}
         handleBranchSelect={handleBranchSelect}
         searchTerm={branchSearchTerm}
         setSearchTerm={setBranchSearchTerm}
