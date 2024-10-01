@@ -1,7 +1,21 @@
-import React, { useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
-const BranchNameSection = ({selectedBank, handleSearch, filteredBranches, isDropdownActive, setActiveDropdown, handleBranchSelect, searchTerm, setSearchTerm, }) => {
+const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches, isDropdownActive, setActiveDropdown, handleBranchSelect, searchTerm, setSearchTerm, }) => {
+    const [inputWidth, setInputWidth] = useState("");
     const inputRef = useRef(null);
+
+    useEffect(() => {
+        const updateWidth = () => {
+        const inputElement = document.querySelector("input");
+        if (inputElement) {
+            setInputWidth(inputElement.offsetWidth + "px");
+        }
+        };
+
+        updateWidth();
+        window.addEventListener("resize", updateWidth);
+        return () => window.removeEventListener("resize", updateWidth);
+    }, []);
 
     useEffect(() => {
         // 當選擇的銀行改變時，清空搜索詞
@@ -46,7 +60,10 @@ const BranchNameSection = ({selectedBank, handleSearch, filteredBranches, isDrop
             </div>
         </div>
         {isDropdownActive && (
-            <ul className="absolute z-10 w-full mt-1 overflow-y-auto bg-white border rounded-md shadow-lg max-h-60">
+            <ul
+            className="absolute z-10 w-full mt-1 overflow-y-auto bg-white border rounded-md shadow-lg max-h-60"
+            style={{ width: inputWidth, maxHeight: "290px" }}
+            >
             {filteredBranches && filteredBranches.length > 0 ? (
                 filteredBranches.map((branch) => (
                 <li
