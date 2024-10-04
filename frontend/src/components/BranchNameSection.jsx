@@ -33,7 +33,7 @@ const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches, isDro
     };
 
     return (
-        <div className="w-full">
+        <section className="branch-input-field w-full">
         <h2 className="mb-2 text-xl font-semibold">分行名稱</h2>
         <div className="relative w-full">
             <input
@@ -48,7 +48,7 @@ const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches, isDro
             onClick={handleInputClick}
             disabled={!selectedBank}
             />
-            <div
+            <button
             className={`absolute inset-y-0 right-0 flex items-center px-2 cursor-pointer ${isDropdownActive ? "text-black-500" : "text-gray-400"}`}
             onClick={handleInputClick}
             >
@@ -56,7 +56,7 @@ const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches, isDro
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 9l-7 7-7-7"></path>
             </svg>
-            </div>
+            </button>
         </div>
         {isDropdownActive && (
             <ul
@@ -82,7 +82,7 @@ const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches, isDro
             )}
             </ul>
         )}
-        </div>
+        </section>
     );
 };
 

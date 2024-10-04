@@ -31,7 +31,7 @@ const BranchDetails = ({ selectedBank, selectedBranch }) => {
     const bankName = selectedBank.split(" ").slice(1).join(" ");
 
     return (
-        <div className="flex flex-col w-5/6">
+        <div className="flex flex-col w-full">
         <section className="primary flex flex-col px-4 py-4 mt-4 border border-gray-700 border-dotted rounded bg-green-50">
             <div className="flex flex-col sm:flex-row sm:justify-between">
             <article className="flex flex-col">

@@ -53,9 +53,9 @@ const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filt
   };
 
   return (
-    <div className="flex flex-col items-center w-full max-w-[600px] mx-auto" ref={formRef}>
-      <div className="flex flex-col md:flex-row md:justify-between w-full">
-        <div className="w-full md:w-[290px] mb-4 md:mb-0">
+    <main className="flex flex-col items-center w-full max-w-[600px] mx-auto" ref={formRef}>
+      <section className="flex flex-col md:flex-row md:justify-between w-full">
+        <article className="w-full md:w-[290px] mb-4 md:mb-0">
           <BankNameSection
             handleSearch={handleBankSearch}
             filteredBanks={filteredBanks}
@@ -64,8 +64,8 @@ const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filt
             isDropdownActive={activeDropdown === "bank"}
             setActiveDropdown={handleDropdownToggle}
           />
-        </div>
-        <div className="w-full md:w-[290px]">
+        </article>
+        <article className="w-full md:w-[290px]">
           <BranchNameSection
             selectedBank={selectedBank}
             handleSearch={handleBranchSearch}
@@ -76,12 +76,12 @@ const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filt
             searchTerm={branchSearchTerm}
             setSearchTerm={setBranchSearchTerm}
           />
-        </div>
-      </div>
-      <div className="w-full mt-4">
+        </article>
+      </section>
+      <section className="w-full mt-4">
         <BranchDetails selectedBank={selectedBank} selectedBranch={selectedBranch} />
-      </div>
-    </div>
+      </section>
+    </main>
   );
 };
 

@@ -47,7 +47,7 @@ const BankNameSection = ({ handleSearch, filteredBanks, selectedBank, setSelecte
     };
 
     return (
-        <div className="w-full">
+        <section className="bank-input-field w-full">
         <h2 className="mb-2 text-xl font-semibold">銀行名稱</h2>
         <div className="relative w-full">
             <input
@@ -60,7 +60,7 @@ const BankNameSection = ({ handleSearch, filteredBanks, selectedBank, setSelecte
             onChange={handleInputChange}
             onClick={handleInputClick}
             />
-            <div
+            <button
             className={`absolute inset-y-0 right-0 flex items-center px-2 cursor-pointer ${isDropdownActive ? "text-black-500" : "text-gray-400"}`}
             onClick={handleInputClick}
             >
@@ -68,7 +68,7 @@ const BankNameSection = ({ handleSearch, filteredBanks, selectedBank, setSelecte
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 9l-7 7-7-7"></path>
             </svg>
-            </div>
+            </button>
         </div>
         {isDropdownActive && (
             <ul
@@ -86,8 +86,8 @@ const BankNameSection = ({ handleSearch, filteredBanks, selectedBank, setSelecte
             )}
             </ul>
         )}
-        <div className="text-left mt-1">可使用下拉選單或直接輸入關鍵字查詢</div>
-        </div>
+        <p className="text-left mt-1">可使用下拉選單或直接輸入關鍵字查詢</p>
+        </section>
     );
 };
 
