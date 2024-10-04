@@ -49,7 +49,7 @@ const BranchDetails = ({ selectedBank, selectedBranch }) => {
                 <p className="mt-2 text-xl">電話：{selectedBranch.tel}</p>
             </article>
             </div>
-            <div className="mt-4 text-green-900 self-end">
+            <div className="mt-4 text-green-900 self-start sm:self-end">
             資料來源：
             <a className="gov-link font-bold text-green-900 hover:text-blue-700" href="https://data.gov.tw/dataset/6041">
                 政府資料開放平台
