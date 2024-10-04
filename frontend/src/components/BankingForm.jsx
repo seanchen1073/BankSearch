@@ -28,11 +28,11 @@ const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filt
     if (bank !== selectedBank) {
       setSelectedBank(bank);
       setSelectedBranch(null);
-      setBranchSearchTerm(""); // 清空分行搜索詞
-      handleBranchSearch(""); // 重置分行搜索
+      setBranchSearchTerm("");
+      handleBranchSearch("");
       window.history.pushState({}, "", "/");
     }
-    setActiveDropdown(null); // 確保下拉選單收起來
+    setActiveDropdown(null);
   };
 
   const handleBranchSelect = (branch) => {
@@ -53,26 +53,34 @@ const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filt
   };
 
   return (
-    <div className="flex flex-wrap justify-center" ref={formRef}>
-      <BankNameSection
-        handleSearch={handleBankSearch}
-        filteredBanks={filteredBanks}
-        selectedBank={selectedBank}
-        setSelectedBank={handleBankSelect}
-        isDropdownActive={activeDropdown === "bank"}
-        setActiveDropdown={handleDropdownToggle}
-      />
-      <BranchNameSection
-        selectedBank={selectedBank}
-        handleSearch={handleBranchSearch}
-        filteredBranches={filteredBranches}
-        isDropdownActive={activeDropdown === "branch"}
-        setActiveDropdown={handleDropdownToggle}
-        handleBranchSelect={handleBranchSelect}
-        searchTerm={branchSearchTerm}
-        setSearchTerm={setBranchSearchTerm}
-      />
-      <BranchDetails selectedBank={selectedBank} selectedBranch={selectedBranch} />
+    <div className="flex flex-col items-center w-full max-w-[600px] mx-auto" ref={formRef}>
+      <div className="flex flex-col md:flex-row md:justify-between w-full">
+        <div className="w-full md:w-[290px] mb-4 md:mb-0">
+          <BankNameSection
+            handleSearch={handleBankSearch}
+            filteredBanks={filteredBanks}
+            selectedBank={selectedBank}
+            setSelectedBank={handleBankSelect}
+            isDropdownActive={activeDropdown === "bank"}
+            setActiveDropdown={handleDropdownToggle}
+          />
+        </div>
+        <div className="w-full md:w-[290px]">
+          <BranchNameSection
+            selectedBank={selectedBank}
+            handleSearch={handleBranchSearch}
+            filteredBranches={filteredBranches}
+            isDropdownActive={activeDropdown === "branch"}
+            setActiveDropdown={handleDropdownToggle}
+            handleBranchSelect={handleBranchSelect}
+            searchTerm={branchSearchTerm}
+            setSearchTerm={setBranchSearchTerm}
+          />
+        </div>
+      </div>
+      <div className="w-full mt-4">
+        <BranchDetails selectedBank={selectedBank} selectedBranch={selectedBranch} />
+      </div>
     </div>
   );
 };

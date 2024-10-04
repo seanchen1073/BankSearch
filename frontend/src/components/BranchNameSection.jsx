@@ -18,7 +18,6 @@ const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches, isDro
     }, []);
 
     useEffect(() => {
-        // 當選擇的銀行改變時，清空搜索詞
         setSearchTerm("");
     }, [selectedBank, setSearchTerm]);
 
@@ -34,9 +33,9 @@ const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches, isDro
     };
 
     return (
-        <div className="relative w-full pl-4 mb-4 md:w-1/2 lg:w-1/3 md:mb-0 sm:px-4">
+        <div className="w-full">
         <h2 className="mb-2 text-xl font-semibold">分行名稱</h2>
-        <div className="relative w-full max-w-md">
+        <div className="relative w-full">
             <input
             ref={inputRef}
             type="text"

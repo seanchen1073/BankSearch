@@ -43,13 +43,13 @@ const BankNameSection = ({ handleSearch, filteredBanks, selectedBank, setSelecte
     const handleBankSelect = (bank) => {
         setSelectedBank(bank);
         setSearchTerm(bank);
-        setActiveDropdown(null); // 確保下拉選單收起來
+        setActiveDropdown(null);
     };
 
     return (
-        <div className="relative w-full pr-4 mb-4 md:w-1/2 lg:w-1/3 md:mb-0 sm:px-4">
+        <div className="w-full">
         <h2 className="mb-2 text-xl font-semibold">銀行名稱</h2>
-        <div className="relative w-full max-w-md">
+        <div className="relative w-full">
             <input
             type="text"
             id="bank-selection"
@@ -71,7 +71,10 @@ const BankNameSection = ({ handleSearch, filteredBanks, selectedBank, setSelecte
             </div>
         </div>
         {isDropdownActive && (
-            <ul className="absolute z-10 mt-1 overflow-y-auto bg-white border rounded-md shadow-lg" style={{ width: inputWidth, maxHeight: "290px" }}>
+            <ul
+            className="absolute z-10 w-full mt-1 overflow-y-auto bg-white border rounded-md shadow-lg max-h-60"
+            style={{ width: inputWidth, maxHeight: "290px" }}
+            >
             {displayedBanks.length > 0 ? (
                 displayedBanks.map((bank) => (
                 <li key={bank.code} className="p-2 cursor-pointer hover:bg-gray-100" onClick={() => handleBankSelect(`${bank.code} ${bank.name}`)}>
