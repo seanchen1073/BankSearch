@@ -83,7 +83,7 @@ const BankNameSection = ({ handleSearch, filteredBanks, selectedBank, setSelecte
             )}
             </ul>
         )}
-        <div className="text-center">可使用下拉選單或直接輸入關鍵字查詢</div>
+        <div className="text-left mt-1">可使用下拉選單或直接輸入關鍵字查詢</div>
         </div>
     );
 };
