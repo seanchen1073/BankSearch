@@ -1,15 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
 import BankNameSection from "./BankNameSection";
 import BranchNameSection from "./BranchNameSection";
-import BranchDetails from "./BranchDetails";
 
-const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filteredBranches, selectedBank, setSelectedBank }) => {
+const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filteredBranches, selectedBank, setSelectedBank, updateUrl, selectedBranch, setSelectedBranch, children, }) => {
   const [activeDropdown, setActiveDropdown] = useState(null);
-  const [selectedBranch, setSelectedBranch] = useState(null);
   const [branchSearchTerm, setBranchSearchTerm] = useState("");
   const formRef = useRef(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -27,25 +23,16 @@ const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filt
   const handleBankSelect = (bank) => {
     if (bank !== selectedBank) {
       setSelectedBank(bank);
-      setSelectedBranch(null);
-      setBranchSearchTerm("");
-      handleBranchSearch("");
-      window.history.pushState({}, "", "/");
+      setSelectedBranch(null); 
+      handleBranchSearch(""); 
     }
     setActiveDropdown(null);
   };
 
   const handleBranchSelect = (branch) => {
     setSelectedBranch(branch);
+    updateUrl();
     setActiveDropdown(null);
-
-    if (selectedBank && branch) {
-      const bankCode = selectedBank.split(" ")[0];
-      const bankName = selectedBank.split(" ").slice(1).join(" ");
-      const url = `/${bankCode}/${branch.code}/${encodeURIComponent(bankName)}-${encodeURIComponent(branch.name)}.html`;
-      console.log(url);
-      window.history.pushState({}, "", url);
-    }
   };
 
   const handleDropdownToggle = (dropdownName) => {
@@ -78,9 +65,7 @@ const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filt
           />
         </article>
       </section>
-      <section className="w-full mt-4">
-        <BranchDetails selectedBank={selectedBank} selectedBranch={selectedBranch} />
-      </section>
+      {children}
     </main>
   );
 };

@@ -3,7 +3,7 @@ import axios from "axios";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import BankingForm from "./components/BankingForm";
-import BankBranchDetail from "./components/BankBranchDetail";
+import BranchDetails from "./components/BranchDetails";
 
 function App() {
   const [bankData, setBankData] = useState([]);
@@ -13,34 +13,28 @@ function App() {
   const [filteredBranches, setFilteredBranches] = useState([]);
 
   const fetchBankData = async (bankCode = null) => {
-    try {
-      let apiUrl = "http://localhost:8000/api/banks/";
-      if (bankCode) {
-        apiUrl += `${bankCode}/branches/`; // 請求特定銀行的分行資料
-      }
-      const response = await axios.get(apiUrl, {
-        headers: {
-          "Cache-Control": "no-cache",
-          Pragma: "no-cache",
-          Expires: "0",
-        },
-      });
-      if (response.status === 200) {
-        return response.data;
-      } else {
-        console.error(`錯誤：收到狀態碼 ${response.status}`);
-        return [];
-      }
-    } catch (error) {
-      console.error("抓取資料時發生錯誤：", error);
-      return [];
+    let apiUrl = "http://localhost:8000/api/banks/";
+    if (bankCode) {
+      apiUrl += `${bankCode}/branches/`; // 請求特定銀行的分行資料
+    }
+    const response = await axios.get(apiUrl, {
+      headers: {
+        "Cache-Control": "no-cache",
+        Pragma: "no-cache",
+        Expires: "0",
+      },
+    });
+
+    if (response.status === 200) {
+      return response.data;
     }
   };
+
 
   useEffect(() => {
     const loadBankData = async () => {
       console.log("載入銀行資料中...");
-      const data = await fetchBankData(); // 初次載入頁面時抓取所有銀行資料
+      const data = await fetchBankData();
       if (data && Array.isArray(data)) {
         setBankData(data);
         setFilteredBanks(data);
@@ -79,14 +73,12 @@ function App() {
     setFilteredBranches(filtered);
   };
 
-  const handleSubmit = () => {
+  const updateUrl = () => {
     if (selectedBank && selectedBranch) {
       const bankCode = selectedBank.split(" ")[0];
       const branchCode = selectedBranch.code;
       const bankName = encodeURIComponent(selectedBank.split(" ")[1]);
       const branchName = encodeURIComponent(selectedBranch.name);
-
-      // 更新網址而不跳轉頁面
       window.history.pushState({}, "", `/${bankCode}/${branchCode}/${bankName}-${branchName}.html`);
     }
   };
@@ -109,11 +101,17 @@ function App() {
                   setSelectedBank={setSelectedBank}
                   selectedBranch={selectedBranch}
                   setSelectedBranch={setSelectedBranch}
-                  handleSubmit={handleSubmit}
-                />
+                  updateUrl={updateUrl}
+                >
+                  {/* 將 BranchDetails 放置為 BankingForm 的 children */}
+                  {selectedBranch && <BranchDetails selectedBank={selectedBank} selectedBranch={selectedBranch} />}
+                </BankingForm>
               }
             />
-            <Route path="/:bankCode/:branchCode/:bankName-:branchName.html" element={<BankBranchDetail />} />
+            <Route
+              path="/:bankCode/:branchCode/:bankName-:branchName.html"
+              element={<BranchDetails selectedBank={selectedBank} selectedBranch={selectedBranch} />}
+            />
           </Routes>
         </div>
       </div>

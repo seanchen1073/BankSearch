@@ -16,9 +16,7 @@ const BranchDetails = ({ selectedBank, selectedBranch }) => {
 
     const handleCopyLink = () => {
         const currentUrl = window.location.href;
-        const encodedUrl = encodeURI(currentUrl); // 使用 encodeURI 處理 URL
-        navigator.clipboard.writeText(encodedUrl);
-        setLinkCopied(true);
+        navigator.clipboard.writeText(currentUrl);
 
         setTimeout(() => {
         setLinkCopied(false);
