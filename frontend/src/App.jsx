@@ -15,7 +15,7 @@ function App() {
   const fetchBankData = async (bankCode = null) => {
     let apiUrl = "http://localhost:8000/api/banks/";
     if (bankCode) {
-      apiUrl += `${bankCode}/branches/`; // 請求特定銀行的分行資料
+      apiUrl += `${bankCode}/branches/`; 
     }
     const response = await axios.get(apiUrl, {
       headers: {
@@ -58,6 +58,10 @@ function App() {
       setFilteredBranches([]);
     }
   }, [selectedBank]);
+
+    useEffect(() => {
+      updateUrl();
+    }, [selectedBank, selectedBranch]);
 
   const handleBankSearch = (searchTerm) => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
