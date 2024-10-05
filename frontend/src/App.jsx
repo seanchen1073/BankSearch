@@ -103,7 +103,6 @@ function App() {
                   setSelectedBranch={setSelectedBranch}
                   updateUrl={updateUrl}
                 >
-                  {/* 將 BranchDetails 放置為 BankingForm 的 children */}
                   {selectedBranch && <BranchDetails selectedBank={selectedBank} selectedBranch={selectedBranch} />}
                 </BankingForm>
               }

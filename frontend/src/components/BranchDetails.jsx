@@ -17,9 +17,9 @@ const BranchDetails = ({ selectedBank, selectedBranch }) => {
     const handleCopyLink = () => {
         const currentUrl = window.location.href;
         navigator.clipboard.writeText(currentUrl);
-
+        setLinkCopied(true);
         setTimeout(() => {
-        setLinkCopied(false);
+            setLinkCopied(false);
         }, 2000);
     };
 
