@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate, } from "react-router-dom";
 import Header from "./components/Header";
 import BankingForm from "./components/BankingForm";
 import BranchDetails from "./components/BranchDetails";
 
 function App() {
+  const navigate = useNavigate();
   const [bankData, setBankData] = useState([]);
   const [selectedBank, setSelectedBank] = useState(null);
   const [selectedBranch, setSelectedBranch] = useState(null);
@@ -83,12 +84,11 @@ function App() {
       const branchCode = selectedBranch.code;
       const bankName = encodeURIComponent(selectedBank.split(" ")[1]);
       const branchName = encodeURIComponent(selectedBranch.name);
-      window.history.pushState({}, "", `/${bankCode}/${branchCode}/${bankName}-${branchName}.html`);
+      navigate(`/${bankCode}/${branchCode}/${bankName}-${branchName}.html`);
     }
   };
 
   return (
-    <Router>
       <div className="min-h-screen bg-gray-100">
         <Header />
         <div className="container px-4 py-8 mx-auto">
@@ -118,7 +118,6 @@ function App() {
           </Routes>
         </div>
       </div>
-    </Router>
   );
 }
 
