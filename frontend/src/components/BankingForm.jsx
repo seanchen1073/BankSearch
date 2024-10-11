@@ -2,7 +2,18 @@ import React, { useState, useEffect, useRef } from "react";
 import BankNameSection from "./BankNameSection";
 import BranchNameSection from "./BranchNameSection";
 
-const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filteredBranches, selectedBank, setSelectedBank, updateUrl, selectedBranch, setSelectedBranch, children, }) => {
+const BankingForm = ({
+  handleBankSearch,
+  handleBranchSearch,
+  filteredBanks,
+  filteredBranches,
+  selectedBank,
+  setSelectedBank,
+  updateUrl,
+  selectedBranch,
+  setSelectedBranch,
+  children,
+}) => {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [branchSearchTerm, setBranchSearchTerm] = useState("");
   const formRef = useRef(null);
@@ -23,8 +34,8 @@ const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filt
   const handleBankSelect = (bank) => {
     if (bank !== selectedBank) {
       setSelectedBank(bank);
-      setSelectedBranch(null); 
-      handleBranchSearch(""); 
+      setSelectedBranch(null);
+      handleBranchSearch("");
     }
     setActiveDropdown(null);
   };
@@ -65,7 +76,6 @@ const BankingForm = ({ handleBankSearch, handleBranchSearch, filteredBanks, filt
           />
         </article>
       </section>
-      {children}
     </main>
   );
 };

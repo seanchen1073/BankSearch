@@ -88,37 +88,31 @@ function App() {
     }
   };
 
-  return (
-      <div className="min-h-screen bg-gray-100">
-        <Header />
-        <div className="container px-4 py-8 mx-auto">
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <BankingForm
-                  handleBankSearch={handleBankSearch}
-                  handleBranchSearch={handleBranchSearch}
-                  filteredBanks={filteredBanks}
-                  filteredBranches={filteredBranches}
-                  selectedBank={selectedBank}
-                  setSelectedBank={setSelectedBank}
-                  selectedBranch={selectedBranch}
-                  setSelectedBranch={setSelectedBranch}
-                  updateUrl={updateUrl}
-                >
-                  {selectedBranch && <BranchDetails selectedBank={selectedBank} selectedBranch={selectedBranch} />}
-                </BankingForm>
-              }
-            />
-            <Route
-              path="/:bankCode/:branchCode/:bankName-:branchName.html"
-              element={<BranchDetails selectedBank={selectedBank} selectedBranch={selectedBranch} />}
-            />
-          </Routes>
-        </div>
-      </div>
-  );
+return (
+  <div className="min-h-screen bg-gray-100">
+    <Header />
+    <div className="container px-4 py-8 mx-auto">
+      <BankingForm
+        handleBankSearch={handleBankSearch}
+        handleBranchSearch={handleBranchSearch}
+        filteredBanks={filteredBanks}
+        filteredBranches={filteredBranches}
+        selectedBank={selectedBank}
+        setSelectedBank={setSelectedBank}
+        selectedBranch={selectedBranch}
+        setSelectedBranch={setSelectedBranch}
+        updateUrl={updateUrl}
+      />
+      {selectedBank && selectedBranch && <BranchDetails selectedBank={selectedBank} selectedBranch={selectedBranch} />}
+      <Routes>
+        <Route
+          path="/:bankCode/:branchCode/:bankName-:branchName.html"
+          element={<BranchDetails selectedBank={selectedBank} selectedBranch={selectedBranch} />}
+        />
+      </Routes>
+    </div>
+  </div>
+);
 }
 
 export default App;

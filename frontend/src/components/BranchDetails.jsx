@@ -19,7 +19,7 @@ const BranchDetails = ({ selectedBank, selectedBranch }) => {
         navigator.clipboard.writeText(currentUrl);
         setLinkCopied(true);
         setTimeout(() => {
-            setLinkCopied(false);
+        setLinkCopied(false);
         }, 2000);
     };
 
@@ -29,7 +29,9 @@ const BranchDetails = ({ selectedBank, selectedBranch }) => {
     const bankName = selectedBank.split(" ").slice(1).join(" ");
 
     return (
-        <div className="flex flex-col w-full">
+        <div className="flex flex-col w-full max-w-[600px] mx-auto">
+        {" "}
+        {/* 將此行添加 max-w 和 mx-auto */}
         <section className="primary flex flex-col px-4 py-4 mt-4 border border-gray-700 border-dotted rounded bg-green-50">
             <div className="flex flex-col sm:flex-row sm:justify-between">
             <article className="flex flex-col">
