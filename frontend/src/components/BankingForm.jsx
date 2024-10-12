@@ -12,7 +12,6 @@ const BankingForm = ({
   updateUrl,
   selectedBranch,
   setSelectedBranch,
-  children,
 }) => {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [branchSearchTerm, setBranchSearchTerm] = useState("");
@@ -52,7 +51,7 @@ const BankingForm = ({
 
   return (
     <main className="flex flex-col items-center w-full max-w-[600px] mx-auto" ref={formRef}>
-      <section className="flex flex-col md:flex-row md:justify-between w-full">
+      <section className="flex flex-col w-full md:flex-row md:justify-between">
         <article className="w-full md:w-[290px] mb-4 md:mb-0">
           <BankNameSection
             handleSearch={handleBankSearch}
