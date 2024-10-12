@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 const BankNameSection = ({ handleSearch, filteredBanks, selectedBank, setSelectedBank, isDropdownActive, setActiveDropdown }) => {
     const [inputWidth, setInputWidth] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
-    const [displayedBanks, setDisplayedBanks] = useState(filteredBanks);
 
     useEffect(() => {
         const updateWidth = () => {
@@ -24,10 +23,6 @@ const BankNameSection = ({ handleSearch, filteredBanks, selectedBank, setSelecte
         }
     }, [selectedBank]);
 
-    useEffect(() => {
-        setDisplayedBanks(filteredBanks);
-    }, [filteredBanks]);
-
     const handleInputChange = (e) => {
         const value = e.target.value;
         setSearchTerm(value);
@@ -47,7 +42,7 @@ const BankNameSection = ({ handleSearch, filteredBanks, selectedBank, setSelecte
     };
 
     return (
-        <section className="bank-input-field w-full">
+        <section className="w-full bank-input-field">
         <h2 className="mb-2 text-xl font-semibold">銀行名稱</h2>
         <div className="relative w-full">
             <input
@@ -75,8 +70,8 @@ const BankNameSection = ({ handleSearch, filteredBanks, selectedBank, setSelecte
             className="absolute z-10 w-full mt-1 overflow-y-auto bg-white border rounded-md shadow-lg max-h-60"
             style={{ width: inputWidth, maxHeight: "290px" }}
             >
-            {displayedBanks.length > 0 ? (
-                displayedBanks.map((bank) => (
+            {filteredBanks.length > 0 ? (
+                filteredBanks.map((bank) => (
                 <li key={bank.code} className="p-2 cursor-pointer hover:bg-gray-100" onClick={() => handleBankSelect(`${bank.code} ${bank.name}`)}>
                     {bank.code} {bank.name}
                 </li>
@@ -86,7 +81,7 @@ const BankNameSection = ({ handleSearch, filteredBanks, selectedBank, setSelecte
             )}
             </ul>
         )}
-        <p className="text-left mt-1">可使用下拉選單或直接輸入關鍵字查詢</p>
+        <p className="mt-1 text-left">可使用下拉選單或直接輸入關鍵字查詢</p>
         </section>
     );
 };
