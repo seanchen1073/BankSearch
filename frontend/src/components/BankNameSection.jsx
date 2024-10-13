@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const BankNameSection = ({ handleSearch, filteredBanks, selectedBank, setSelectedBank, isDropdownActive, setActiveDropdown }) => {
+const BankNameSection = ({ filteredBanks, selectedBank, setSelectedBank, isDropdownActive, setActiveDropdown }) => {
     const [inputWidth, setInputWidth] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -26,13 +26,11 @@ const BankNameSection = ({ handleSearch, filteredBanks, selectedBank, setSelecte
     const handleInputChange = (e) => {
         const value = e.target.value;
         setSearchTerm(value);
-        handleSearch(value);
         setActiveDropdown("bank");
     };
 
     const handleInputClick = () => {
         setActiveDropdown("bank");
-        setDisplayedBanks(filteredBanks);
     };
 
     const handleBankSelect = (bank) => {

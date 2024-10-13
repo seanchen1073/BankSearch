@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
-const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches, isDropdownActive, setActiveDropdown, handleBranchSelect, searchTerm, setSearchTerm, }) => {
+const BranchNameSection = ({ selectedBank, setSelectedBranch, filteredBranches, isDropdownActive, setActiveDropdown, searchTerm, setSearchTerm, }) => {
     const [inputWidth, setInputWidth] = useState("");
     const inputRef = useRef(null);
 
@@ -18,22 +18,31 @@ const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches, isDro
     }, []);
 
     useEffect(() => {
-        setSearchTerm("");
-    }, [selectedBank, setSearchTerm]);
+        if (selectedBank) {
+            setSearchTerm("");
+        }
+    }, [selectedBank]);
+
 
     const handleInputChange = (e) => {
         const value = e.target.value;
         setSearchTerm(value);
-        handleSearch(value);
         setActiveDropdown("branch");
     };
 
     const handleInputClick = () => {
         setActiveDropdown("branch");
+        setSearchTerm("");
     };
 
+    const handleBranchSelect = (branch) => {
+        setSelectedBranch(branch);
+        setSearchTerm(branch.name);
+        setActiveDropdown(null);
+        };
+
     return (
-        <section className="branch-input-field w-full">
+        <section className="w-full branch-input-field">
         <h2 className="mb-2 text-xl font-semibold">分行名稱</h2>
         <div className="relative w-full">
             <input
@@ -70,7 +79,7 @@ const BranchNameSection = ({ selectedBank, handleSearch, filteredBranches, isDro
                     className="p-2 cursor-pointer hover:bg-gray-100"
                     onClick={() => {
                     setSearchTerm(branch.name);
-                    setActiveDropdown(null);
+                    // setActiveDropdown(null);
                     handleBranchSelect(branch);
                     }}
                 >
