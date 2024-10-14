@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 
-const BranchNameSection = ({ selectedBank, setSelectedBranch, filteredBranches, isDropdownActive, setActiveDropdown, searchTerm, setSearchTerm, }) => {
+const BranchNameSection = ({ selectedBank, setSelectedBranch, filteredBranches, isDropdownActive, setActiveDropdown, searchTerm, setSearchTerm }) => {
     const [inputWidth, setInputWidth] = useState("");
     const inputRef = useRef(null);
+    const [selectedBranchName, setSelectedBranchName] = useState("");
 
     useEffect(() => {
         const updateWidth = () => {
@@ -19,10 +20,10 @@ const BranchNameSection = ({ selectedBank, setSelectedBranch, filteredBranches, 
 
     useEffect(() => {
         if (selectedBank) {
-            setSearchTerm("");
+        setSearchTerm("");
+        setSelectedBranchName("");
         }
     }, [selectedBank]);
-
 
     const handleInputChange = (e) => {
         const value = e.target.value;
@@ -32,14 +33,15 @@ const BranchNameSection = ({ selectedBank, setSelectedBranch, filteredBranches, 
 
     const handleInputClick = () => {
         setActiveDropdown("branch");
-        setSearchTerm("");
+        setSearchTerm(""); // 清空搜尋詞，以顯示所有分行
     };
 
     const handleBranchSelect = (branch) => {
         setSelectedBranch(branch);
         setSearchTerm(branch.name);
+        setSelectedBranchName(branch.name);
         setActiveDropdown(null);
-        };
+    };
 
     return (
         <section className="w-full branch-input-field">
@@ -52,7 +54,7 @@ const BranchNameSection = ({ selectedBank, setSelectedBranch, filteredBranches, 
             name="branch"
             className={`w-full p-2 pr-10 border rounded-md ${isDropdownActive ? "border-blue-500 border-2" : "border-gray-300"} focus:outline-none`}
             placeholder="請選擇分行名稱"
-            value={searchTerm}
+            value={searchTerm || selectedBranchName}
             onChange={handleInputChange}
             onClick={handleInputClick}
             disabled={!selectedBank}
@@ -74,15 +76,7 @@ const BranchNameSection = ({ selectedBank, setSelectedBranch, filteredBranches, 
             >
             {filteredBranches && filteredBranches.length > 0 ? (
                 filteredBranches.map((branch) => (
-                <li
-                    key={branch.code}
-                    className="p-2 cursor-pointer hover:bg-gray-100"
-                    onClick={() => {
-                    setSearchTerm(branch.name);
-                    // setActiveDropdown(null);
-                    handleBranchSelect(branch);
-                    }}
-                >
+                <li key={branch.code} className="p-2 cursor-pointer hover:bg-gray-100" onClick={() => handleBranchSelect(branch)}>
                     {branch.code} {branch.name}
                 </li>
                 ))

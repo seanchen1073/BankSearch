@@ -27,6 +27,16 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
     setFilteredBanks(bankData);
   }, [bankData]);
 
+  useEffect(() => {
+    if (selectedBank) {
+      const selectedBankData = bankData.find((bank) => bank.code === selectedBank.split(" ")[0]);
+      if (selectedBankData) {
+        setFilteredBranches(selectedBankData.branches);
+      }
+    } else {
+      setFilteredBranches([]);
+    }
+  }, [selectedBank, bankData]);
 
   // 處理銀行選擇
   const handleBankSelect = (bank) => {
@@ -34,7 +44,6 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
       setSelectedBank(bank);
       setSelectedBranch(null);
       setBranchSearchTerm(""); // 清空分行搜尋框
-      handleBranchSearch(""); // 清空分行結果
     }
     setActiveDropdown(null);
   };
@@ -47,30 +56,40 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
     );
     setFilteredBanks(filtered);
     setBankSearchTerm(searchTerm); // 更新銀行搜尋框的值
-    setSelectedBank(filtered.length > 0 ? filtered[0].code : "");
-    setFilteredBranches([]); // 清空分行結果
   };
 
   // 處理分行搜尋
   const handleBranchSearch = (searchTerm) => {
-    if (!selectedBank) return;
-    const selectedBankData = bankData.find((bank) => bank.code === selectedBank.split(" ")[0]);
-    if (selectedBankData) {
-      const filtered = selectedBankData.branches.filter((branch) => branch.name.toLowerCase().includes(searchTerm.toLowerCase()));
-      setFilteredBranches(filtered);
+    setBranchSearchTerm(searchTerm);
+    if (selectedBank) {
+      const selectedBankData = bankData.find((bank) => bank.code === selectedBank.split(" ")[0]);
+      if (selectedBankData) {
+        const filtered = selectedBankData.branches.filter(
+          (branch) => branch.name.toLowerCase().includes(searchTerm.toLowerCase()) || branch.code.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setFilteredBranches(filtered);
+      }
     }
-    setBranchSearchTerm(searchTerm); // 更新分行搜尋框的值
   };
 
   const handleBranchSelect = (branch) => {
     setSelectedBranch(branch);
-    setBranchSearchTerm("");
+    setBranchSearchTerm(branch.name);
     updateUrl();
     setActiveDropdown(null);
   };
 
   const handleDropdownToggle = (dropdownName) => {
     setActiveDropdown((prevDropdown) => (prevDropdown === dropdownName ? null : dropdownName));
+    if (dropdownName === "branch") {
+      setBranchSearchTerm(""); // 清空分行搜尋詞，以顯示所有分行
+      if (selectedBank) {
+        const selectedBankData = bankData.find((bank) => bank.code === selectedBank.split(" ")[0]);
+        if (selectedBankData) {
+          setFilteredBranches(selectedBankData.branches);
+        }
+      }
+    }
   };
 
   return (
@@ -83,7 +102,7 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
             isDropdownActive={activeDropdown === "bank"}
             setActiveDropdown={handleDropdownToggle}
             searchTerm={bankSearchTerm}
-            setSearchTerm={handleBankSearch} // 更新這裡
+            setSearchTerm={handleBankSearch}
             setSelectedBank={handleBankSelect}
             bankData={bankData}
           />
@@ -96,7 +115,7 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
             setActiveDropdown={handleDropdownToggle}
             handleBranchSelect={handleBranchSelect}
             searchTerm={branchSearchTerm}
-            setSearchTerm={handleBranchSearch} //
+            setSearchTerm={handleBranchSearch}
             setSelectedBranch={handleBranchSelect}
             bankData={bankData}
           />
