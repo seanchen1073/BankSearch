@@ -93,9 +93,9 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
   };
 
   return (
-    <main className="flex flex-col items-center w-full max-w-[600px] mx-auto" ref={formRef}>
+    <main className="flex flex-col items-center w-full max-w-[600px] mx-auto">
       <section className="flex flex-col w-full md:flex-row md:justify-between">
-        <article className="w-full md:w-[290px] mb-4 md:mb-0">
+        <article className="w-full md:w-[290px] mb-4 md:mb-0" ref={formRef}>
           <BankNameSection
             selectedBank={selectedBank}
             filteredBanks={filteredBanks}
@@ -107,7 +107,7 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
             bankData={bankData}
           />
         </article>
-        <article className="w-full md:w-[290px]">
+        <article className="w-full md:w-[290px]" ref={formRef}>
           <BranchNameSection
             selectedBank={selectedBank}
             filteredBranches={filteredBranches}
