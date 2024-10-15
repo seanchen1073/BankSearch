@@ -45,7 +45,9 @@ const BranchNameSection = ({ selectedBank, setSelectedBranch, filteredBranches, 
 
     return (
         <section className="w-full branch-input-field">
-            <h2 className="mb-2 text-xl font-semibold">分行名稱</h2>
+            <h2 className="mb-2 text-xl font-semibold" onClick={() => setActiveDropdown(null)}>
+            分行名稱
+            </h2>
             <div className="relative w-full">
             <input
                 ref={inputRef}
