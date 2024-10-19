@@ -25,8 +25,7 @@ const BranchNameSection = ({ selectedBank, setSelectedBranch, filteredBranches, 
     }, [selectedBank]);
 
     const handleInputChange = (e) => {
-        const value = e.target.value;
-        setSearchTerm(value);
+        setSearchTerm(e.target.value);
         setSelectedBranchName(value);
         if (value === "") {
         setSelectedBranch(null);
