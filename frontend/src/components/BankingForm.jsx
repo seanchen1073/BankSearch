@@ -24,8 +24,8 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
   }, []);
 
   useEffect(() => {
-    handleBankSearch(bankSearchTerm);
-  }, [bankData, bankSearchTerm]);
+    setFilteredBanks(bankData);
+  }, [bankData]);
 
   useEffect(() => {
     if (selectedBank) {
