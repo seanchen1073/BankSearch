@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 
-const BranchNameSection = ({ selectedBank, setSelectedBranch, filteredBranches, isDropdownActive, setActiveDropdown, searchTerm, setSearchTerm }) => {
+const BranchNameSection = ({ selectedBank, selectedBranch, setSelectedBranch, filteredBranches, isDropdownActive, setActiveDropdown, searchTerm, setSearchTerm }) => {
     const [inputWidth, setInputWidth] = useState("");
-    const [selectedBranchName, setSelectedBranchName] = useState("");
     const inputRef = useRef(null);
 
     useEffect(() => {
@@ -20,13 +19,13 @@ const BranchNameSection = ({ selectedBank, setSelectedBranch, filteredBranches, 
     useEffect(() => {
         if (selectedBank) {
         setSearchTerm("");
-        setSelectedBranchName("");
         }
     }, [selectedBank]);
 
     const handleInputChange = (e) => {
-        setSearchTerm(e.target.value);
-        setSelectedBranchName(value);
+        const value = e.target.value
+        setSearchTerm(value);
+        setSelectedBranch(branch.name);
         if (value === "") {
         setSelectedBranch(null);
         }
@@ -40,7 +39,6 @@ const BranchNameSection = ({ selectedBank, setSelectedBranch, filteredBranches, 
     const handleBranchSelect = (branch) => {
         setSelectedBranch(branch);
         setSearchTerm(branch.name);
-        setSelectedBranchName(branch.name);
         setActiveDropdown(null);
     };
 
@@ -57,7 +55,7 @@ const BranchNameSection = ({ selectedBank, setSelectedBranch, filteredBranches, 
             name="branch"
             className={`w-full p-2 pr-10 border rounded-md ${isDropdownActive ? "border-blue-500 border-2" : "border-gray-300"} focus:outline-none`}
             placeholder="請選擇分行名稱"
-            value={searchTerm || selectedBranchName}
+            value={searchTerm || selectedBranch}
             onChange={handleInputChange}
             onClick={handleInputClick}
             disabled={!selectedBank}
