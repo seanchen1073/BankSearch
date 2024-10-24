@@ -16,7 +16,6 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
         setActiveDropdown(null);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -35,30 +34,41 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
       }
     } else {
       setFilteredBranches([]);
-    }
-  }, [selectedBank, bankData]);
-
-  // 處理銀行選擇
-  const handleBankSelect = (bank) => {
-    if (bank !== selectedBank) {
-      setSelectedBank(bank);
+      setBranchSearchTerm("");
       setSelectedBranch(null);
-      setBranchSearchTerm(""); // 清空分行搜尋框
+    }
+  }, [selectedBank, bankData, setSelectedBranch]);
+
+  const handleBankSelect = (bank) => {
+    const bankString = `${bank.code} ${bank.name}`;
+    if (bankString !== selectedBank) {
+      setSelectedBank(bankString);
+      setBankSearchTerm(bankString);
+      setSelectedBranch(null);
+      setBranchSearchTerm("");
     }
     setActiveDropdown(null);
   };
 
-  // 處理銀行搜尋
+  const handleBranchSelect = (branch) => {
+    setSelectedBranch(branch);
+    setBranchSearchTerm(`${branch.code} ${branch.name}`);
+    updateUrl();
+    setActiveDropdown(null);
+  };
+
   const handleBankSearch = (searchTerm) => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
     const filtered = bankData.filter(
       (bank) => bank.code.toLowerCase().includes(lowerCaseSearchTerm) || bank.name.toLowerCase().includes(lowerCaseSearchTerm)
     );
     setFilteredBanks(filtered);
-    setBankSearchTerm(searchTerm); // 更新銀行搜尋框的值
+    setBankSearchTerm(searchTerm);
+    if (searchTerm === "") {
+      setSelectedBank(null);
+    }
   };
 
-  // 處理分行搜尋
   const handleBranchSearch = (searchTerm) => {
     setBranchSearchTerm(searchTerm);
     if (selectedBank) {
@@ -70,26 +80,13 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
         setFilteredBranches(filtered);
       }
     }
-  };
-
-  const handleBranchSelect = (branch) => {
-    setSelectedBranch(branch);
-    setBranchSearchTerm(branch.name);
-    updateUrl();
-    setActiveDropdown(null);
+    if (searchTerm === "") {
+      setSelectedBranch(null);
+    }
   };
 
   const handleDropdownToggle = (dropdownName) => {
     setActiveDropdown((prevDropdown) => (prevDropdown === dropdownName ? null : dropdownName));
-    if (dropdownName === "branch") {
-      setBranchSearchTerm(""); // 清空分行搜尋詞，以顯示所有分行
-      if (selectedBank) {
-        const selectedBankData = bankData.find((bank) => bank.code === selectedBank.split(" ")[0]);
-        if (selectedBankData) {
-          setFilteredBranches(selectedBankData.branches);
-        }
-      }
-    }
   };
 
   return (
@@ -101,23 +98,21 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
             filteredBanks={filteredBanks}
             isDropdownActive={activeDropdown === "bank"}
             setActiveDropdown={handleDropdownToggle}
-            searchTerm={bankSearchTerm}
-            setSearchTerm={handleBankSearch}
-            setSelectedBank={handleBankSelect}
-            bankData={bankData}
+            bankSearchTerm={bankSearchTerm}
+            handleBankSearch={handleBankSearch}
+            handleBankSelect={handleBankSelect}
           />
         </article>
         <article className="w-full md:w-[290px]" ref={formRef}>
           <BranchNameSection
             selectedBank={selectedBank}
+            selectedBranch={selectedBranch}
             filteredBranches={filteredBranches}
             isDropdownActive={activeDropdown === "branch"}
             setActiveDropdown={handleDropdownToggle}
+            branchSearchTerm={branchSearchTerm}
+            handleBranchSearch={handleBranchSearch}
             handleBranchSelect={handleBranchSelect}
-            searchTerm={branchSearchTerm}
-            setSearchTerm={handleBranchSearch}
-            setSelectedBranch={handleBranchSelect}
-            bankData={bankData}
           />
         </article>
       </section>
