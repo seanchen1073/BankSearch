@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
-const BranchNameSection = ({
-    selectedBank, selectedBranch, filteredBranches, isDropdownActive, setActiveDropdown, branchSearchTerm, handleBranchSearch, handleBranchSelect }) => {
+const BranchNameSection = ({ selectedBank, filteredBranches, isDropdownActive, setActiveDropdown, branchSearchTerm, handleBranchSearch, handleBranchSelect }) => {
     const [inputWidth, setInputWidth] = useState("");
     const inputRef = useRef(null);
 
@@ -17,9 +16,9 @@ const BranchNameSection = ({
         return () => window.removeEventListener("resize", updateWidth);
     }, []);
 
+    // 修正：直接傳遞事件物件給父組件的處理函數
     const handleInputChange = (e) => {
         handleBranchSearch(e.target.value);
-        setActiveDropdown("branch");
     };
 
     const handleInputClick = () => {
@@ -42,7 +41,7 @@ const BranchNameSection = ({
             }`}
             placeholder={selectedBank ? "請選擇分行名稱" : "請先選擇銀行"}
             value={branchSearchTerm}
-            onChange={handleInputChange}
+            onChange={handleInputChange} // 修正：直接使用onChange事件
             onClick={handleInputClick}
             disabled={!selectedBank}
             />

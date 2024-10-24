@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
-const BankNameSection = ({
-    filteredBanks, selectedBank, isDropdownActive, setActiveDropdown, bankSearchTerm, handleBankSearch, handleBankSelect }) => {
+const BankNameSection = ({ filteredBanks, isDropdownActive, setActiveDropdown, bankSearchTerm, handleBankSearch, handleBankSelect }) => {
     const [inputWidth, setInputWidth] = useState("");
     const inputRef = useRef(null);
 
@@ -17,9 +16,9 @@ const BankNameSection = ({
         return () => window.removeEventListener("resize", updateWidth);
     }, []);
 
+    // 修正：直接傳遞事件物件給父組件的處理函數
     const handleInputChange = (e) => {
         handleBankSearch(e.target.value);
-        setActiveDropdown("bank");
     };
 
     const handleInputClick = () => {
@@ -38,7 +37,7 @@ const BankNameSection = ({
             className={`w-full p-2 pr-10 border rounded-md ${isDropdownActive ? "border-blue-500 border-2" : "border-gray-300"} focus:outline-none`}
             placeholder="請輸入關鍵字或銀行代碼"
             value={bankSearchTerm}
-            onChange={handleInputChange}
+            onChange={handleInputChange} // 修正：直接使用onChange事件
             onClick={handleInputClick}
             />
             <button
