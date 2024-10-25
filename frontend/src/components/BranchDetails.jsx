@@ -23,8 +23,6 @@ const BranchDetails = ({ selectedBank, selectedBranch }) => {
         }, 2000);
     };
 
-    if (!selectedBank || !selectedBranch) return null;
-
     const bankCode = selectedBank.split(" ")[0];
     const bankName = selectedBank.split(" ").slice(1).join(" ");
 
