@@ -67,9 +67,10 @@ function App() {
     if (selectedBank && selectedBranch) {
       const bankCode = selectedBank.split(" ")[0];
       const branchCode = selectedBranch.code;
-      const bankName = encodeURIComponent(selectedBank.split(" ")[1]);
-      const branchName = encodeURIComponent(selectedBranch.name);
-      navigate(`/${bankCode}/${branchCode}/${bankName}-${branchName}.html`);
+      const bankName = selectedBank.split(" ")[1];
+      const branchName = selectedBranch.name;
+      const names = `${bankName}-${branchName}.html`;
+      navigate(encodeURI(`/${bankCode}/${branchCode}/${names}`));
     }
   };
 
@@ -87,12 +88,9 @@ function App() {
           setSelectedBranch={setSelectedBranch}
           updateUrl={updateUrl}
         />
-        {selectedBank && selectedBranch && <BranchDetails selectedBank={selectedBank} selectedBranch={selectedBranch} />}
         <Routes>
-          <Route
-            path="/:bankCode/:branchCode/:bankName-:branchName.html"
-            element={<BranchDetails selectedBank={selectedBank} selectedBranch={selectedBranch} />}
-          />
+          <Route path="/" element={<div />} />
+          <Route path="/:bankCode/:branchCode/:names" element={<BranchDetails selectedBank={selectedBank} selectedBranch={selectedBranch} />} />
         </Routes>
       </div>
     </div>
