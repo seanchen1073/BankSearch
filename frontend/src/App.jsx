@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Header from "./components/Header";
 import BankingForm from "./components/BankingForm";
 import BranchDetails from "./components/BranchDetails";
 
 function App() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [bankData, setBankData] = useState([]);
-  const [filteredBanks, setFilteredBanks] = useState(bankData); // 新增狀態以存儲過濾的銀行
-  const [filteredBranches, setFilteredBranches] = useState([]); // 新增狀態以存儲過濾的分行
+  const [filteredBanks, setFilteredBanks] = useState([]); // 將初始值改為空陣列
+  const [filteredBranches, setFilteredBranches] = useState([]);
   const [selectedBank, setSelectedBank] = useState(null);
   const [selectedBranch, setSelectedBranch] = useState(null);
 
@@ -18,26 +19,36 @@ function App() {
     if (bankCode) {
       apiUrl += `${bankCode}/branches/`;
     }
-    const response = await axios.get(apiUrl, {
-      headers: {
-        "Cache-Control": "no-cache",
-        Pragma: "no-cache",
-        Expires: "0",
-      },
-    });
+    try {
+      const response = await axios.get(apiUrl, {
+        headers: {
+          "Cache-Control": "no-cache",
+          Pragma: "no-cache",
+          Expires: "0",
+        },
+      });
 
-    if (response.status === 200) {
-      return response.data;
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error) {
+      console.error("獲取資料失敗:", error);
+      if (bankCode) {
+        // 只有在獲取分行資料失敗時才導回首頁
+        navigate("/");
+      }
+      return null;
     }
   };
 
+  // 初始載入銀行資料
   useEffect(() => {
     const loadBankData = async () => {
       console.log("載入銀行資料中...");
       const data = await fetchBankData();
       if (data && Array.isArray(data)) {
         setBankData(data);
-        setFilteredBanks(data); // 將銀行數據存儲到過濾的銀行狀態中
+        setFilteredBanks(data); // 確保銀行資料正確設置
         console.log("銀行資料載入成功：", data);
       } else {
         console.error("無法載入銀行資料");
@@ -46,12 +57,62 @@ function App() {
     loadBankData();
   }, []);
 
+  // 從 URL 解析銀行和分行資料
+  useEffect(() => {
+    const initializeFromUrl = async () => {
+      const pathParts = location.pathname.split("/");
+      if (pathParts.length === 4) {
+        const [, bankCode, branchCode] = pathParts;
+        try {
+          // 如果還沒有銀行資料，先獲取
+          if (bankData.length === 0) {
+            const banks = await fetchBankData();
+            if (banks) {
+              setBankData(banks);
+              setFilteredBanks(banks);
+            }
+          }
+
+          // 找到對應的銀行
+          const bank = bankData.find((b) => b.code === bankCode);
+          if (bank) {
+            const bankWithCode = `${bank.code} ${bank.name}`;
+            setSelectedBank(bankWithCode);
+
+            // 獲取該銀行的所有分行
+            const branches = await fetchBankData(bankCode);
+            if (branches) {
+              setFilteredBranches(branches);
+
+              // 找到對應的分行
+              const branch = branches.find((b) => b.code === branchCode);
+              if (branch) {
+                setSelectedBranch(branch);
+              } else {
+                navigate("/");
+              }
+            }
+          }
+        } catch (error) {
+          console.error("初始化資料失敗:", error);
+          navigate("/");
+        }
+      }
+    };
+
+    if (location.pathname !== "/") {
+      initializeFromUrl();
+    }
+  }, [location.pathname, bankData]);
+
   useEffect(() => {
     if (selectedBank) {
       const fetchBranches = async () => {
         const bankCode = selectedBank.split(" ")[0];
         const branches = await fetchBankData(bankCode);
-        setFilteredBranches(branches); // 更新過濾的分行
+        if (branches) {
+          setFilteredBranches(branches);
+        }
       };
       fetchBranches();
     } else {
@@ -79,9 +140,9 @@ function App() {
       <Header />
       <div className="container px-4 py-8 mx-auto">
         <BankingForm
-          bankData={bankData} // 傳遞銀行數據
-          filteredBanks={filteredBanks} // 傳遞過濾的銀行
-          filteredBranches={filteredBranches} // 傳遞過濾的分行
+          bankData={bankData}
+          filteredBanks={filteredBanks}
+          filteredBranches={filteredBranches}
           selectedBank={selectedBank}
           setSelectedBank={setSelectedBank}
           selectedBranch={selectedBranch}
