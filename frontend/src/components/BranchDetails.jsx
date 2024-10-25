@@ -33,7 +33,7 @@ const BranchDetails = ({ selectedBank, selectedBranch }) => {
             navigate("/");
             return null;
         }
-        return <div>載入中...</div>;
+        return null;
     }
 
     const displayBankCode = selectedBank.split(" ")[0];

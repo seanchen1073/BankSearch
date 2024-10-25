@@ -9,7 +9,7 @@ function App() {
   const navigate = useNavigate();
   const location = useLocation();
   const [bankData, setBankData] = useState([]);
-  const [filteredBanks, setFilteredBanks] = useState([]); // 將初始值改為空陣列
+  const [filteredBanks, setFilteredBanks] = useState([]); 
   const [filteredBranches, setFilteredBranches] = useState([]);
   const [selectedBank, setSelectedBank] = useState(null);
   const [selectedBranch, setSelectedBranch] = useState(null);
