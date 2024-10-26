@@ -10,6 +10,20 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
   const [branchSearchTerm, setBranchSearchTerm] = useState("");
   const formRef = useRef(null);
 
+  // 監聽 selectedBank 變化，更新 bankSearchTerm
+  useEffect(() => {
+    if (selectedBank) {
+      setBankSearchTerm(selectedBank);
+    }
+  }, [selectedBank]);
+
+  // 監聽 selectedBranch 變化，更新 branchSearchTerm
+  useEffect(() => {
+    if (selectedBranch) {
+      setBranchSearchTerm(`${selectedBranch.code} ${selectedBranch.name}`);
+    }
+  }, [selectedBranch]);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (formRef.current && !formRef.current.contains(event.target)) {

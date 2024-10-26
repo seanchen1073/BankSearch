@@ -9,7 +9,7 @@ function App() {
   const navigate = useNavigate();
   const location = useLocation();
   const [bankData, setBankData] = useState([]);
-  const [filteredBanks, setFilteredBanks] = useState([]); 
+  const [filteredBanks, setFilteredBanks] = useState([]);
   const [filteredBranches, setFilteredBranches] = useState([]);
   const [selectedBank, setSelectedBank] = useState(null);
   const [selectedBranch, setSelectedBranch] = useState(null);
@@ -57,22 +57,15 @@ function App() {
     loadBankData();
   }, []);
 
-  // 從 URL 解析銀行和分行資料
+  // 從 URL 解析銀行和分行資料// 從 URL 解析銀行和分行資料
   useEffect(() => {
     const initializeFromUrl = async () => {
       const pathParts = location.pathname.split("/");
-      if (pathParts.length === 4) {
+      if (pathParts.length === 4 && bankData.length > 0) {
+        // 確保 bankData 已載入
         const [, bankCode, branchCode] = pathParts;
-        try {
-          // 如果還沒有銀行資料，先獲取
-          if (bankData.length === 0) {
-            const banks = await fetchBankData();
-            if (banks) {
-              setBankData(banks);
-              setFilteredBanks(banks);
-            }
-          }
 
+        try {
           // 找到對應的銀行
           const bank = bankData.find((b) => b.code === bankCode);
           if (bank) {
@@ -88,8 +81,6 @@ function App() {
               const branch = branches.find((b) => b.code === branchCode);
               if (branch) {
                 setSelectedBranch(branch);
-              } else {
-                navigate("/");
               }
             }
           }
@@ -100,10 +91,8 @@ function App() {
       }
     };
 
-    if (location.pathname !== "/") {
-      initializeFromUrl();
-    }
-  }, [location.pathname, bankData]);
+    initializeFromUrl();
+  }, [location.pathname, bankData]); // 只依賴這兩個值
 
   useEffect(() => {
     if (selectedBank) {
