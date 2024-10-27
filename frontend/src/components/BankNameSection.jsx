@@ -67,27 +67,20 @@ const BankNameSection = ({
             onKeyDown={handleKeyDown}
             onMouseDown={(e) => e.stopPropagation()}
             >
-            {filteredBanks.length > 0 ? (
-                filteredBanks.map((bank, index) => {
-                    const isSelected = selectedBank === `${bank.code} ${bank.name}`;
+            {filteredBanks.map((bank, index) => {
+                const isSelected = selectedBank === `${bank.code} ${bank.name}`;
+                const isActive = index === selectedIndex; // 判斷當前索引是否是選中的索引
                 return (
-                    <li
-                        key={bank.code}
-                        className={`p-2 cursor-pointer ${index === selectedIndex ? "bg-gray-100" : ""} hover:bg-gray-100 ${
-                            isSelected ? "hover:bg-blue-500 hover:text-white" : ""
-                        } ${
-                            isSelected ? "bg-blue-500 text-white" : ""
-                        }`}
-                        onClick={() => handleBankSelect(bank)}
-                        onMouseEnter={() => setSelectedIndex(index)}
-                    >
+                <li
+                    key={bank.code}
+                    className={`p-2 cursor-pointer ${isSelected ? "bg-blue-500 text-white" : isActive ? "bg-gray-100" : "hover:bg-gray-100"}`}
+                    onClick={() => handleBankSelect(bank)}
+                    onMouseEnter={() => setSelectedIndex(index)}
+                >
                     {bank.code} {bank.name}
-                    </li>
-                    );
-                })
-            ) : (
-                <li className="p-2 text-center text-gray-500">無相關資料</li>
-            )}
+                </li>
+                );
+            })}
             </ul>
         )}
         <p className="mt-1 text-left">可使用下拉選單或直接輸入關鍵字查詢</p>

@@ -78,25 +78,22 @@ const BranchNameSection = ({
             >
             {filteredBranches && filteredBranches.length > 0 ? (
                 filteredBranches.map((branch, index) => {
-                    const isSelected = selectedBranch &&
-                    selectedBranch.code === branch.code &&
-                    selectedBranch.name === branch.name;
+                const isSelected = selectedBranch && selectedBranch.code === branch.code && selectedBranch.name === branch.name;
+                const isHovered = index === selectedIndex;
+
                 return (
                     <li
                     key={branch.code}
-                    className={`p-2 cursor-pointer ${index === selectedIndex ? "bg-gray-100" : ""
-                    } hover:bg-gray-100 ${
-                        isSelected ? "hover:bg-blue-500 hover:text-white" : ""
-                        } ${
-                            isSelected ? "bg-blue-500 text-white" : ""
-                        }`}
+                    className={`p-2 cursor-pointer ${isSelected ? "bg-blue-500 text-white" : isHovered ? "bg-gray-100" : ""} ${
+                        !isSelected && !isHovered ? "hover:bg-gray-100" : ""
+                    }`}
                     onClick={() => handleBranchSelect(branch)}
                     onMouseEnter={() => setSelectedIndex(index)}
-                >
+                    >
                     {branch.code} {branch.name}
-                </li>
+                    </li>
                 );
-            })
+                })
             ) : (
                 <li className="p-2 text-center text-gray-500">無相關資料</li>
             )}
