@@ -1,6 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
 
-const BranchNameSection = ({ selectedBank, filteredBranches, isDropdownActive, setActiveDropdown, branchSearchTerm, handleBranchSearch, handleBranchSelect }) => {
+const BranchNameSection = ({
+    selectedBank,
+    filteredBranches,
+    isDropdownActive,
+    setActiveDropdown,
+    branchSearchTerm,
+    handleBranchSearch,
+    handleBranchSelect,
+    selectedIndex,
+    handleKeyDown,
+    }) => {
     const [inputWidth, setInputWidth] = useState("");
     const inputRef = useRef(null);
 
@@ -16,7 +26,6 @@ const BranchNameSection = ({ selectedBank, filteredBranches, isDropdownActive, s
         return () => window.removeEventListener("resize", updateWidth);
     }, []);
 
-    // 修正：直接傳遞事件物件給父組件的處理函數
     const handleInputChange = (e) => {
         handleBranchSearch(e.target.value);
     };
@@ -41,9 +50,10 @@ const BranchNameSection = ({ selectedBank, filteredBranches, isDropdownActive, s
             }`}
             placeholder={selectedBank ? "請選擇分行名稱" : "請先選擇銀行"}
             value={branchSearchTerm}
-            onChange={handleInputChange} // 修正：直接使用onChange事件
+            onChange={handleInputChange}
             onClick={handleInputClick}
             disabled={!selectedBank}
+            onKeyDown={handleKeyDown}
             />
             <button
             className={`absolute inset-y-0 right-0 flex items-center px-2 ${selectedBank ? "cursor-pointer" : "cursor-not-allowed"} ${
@@ -63,10 +73,15 @@ const BranchNameSection = ({ selectedBank, filteredBranches, isDropdownActive, s
             className="absolute z-10 w-full mt-1 overflow-y-auto bg-white border rounded-md shadow-lg max-h-60"
             style={{ width: inputWidth, maxHeight: "290px" }}
             onMouseDown={(e) => e.stopPropagation()}
+            onKeyDown={handleKeyDown}
             >
             {filteredBranches && filteredBranches.length > 0 ? (
-                filteredBranches.map((branch) => (
-                <li key={branch.code} className="p-2 cursor-pointer hover:bg-gray-100" onClick={() => handleBranchSelect(branch)}>
+                filteredBranches.map((branch, index) => (
+                <li
+                    key={branch.code}
+                    className={`p-2 cursor-pointer ${index === selectedIndex ? "bg-gray-100" : ""} hover:bg-gray-100`}
+                    onClick={() => handleBranchSelect(branch)}
+                >
                     {branch.code} {branch.name}
                 </li>
                 ))

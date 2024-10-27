@@ -1,6 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 
-const BankNameSection = ({ filteredBanks, isDropdownActive, setActiveDropdown, bankSearchTerm, handleBankSearch, handleBankSelect }) => {
+const BankNameSection = ({
+    filteredBanks,
+    isDropdownActive,
+    setActiveDropdown,
+    bankSearchTerm,
+    handleBankSearch,
+    handleBankSelect,
+    selectedIndex,
+    handleKeyDown,
+    }) => {
     const [inputWidth, setInputWidth] = useState("");
     const inputRef = useRef(null);
 
@@ -16,7 +25,6 @@ const BankNameSection = ({ filteredBanks, isDropdownActive, setActiveDropdown, b
         return () => window.removeEventListener("resize", updateWidth);
     }, []);
 
-    // 修正：直接傳遞事件物件給父組件的處理函數
     const handleInputChange = (e) => {
         handleBankSearch(e.target.value);
     };
@@ -37,8 +45,9 @@ const BankNameSection = ({ filteredBanks, isDropdownActive, setActiveDropdown, b
             className={`w-full p-2 pr-10 border rounded-md ${isDropdownActive ? "border-blue-500 border-2" : "border-gray-300"} focus:outline-none`}
             placeholder="請輸入關鍵字或銀行代碼"
             value={bankSearchTerm}
-            onChange={handleInputChange} // 修正：直接使用onChange事件
+            onChange={handleInputChange}
             onClick={handleInputClick}
+            onKeyDown={handleKeyDown}
             />
             <button
             className={`absolute inset-y-0 right-0 flex items-center px-2 cursor-pointer ${isDropdownActive ? "text-black-500" : "text-gray-400"}`}
@@ -54,11 +63,16 @@ const BankNameSection = ({ filteredBanks, isDropdownActive, setActiveDropdown, b
             <ul
             className="absolute z-10 w-full mt-1 overflow-y-auto bg-white border rounded-md shadow-lg max-h-60"
             style={{ width: inputWidth, maxHeight: "290px" }}
+            onKeyDown={handleKeyDown}
             onMouseDown={(e) => e.stopPropagation()}
             >
             {filteredBanks.length > 0 ? (
-                filteredBanks.map((bank) => (
-                <li key={bank.code} className="p-2 cursor-pointer hover:bg-gray-100" onClick={() => handleBankSelect(bank)}>
+                filteredBanks.map((bank, index) => (
+                <li
+                    key={bank.code}
+                    className={`p-2 cursor-pointer ${index === selectedIndex ? "bg-gray-100" : ""} hover:bg-gray-100`}
+                    onClick={() => handleBankSelect(bank)}
+                >
                     {bank.code} {bank.name}
                 </li>
                 ))

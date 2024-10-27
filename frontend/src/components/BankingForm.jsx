@@ -6,18 +6,17 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
   const [filteredBanks, setFilteredBanks] = useState(bankData);
   const [filteredBranches, setFilteredBranches] = useState([]);
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
   const [bankSearchTerm, setBankSearchTerm] = useState("");
   const [branchSearchTerm, setBranchSearchTerm] = useState("");
   const formRef = useRef(null);
 
-  // 監聽 selectedBank 變化，更新 bankSearchTerm
   useEffect(() => {
     if (selectedBank) {
       setBankSearchTerm(selectedBank);
     }
   }, [selectedBank]);
 
-  // 監聽 selectedBranch 變化，更新 branchSearchTerm
   useEffect(() => {
     if (selectedBranch) {
       setBranchSearchTerm(`${selectedBranch.code} ${selectedBranch.name}`);
@@ -28,6 +27,7 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
     const handleClickOutside = (event) => {
       if (formRef.current && !formRef.current.contains(event.target)) {
         setActiveDropdown(null);
+        setSelectedIndex(-1);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -53,6 +53,37 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
     }
   }, [selectedBank, bankData, setSelectedBranch]);
 
+  const handleKeyDown = (event) => {
+    if (!activeDropdown) return;
+
+    const currentList = activeDropdown === "bank" ? filteredBanks : filteredBranches;
+
+    switch (event.key) {
+      case "ArrowDown":
+        event.preventDefault();
+        setSelectedIndex((prev) => Math.min(prev + 1, currentList.length - 1));
+        break;
+      case "ArrowUp":
+        event.preventDefault();
+        setSelectedIndex((prev) => Math.max(prev - 1, 0));
+        break;
+      case "Enter":
+        event.preventDefault();
+        if (selectedIndex >= 0) {
+          if (activeDropdown === "bank") {
+            handleBankSelect(filteredBanks[selectedIndex]);
+          } else {
+            handleBranchSelect(filteredBranches[selectedIndex]);
+          }
+        }
+        break;
+      case "Escape":
+        setActiveDropdown(null);
+        setSelectedIndex(-1);
+        break;
+    }
+  };
+
   const handleBankSelect = (bank) => {
     const bankString = `${bank.code} ${bank.name}`;
     if (bankString !== selectedBank) {
@@ -62,6 +93,7 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
       setBranchSearchTerm("");
     }
     setActiveDropdown(null);
+    setSelectedIndex(-1);
   };
 
   const handleBranchSelect = (branch) => {
@@ -69,6 +101,7 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
     setBranchSearchTerm(`${branch.code} ${branch.name}`);
     updateUrl();
     setActiveDropdown(null);
+    setSelectedIndex(-1);
   };
 
   const handleBankSearch = (searchTerm) => {
@@ -78,6 +111,7 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
     );
     setFilteredBanks(filtered);
     setBankSearchTerm(searchTerm);
+    setSelectedIndex(-1);
     if (searchTerm === "") {
       setSelectedBank(null);
     }
@@ -85,6 +119,7 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
 
   const handleBranchSearch = (searchTerm) => {
     setBranchSearchTerm(searchTerm);
+    setSelectedIndex(-1);
     if (selectedBank) {
       const selectedBankData = bankData.find((bank) => bank.code === selectedBank.split(" ")[0]);
       if (selectedBankData) {
@@ -99,10 +134,6 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
     }
   };
 
-  const handleDropdownToggle = (dropdownName) => {
-    setActiveDropdown((prevDropdown) => (prevDropdown === dropdownName ? null : dropdownName));
-  };
-
   return (
     <main className="flex flex-col items-center w-full max-w-[600px] mx-auto">
       <section className="flex flex-col w-full md:flex-row md:justify-between">
@@ -111,10 +142,12 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
             selectedBank={selectedBank}
             filteredBanks={filteredBanks}
             isDropdownActive={activeDropdown === "bank"}
-            setActiveDropdown={handleDropdownToggle}
+            setActiveDropdown={setActiveDropdown}
             bankSearchTerm={bankSearchTerm}
             handleBankSearch={handleBankSearch}
             handleBankSelect={handleBankSelect}
+            selectedIndex={selectedIndex}
+            handleKeyDown={handleKeyDown}
           />
         </article>
         <article className="w-full md:w-[290px]" ref={formRef}>
@@ -123,10 +156,12 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
             selectedBranch={selectedBranch}
             filteredBranches={filteredBranches}
             isDropdownActive={activeDropdown === "branch"}
-            setActiveDropdown={handleDropdownToggle}
+            setActiveDropdown={setActiveDropdown}
             branchSearchTerm={branchSearchTerm}
             handleBranchSearch={handleBranchSearch}
             handleBranchSelect={handleBranchSelect}
+            selectedIndex={selectedIndex}
+            handleKeyDown={handleKeyDown}
           />
         </article>
       </section>
