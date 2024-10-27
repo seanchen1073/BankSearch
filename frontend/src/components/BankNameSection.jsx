@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 
 const BankNameSection = ({
+    selectedBank,
     filteredBanks,
     isDropdownActive,
     setActiveDropdown,
@@ -67,15 +68,23 @@ const BankNameSection = ({
             onMouseDown={(e) => e.stopPropagation()}
             >
             {filteredBanks.length > 0 ? (
-                filteredBanks.map((bank, index) => (
-                <li
-                    key={bank.code}
-                    className={`p-2 cursor-pointer ${index === selectedIndex ? "bg-gray-100" : ""} hover:bg-gray-100`}
-                    onClick={() => handleBankSelect(bank)}
-                >
+                filteredBanks.map((bank, index) => {
+                    const isSelected = selectedBank === `${bank.code} ${bank.name}`;
+                return (
+                    <li
+                        key={bank.code}
+                        className={`p-2 cursor-pointer ${index === selectedIndex ? "bg-gray-100" : ""} hover:bg-gray-100 ${
+                            isSelected ? "hover:bg-blue-500 hover:text-white" : ""
+                        } ${
+                            isSelected ? "bg-blue-500 text-white" : ""
+                        }`}
+                        onClick={() => handleBankSelect(bank)}
+                        onMouseEnter={() => setSelectedIndex(index)}
+                    >
                     {bank.code} {bank.name}
-                </li>
-                ))
+                    </li>
+                    );
+                })
             ) : (
                 <li className="p-2 text-center text-gray-500">無相關資料</li>
             )}

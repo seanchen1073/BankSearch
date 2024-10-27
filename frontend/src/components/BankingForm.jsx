@@ -57,16 +57,33 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
     if (!activeDropdown) return;
 
     const currentList = activeDropdown === "bank" ? filteredBanks : filteredBranches;
+    const listElement = document.querySelector(activeDropdown === "bank" ? ".bank-dropdown" : ".branch-dropdown");
 
     switch (event.key) {
       case "ArrowDown":
         event.preventDefault();
-        setSelectedIndex((prev) => Math.min(prev + 1, currentList.length - 1));
+        setSelectedIndex(prev => {
+          const nextIndex = Math.min(prev +1, currentList.length -1);
+          const selectedElement = listElement?.children[nextIndex];
+          if (selectedElement) {
+            selectedElement.scrollIntoView({ block: "nearest"});
+          }
+          return nextIndex;
+        });
         break;
+
       case "ArrowUp":
         event.preventDefault();
-        setSelectedIndex((prev) => Math.max(prev - 1, 0));
+        setSelectedIndex(prev => {
+          const nextIndex = Math.max(prev - 1, 0);
+          const selectedElement = listElement?.children[nextIndex];
+          if (selectedElement) {
+            selectedElement.scrollIntoView({ block: "nearest"});
+          }
+          return nextIndex;
+        });
         break;
+
       case "Enter":
         event.preventDefault();
         if (selectedIndex >= 0) {
@@ -77,6 +94,7 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
           }
         }
         break;
+        
       case "Escape":
         setActiveDropdown(null);
         setSelectedIndex(-1);
