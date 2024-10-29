@@ -64,32 +64,28 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
     switch (event.key) {
       case "ArrowDown":
         event.preventDefault();
-        setSelectedIndex(prev => {
-          const nextIndex = prev === -1 ? 
-            (mouseHoveredIndex !== -1 ? mouseHoveredIndex : 0) : 
-            Math.min(prev + 1, currentList.length - 1);
-          
+        setSelectedIndex((prev) => {
+          const nextIndex = prev === -1 ? (mouseHoveredIndex !== -1 ? mouseHoveredIndex : 0) : Math.min(prev + 1, currentList.length - 1);
+
           const selectedElement = listElement?.children[nextIndex];
           if (selectedElement) {
             selectedElement.scrollIntoView({ block: "nearest", behavior: "smooth" });
           }
-          setMouseHoveredIndex(-1);
+          setMouseHoveredIndex(-1); // 清除 mouseHoveredIndex
           return nextIndex;
         });
         break;
 
       case "ArrowUp":
         event.preventDefault();
-        setSelectedIndex(prev => {
-          const nextIndex = prev === -1 ? 
-            (mouseHoveredIndex !== -1 ? mouseHoveredIndex : 0) : 
-            Math.max(prev - 1, 0);
-          
+        setSelectedIndex((prev) => {
+          const nextIndex = prev === -1 ? (mouseHoveredIndex !== -1 ? mouseHoveredIndex : 0) : Math.max(prev - 1, 0);
+
           const selectedElement = listElement?.children[nextIndex];
           if (selectedElement) {
             selectedElement.scrollIntoView({ block: "nearest", behavior: "smooth" });
           }
-          setMouseHoveredIndex(-1);
+          setMouseHoveredIndex(-1); // 清除 mouseHoveredIndex
           return nextIndex;
         });
         break;
@@ -104,13 +100,22 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
           }
         }
         break;
-        
+
       case "Escape":
         setActiveDropdown(null);
         setSelectedIndex(-1);
         setMouseHoveredIndex(-1);
         break;
     }
+  };
+
+  const handleMouseEnter = (index) => {
+    setMouseHoveredIndex(index);
+    setSelectedIndex(index);
+  }
+
+  const handleMouseLeave = () => {
+    setMouseHoveredIndex(-1);
   };
 
   const handleBankSelect = (bank) => {
@@ -184,6 +189,8 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
             selectedIndex={selectedIndex}
             mouseHoveredIndex={mouseHoveredIndex}
             setMouseHoveredIndex={setMouseHoveredIndex}
+            handleMouseEnter={handleMouseEnter}
+            handleMouseLeave={handleMouseLeave}
             handleKeyDown={handleKeyDown}
           />
         </article>
@@ -200,6 +207,8 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
             selectedIndex={selectedIndex}
             mouseHoveredIndex={mouseHoveredIndex}
             setMouseHoveredIndex={setMouseHoveredIndex}
+            handleMouseEnter={handleMouseEnter}
+            handleMouseLeave={handleMouseLeave}
             handleKeyDown={handleKeyDown}
           />
         </article>

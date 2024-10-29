@@ -12,6 +12,8 @@ const BranchNameSection = ({
     selectedIndex,
     mouseHoveredIndex,
     setMouseHoveredIndex,
+    handleMouseEnter,
+    handleMouseLeave,
     handleKeyDown,
     }) => {
     const [inputWidth, setInputWidth] = useState("");
@@ -37,14 +39,6 @@ const BranchNameSection = ({
         if (selectedBank) {
         setActiveDropdown("branch");
         }
-    };
-
-    const handleMouseEnter = (index) => {
-        setMouseHoveredIndex(index);
-    };
-
-    const handleMouseLeave = () => {
-        setMouseHoveredIndex(-1);
     };
 
     return (
@@ -94,7 +88,9 @@ const BranchNameSection = ({
                 return (
                     <li
                     key={branch.code}
-                    className={`p-2 cursor-pointer ${isSelected ? "bg-blue-500 text-white" : isHighlighted ? "bg-gray-300" : "hover:bg-gray-300"}`}
+                    className={`p-2 cursor-pointer ${isSelected ? "bg-blue-500 text-white" : isHighlighted ? "bg-gray-300" : "hover:bg-gray-300"} ${
+                        index === (selectedIndex === -1 ? mouseHoveredIndex : selectedIndex) ? "highlight" : ""
+                    }`}
                     onClick={() => handleBranchSelect(branch)}
                     onMouseEnter={() => handleMouseEnter(index)}
                     onMouseLeave={handleMouseLeave}

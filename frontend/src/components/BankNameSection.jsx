@@ -11,6 +11,8 @@ const BankNameSection = ({
     selectedIndex,
     mouseHoveredIndex,
     setMouseHoveredIndex,
+    handleMouseEnter,
+    handleMouseLeave,
     handleKeyDown,
     }) => {
     const [inputWidth, setInputWidth] = useState("");
@@ -34,14 +36,6 @@ const BankNameSection = ({
 
     const handleInputClick = () => {
         setActiveDropdown("bank");
-    };
-
-    const handleMouseEnter = (index) => {
-        setMouseHoveredIndex(index);
-    };
-
-    const handleMouseLeave = () => {
-        setMouseHoveredIndex(-1);
     };
 
     return (
@@ -82,15 +76,17 @@ const BankNameSection = ({
                 const isHighlighted = !isSelected && (index === selectedIndex || index === mouseHoveredIndex);
 
                 return (
-                <li
-                    key={bank.code}
-                    className={`p-2 cursor-pointer ${isSelected ? "bg-blue-500 text-white" : isHighlighted ? "bg-gray-300" : "hover:bg-gray-300"}`}
-                    onClick={() => handleBankSelect(bank)}
-                    onMouseEnter={() => handleMouseEnter(index)}
-                    onMouseLeave={handleMouseLeave}
-                >
-                    {bank.code} {bank.name}
-                </li>
+                    <li
+                        key={bank.code}
+                        className={`p-2 cursor-pointer ${isSelected ? "bg-blue-500 text-white" : isHighlighted ? "bg-gray-300" : "hover:bg-gray-300"} ${
+                        index === (selectedIndex === -1 ? mouseHoveredIndex : selectedIndex) ? "highlight" : ""
+                        }`}
+                        onClick={() => handleBankSelect(bank)}
+                        onMouseEnter={() => handleMouseEnter(index)}
+                        onMouseLeave={handleMouseLeave}
+                    >
+                        {bank.code} {bank.name}
+                    </li>
                 );
             })}
             </ul>
