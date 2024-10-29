@@ -9,6 +9,8 @@ const BankNameSection = ({
     handleBankSearch,
     handleBankSelect,
     selectedIndex,
+    mouseHoveredIndex,
+    setMouseHoveredIndex,
     handleKeyDown,
     }) => {
     const [inputWidth, setInputWidth] = useState("");
@@ -32,6 +34,14 @@ const BankNameSection = ({
 
     const handleInputClick = () => {
         setActiveDropdown("bank");
+    };
+
+    const handleMouseEnter = (index) => {
+        setMouseHoveredIndex(index);
+    };
+
+    const handleMouseLeave = () => {
+        setMouseHoveredIndex(-1);
     };
 
     return (
@@ -62,20 +72,22 @@ const BankNameSection = ({
         </div>
         {isDropdownActive && (
             <ul
-            className="absolute z-10 w-full mt-1 overflow-y-auto bg-white border rounded-md shadow-lg max-h-60"
+            className="bank-dropdown absolute z-10 w-full mt-1 overflow-y-auto bg-white border rounded-md shadow-lg max-h-60"
             style={{ width: inputWidth, maxHeight: "290px" }}
             onKeyDown={handleKeyDown}
             onMouseDown={(e) => e.stopPropagation()}
             >
             {filteredBanks.map((bank, index) => {
                 const isSelected = selectedBank === `${bank.code} ${bank.name}`;
-                const isActive = index === selectedIndex; // 判斷當前索引是否是選中的索引
+                const isHighlighted = !isSelected && (index === selectedIndex || index === mouseHoveredIndex);
+
                 return (
                 <li
                     key={bank.code}
-                    className={`p-2 cursor-pointer ${isSelected ? "bg-blue-500 text-white" : isActive ? "bg-gray-100" : "hover:bg-gray-100"}`}
+                    className={`p-2 cursor-pointer ${isSelected ? "bg-blue-500 text-white" : isHighlighted ? "bg-gray-300" : "hover:bg-gray-300"}`}
                     onClick={() => handleBankSelect(bank)}
-                    onMouseEnter={() => setSelectedIndex(index)}
+                    onMouseEnter={() => handleMouseEnter(index)}
+                    onMouseLeave={handleMouseLeave}
                 >
                     {bank.code} {bank.name}
                 </li>

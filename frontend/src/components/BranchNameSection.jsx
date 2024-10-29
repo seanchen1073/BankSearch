@@ -10,6 +10,8 @@ const BranchNameSection = ({
     handleBranchSearch,
     handleBranchSelect,
     selectedIndex,
+    mouseHoveredIndex,
+    setMouseHoveredIndex,
     handleKeyDown,
     }) => {
     const [inputWidth, setInputWidth] = useState("");
@@ -35,6 +37,14 @@ const BranchNameSection = ({
         if (selectedBank) {
         setActiveDropdown("branch");
         }
+    };
+
+    const handleMouseEnter = (index) => {
+        setMouseHoveredIndex(index);
+    };
+
+    const handleMouseLeave = () => {
+        setMouseHoveredIndex(-1);
     };
 
     return (
@@ -71,7 +81,7 @@ const BranchNameSection = ({
         </div>
         {isDropdownActive && selectedBank && (
             <ul
-            className="absolute z-10 w-full mt-1 overflow-y-auto bg-white border rounded-md shadow-lg max-h-60"
+            className="branch-dropdown absolute z-10 w-full mt-1 overflow-y-auto bg-white border rounded-md shadow-lg max-h-60"
             style={{ width: inputWidth, maxHeight: "290px" }}
             onMouseDown={(e) => e.stopPropagation()}
             onKeyDown={handleKeyDown}
@@ -79,16 +89,15 @@ const BranchNameSection = ({
             {filteredBranches && filteredBranches.length > 0 ? (
                 filteredBranches.map((branch, index) => {
                 const isSelected = selectedBranch && selectedBranch.code === branch.code && selectedBranch.name === branch.name;
-                const isHovered = index === selectedIndex;
+                const isHighlighted = !isSelected && (index === selectedIndex || index === mouseHoveredIndex);
 
                 return (
                     <li
                     key={branch.code}
-                    className={`p-2 cursor-pointer ${isSelected ? "bg-blue-500 text-white" : isHovered ? "bg-gray-100" : ""} ${
-                        !isSelected && !isHovered ? "hover:bg-gray-100" : ""
-                    }`}
+                    className={`p-2 cursor-pointer ${isSelected ? "bg-blue-500 text-white" : isHighlighted ? "bg-gray-300" : "hover:bg-gray-300"}`}
                     onClick={() => handleBranchSelect(branch)}
-                    onMouseEnter={() => setSelectedIndex(index)}
+                    onMouseEnter={() => handleMouseEnter(index)}
+                    onMouseLeave={handleMouseLeave}
                     >
                     {branch.code} {branch.name}
                     </li>

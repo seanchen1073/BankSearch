@@ -9,6 +9,7 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [bankSearchTerm, setBankSearchTerm] = useState("");
   const [branchSearchTerm, setBranchSearchTerm] = useState("");
+  const [mouseHoveredIndex, setMouseHoveredIndex] = useState(-1);
   const formRef = useRef(null);
 
   useEffect(() => {
@@ -28,6 +29,7 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
       if (formRef.current && !formRef.current.contains(event.target)) {
         setActiveDropdown(null);
         setSelectedIndex(-1);
+        setMouseHoveredIndex(-1);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -63,11 +65,15 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
       case "ArrowDown":
         event.preventDefault();
         setSelectedIndex(prev => {
-          const nextIndex = Math.min(prev +1, currentList.length -1);
+          const nextIndex = prev === -1 ? 
+            (mouseHoveredIndex !== -1 ? mouseHoveredIndex : 0) : 
+            Math.min(prev + 1, currentList.length - 1);
+          
           const selectedElement = listElement?.children[nextIndex];
           if (selectedElement) {
-            selectedElement.scrollIntoView({ block: "nearest"});
+            selectedElement.scrollIntoView({ block: "nearest", behavior: "smooth" });
           }
+          setMouseHoveredIndex(-1);
           return nextIndex;
         });
         break;
@@ -75,11 +81,15 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
       case "ArrowUp":
         event.preventDefault();
         setSelectedIndex(prev => {
-          const nextIndex = Math.max(prev - 1, 0);
+          const nextIndex = prev === -1 ? 
+            (mouseHoveredIndex !== -1 ? mouseHoveredIndex : 0) : 
+            Math.max(prev - 1, 0);
+          
           const selectedElement = listElement?.children[nextIndex];
           if (selectedElement) {
-            selectedElement.scrollIntoView({ block: "nearest"});
+            selectedElement.scrollIntoView({ block: "nearest", behavior: "smooth" });
           }
+          setMouseHoveredIndex(-1);
           return nextIndex;
         });
         break;
@@ -98,6 +108,7 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
       case "Escape":
         setActiveDropdown(null);
         setSelectedIndex(-1);
+        setMouseHoveredIndex(-1);
         break;
     }
   };
@@ -112,6 +123,7 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
     }
     setActiveDropdown(null);
     setSelectedIndex(-1);
+    setMouseHoveredIndex(-1);
   };
 
   const handleBranchSelect = (branch) => {
@@ -120,16 +132,19 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
     updateUrl();
     setActiveDropdown(null);
     setSelectedIndex(-1);
+    setMouseHoveredIndex(-1);
   };
 
   const handleBankSearch = (searchTerm) => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
     const filtered = bankData.filter(
-      (bank) => bank.code.toLowerCase().includes(lowerCaseSearchTerm) || bank.name.toLowerCase().includes(lowerCaseSearchTerm)
+      (bank) => bank.code.toLowerCase().includes(lowerCaseSearchTerm) || 
+                bank.name.toLowerCase().includes(lowerCaseSearchTerm)
     );
     setFilteredBanks(filtered);
     setBankSearchTerm(searchTerm);
     setSelectedIndex(-1);
+    setMouseHoveredIndex(-1);
     if (searchTerm === "") {
       setSelectedBank(null);
     }
@@ -138,11 +153,13 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
   const handleBranchSearch = (searchTerm) => {
     setBranchSearchTerm(searchTerm);
     setSelectedIndex(-1);
+    setMouseHoveredIndex(-1);
     if (selectedBank) {
       const selectedBankData = bankData.find((bank) => bank.code === selectedBank.split(" ")[0]);
       if (selectedBankData) {
         const filtered = selectedBankData.branches.filter(
-          (branch) => branch.name.toLowerCase().includes(searchTerm.toLowerCase()) || branch.code.toLowerCase().includes(searchTerm.toLowerCase())
+          (branch) => branch.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                      branch.code.toLowerCase().includes(searchTerm.toLowerCase())
         );
         setFilteredBranches(filtered);
       }
@@ -165,6 +182,8 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
             handleBankSearch={handleBankSearch}
             handleBankSelect={handleBankSelect}
             selectedIndex={selectedIndex}
+            mouseHoveredIndex={mouseHoveredIndex}
+            setMouseHoveredIndex={setMouseHoveredIndex}
             handleKeyDown={handleKeyDown}
           />
         </article>
@@ -179,6 +198,8 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
             handleBranchSearch={handleBranchSearch}
             handleBranchSelect={handleBranchSelect}
             selectedIndex={selectedIndex}
+            mouseHoveredIndex={mouseHoveredIndex}
+            setMouseHoveredIndex={setMouseHoveredIndex}
             handleKeyDown={handleKeyDown}
           />
         </article>
