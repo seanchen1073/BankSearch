@@ -78,12 +78,24 @@ const BankNameSection = ({
                 return (
                     <li
                         key={bank.code}
-                        className={`p-2 cursor-pointer ${isSelected ? "bg-blue-500 text-white" : isHighlighted ? "bg-gray-300" : "hover:bg-gray-300"} ${
-                        index === (selectedIndex === -1 ? mouseHoveredIndex : selectedIndex) ? "highlight" : ""
+                        className={`p-2 cursor-pointer ${
+                        isSelected
+                            ? "bg-blue-500 text-white"
+                            : index === selectedIndex
+                            ? "bg-gray-300"
+                            : index === mouseHoveredIndex
+                            ? "bg-gray-300"
+                            : "hover:bg-gray-300"
                         }`}
                         onClick={() => handleBankSelect(bank)}
-                        onMouseEnter={() => handleMouseEnter(index)}
-                        onMouseLeave={handleMouseLeave}
+                        onMouseEnter={() => {
+                        handleMouseEnter(index);
+                        setMouseHoveredIndex(index); // 更新滑鼠懸停的狀態
+                        }}
+                        onMouseLeave={() => {
+                        handleMouseLeave();
+                        setMouseHoveredIndex(-1); // 清除滑鼠懸停的狀態
+                        }}
                     >
                         {bank.code} {bank.name}
                     </li>

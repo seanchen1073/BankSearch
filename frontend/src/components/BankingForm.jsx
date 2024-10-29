@@ -66,12 +66,11 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
         event.preventDefault();
         setSelectedIndex((prev) => {
           const nextIndex = prev === -1 ? (mouseHoveredIndex !== -1 ? mouseHoveredIndex : 0) : Math.min(prev + 1, currentList.length - 1);
-
           const selectedElement = listElement?.children[nextIndex];
           if (selectedElement) {
             selectedElement.scrollIntoView({ block: "nearest", behavior: "smooth" });
           }
-          setMouseHoveredIndex(-1); // 清除 mouseHoveredIndex
+          setMouseHoveredIndex(-1); // 清除滑鼠懸停狀態
           return nextIndex;
         });
         break;
@@ -80,12 +79,11 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
         event.preventDefault();
         setSelectedIndex((prev) => {
           const nextIndex = prev === -1 ? (mouseHoveredIndex !== -1 ? mouseHoveredIndex : 0) : Math.max(prev - 1, 0);
-
           const selectedElement = listElement?.children[nextIndex];
           if (selectedElement) {
             selectedElement.scrollIntoView({ block: "nearest", behavior: "smooth" });
           }
-          setMouseHoveredIndex(-1); // 清除 mouseHoveredIndex
+          setMouseHoveredIndex(-1); // 清除滑鼠懸停狀態
           return nextIndex;
         });
         break;
@@ -111,12 +109,13 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
 
   const handleMouseEnter = (index) => {
     setMouseHoveredIndex(index);
-    setSelectedIndex(index);
-  }
+    setSelectedIndex(-1); // 確保鍵盤選中效果消失
+  };
 
   const handleMouseLeave = () => {
     setMouseHoveredIndex(-1);
   };
+
 
   const handleBankSelect = (bank) => {
     const bankString = `${bank.code} ${bank.name}`;
