@@ -96,6 +96,12 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
           } else {
             handleBranchSelect(filteredBranches[selectedIndex]);
           }
+        } else if (mouseHoveredIndex >= 0) {
+          if (activeDropdown === "bank") {
+            handleBankSelect(filteredBanks[mouseHoveredIndex]);
+          } else {
+            handleBranchSelect(filteredBranches[mouseHoveredIndex]);
+          }
         }
         break;
 
