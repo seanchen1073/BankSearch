@@ -57,6 +57,13 @@ useEffect(() => {
   }, [bankData]);
 
   useEffect(() => {
+    if (activeDropdown === "bank") {
+      setFilteredBanks(bankData); 
+    }
+  }, [activeDropdown, bankData]);
+
+
+  useEffect(() => {
     if (selectedBank) {
       const selectedBankData = bankData.find((bank) => bank.code === selectedBank.split(" ")[0]);
       if (selectedBankData) {
