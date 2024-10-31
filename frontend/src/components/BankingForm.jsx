@@ -38,6 +38,20 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
     };
   }, []);
 
+useEffect(() => {
+  switch (activeDropdown) {
+    case "bank":
+      setMouseHoveredIndex(!selectedBank ? 0 : -1);
+      break;
+    case "branch":
+      setMouseHoveredIndex(!selectedBranch ? 0 : -1);
+      break;
+    default:
+      setMouseHoveredIndex(-1);
+      break;
+  }
+}, [activeDropdown, selectedBank, selectedBranch]);
+
   useEffect(() => {
     setFilteredBanks(bankData);
   }, [bankData]);
