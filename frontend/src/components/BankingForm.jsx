@@ -87,9 +87,17 @@ useEffect(() => {
         event.preventDefault();
         setSelectedIndex((prev) => {
           const nextIndex = prev === -1 ? (mouseHoveredIndex !== -1 ? mouseHoveredIndex : 0) : Math.min(prev + 1, currentList.length - 1);
+
+          // 當在最後一筆時按下，返回第一筆
+          if (nextIndex === currentList.length - 1) {
+            listElement.scrollTop = 0; // 滾動到最上面
+            return 0; // 選擇第一筆
+          }
+
+          // 正常滾動到下一筆
           const selectedElement = listElement?.children[nextIndex];
           if (selectedElement) {
-            selectedElement.scrollIntoView({ block: "nearest", behavior: "smooth" });
+            selectedElement.scrollIntoView({ block: "nearest", behavior: "auto" });
           }
           setMouseHoveredIndex(-1); // 清除滑鼠懸停狀態
           return nextIndex;
@@ -99,10 +107,18 @@ useEffect(() => {
       case "ArrowUp":
         event.preventDefault();
         setSelectedIndex((prev) => {
-          const nextIndex = prev === -1 ? (mouseHoveredIndex !== -1 ? mouseHoveredIndex : 0) : Math.max(prev - 1, 0);
+          const nextIndex = prev === -1 ? (mouseHoveredIndex !== -1 ? mouseHoveredIndex : currentList.length - 1) : Math.max(prev - 1, 0);
+
+          // 當在第一筆時按下，返回最後一筆
+          if (nextIndex === 0) {
+            listElement.scrollTop = listElement.scrollHeight; // 滾動到最下面
+            return currentList.length - 1; // 選擇最後一筆
+          }
+
+          // 正常滾動到上一筆
           const selectedElement = listElement?.children[nextIndex];
           if (selectedElement) {
-            selectedElement.scrollIntoView({ block: "nearest", behavior: "smooth" });
+            selectedElement.scrollIntoView({ block: "nearest", behavior: "auto" });
           }
           setMouseHoveredIndex(-1); // 清除滑鼠懸停狀態
           return nextIndex;
