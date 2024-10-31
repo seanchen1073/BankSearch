@@ -83,7 +83,6 @@ const BranchNameSection = ({
             {filteredBranches && filteredBranches.length > 0 ? (
                 filteredBranches.map((branch, index) => {
                 const isSelected = selectedBranch && selectedBranch.code === branch.code && selectedBranch.name === branch.name;
-                const isHighlighted = !isSelected && (index === selectedIndex || index === mouseHoveredIndex);
 
                 return (
                     <li
@@ -91,9 +90,7 @@ const BranchNameSection = ({
                         className={`p-2 cursor-pointer ${
                         isSelected
                             ? "bg-blue-500 text-white"
-                            : index === selectedIndex
-                            ? "bg-gray-300"
-                            : index === mouseHoveredIndex
+                            : index === selectedIndex || index === mouseHoveredIndex
                             ? "bg-gray-300"
                             : "hover:bg-gray-300"
                         }`}
