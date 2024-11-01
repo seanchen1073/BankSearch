@@ -86,20 +86,28 @@ useEffect(() => {
       case "ArrowDown":
         event.preventDefault();
         setSelectedIndex((prev) => {
-          const nextIndex = prev === -1 ? (mouseHoveredIndex !== -1 ? mouseHoveredIndex : 0) : Math.min(prev + 1, currentList.length - 1);
+          // 如果有滑鼠懸停的項目且目前沒有選中項目，從滑鼠懸停的位置開始
+          const startIndex = prev === -1 ? (mouseHoveredIndex !== -1 ? mouseHoveredIndex : -1) : prev;
+          let nextIndex;
 
-          // 當在最後一筆時按下，返回第一筆
-          if (nextIndex === currentList.length - 1) {
-            listElement.scrollTop = 0; // 滾動到最上面
-            return 0; // 選擇第一筆
+          // 處理循環邏輯
+          if (startIndex === -1) {
+            nextIndex = 0; // 如果沒有起始位置，從第一個開始
+          } else if (startIndex === currentList.length - 1) {
+            listElement.scrollTop = 0; // 在最後一筆時跳回第一筆
+            nextIndex = 0;
+          } else {
+            nextIndex = startIndex + 1;
           }
 
-          // 正常滾動到下一筆
+          // 滾動到選中項目
           const selectedElement = listElement?.children[nextIndex];
           if (selectedElement) {
             selectedElement.scrollIntoView({ block: "nearest", behavior: "auto" });
           }
-          setMouseHoveredIndex(-1); // 清除滑鼠懸停狀態
+
+          // 清除滑鼠懸停效果
+          setMouseHoveredIndex(-1);
           return nextIndex;
         });
         break;
@@ -107,20 +115,28 @@ useEffect(() => {
       case "ArrowUp":
         event.preventDefault();
         setSelectedIndex((prev) => {
-          const nextIndex = prev === -1 ? (mouseHoveredIndex !== -1 ? mouseHoveredIndex : currentList.length - 1) : Math.max(prev - 1, 0);
+          // 如果有滑鼠懸停的項目且目前沒有選中項目，從滑鼠懸停的位置開始
+          const startIndex = prev === -1 ? (mouseHoveredIndex !== -1 ? mouseHoveredIndex : -1) : prev;
+          let nextIndex;
 
-          // 當在第一筆時按下，返回最後一筆
-          if (nextIndex === 0) {
-            listElement.scrollTop = listElement.scrollHeight; // 滾動到最下面
-            return currentList.length - 1; // 選擇最後一筆
+          // 處理循環邏輯
+          if (startIndex === -1) {
+            nextIndex = currentList.length - 1; // 如果沒有起始位置，從最後一個開始
+          } else if (startIndex === 0) {
+            listElement.scrollTop = listElement.scrollHeight; // 在第一筆時跳到最後一筆
+            nextIndex = currentList.length - 1;
+          } else {
+            nextIndex = startIndex - 1;
           }
 
-          // 正常滾動到上一筆
+          // 滾動到選中項目
           const selectedElement = listElement?.children[nextIndex];
           if (selectedElement) {
             selectedElement.scrollIntoView({ block: "nearest", behavior: "auto" });
           }
-          setMouseHoveredIndex(-1); // 清除滑鼠懸停狀態
+
+          // 清除滑鼠懸停效果
+          setMouseHoveredIndex(-1);
           return nextIndex;
         });
         break;
@@ -151,14 +167,14 @@ useEffect(() => {
   };
 
   const handleMouseEnter = (index) => {
+    // 設置滑鼠懸停索引的同時，清除鍵盤選中狀態
     setMouseHoveredIndex(index);
-    setSelectedIndex(-1); // 確保鍵盤選中效果消失
+    setSelectedIndex(-1);
   };
 
   const handleMouseLeave = () => {
     setMouseHoveredIndex(-1);
   };
-
 
   const handleBankSelect = (bank) => {
     const bankString = `${bank.code} ${bank.name}`;

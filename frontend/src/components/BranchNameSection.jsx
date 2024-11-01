@@ -90,19 +90,15 @@ const BranchNameSection = ({
                         className={`p-2 cursor-pointer ${
                         isSelected
                             ? "bg-blue-500 text-white"
-                            : index === selectedIndex || index === mouseHoveredIndex
-                            ? "bg-gray-300"
-                            : "hover:bg-gray-300"
+                            : selectedIndex === index
+                            ? "bg-gray-300" // 鍵盤導航效果
+                            : mouseHoveredIndex === index
+                            ? "bg-gray-300" // 滑鼠懸停效果
+                            : ""
                         }`}
                         onClick={() => handleBranchSelect(branch)}
-                        onMouseEnter={() => {
-                        handleMouseEnter(index);
-                        setMouseHoveredIndex(index); // 更新滑鼠懸停的狀態
-                        }}
-                        onMouseLeave={() => {
-                        handleMouseLeave();
-                        setMouseHoveredIndex(-1); // 清除滑鼠懸停的狀態
-                        }}
+                        onMouseEnter={() => handleMouseEnter(index)}
+                        onMouseLeave={handleMouseLeave}
                     >
                         {branch.code} {branch.name}
                     </li>
