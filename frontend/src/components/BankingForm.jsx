@@ -40,17 +40,53 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
 
 useEffect(() => {
   switch (activeDropdown) {
-    case "bank":
-      setMouseHoveredIndex(!selectedBank ? 0 : -1);
+    case "bank": {
+      const index = selectedBank ? filteredBanks.findIndex((bank) => `${bank.code} ${bank.name}` === selectedBank) : -1;
+      setSelectedIndex(index);
+      setMouseHoveredIndex(index === -1 && filteredBanks.length > 0 ? 0 : -1); // Set to 0 if there are items
+
+      if (index !== -1) {
+        setTimeout(() => {
+          const listElement = document.querySelector(".bank-dropdown");
+          const selectedElement = listElement?.children[index];
+          if (selectedElement) {
+            const containerHeight = listElement.clientHeight;
+            const itemHeight = selectedElement.offsetHeight;
+            const scrollPosition = selectedElement.offsetTop;
+            const targetScroll = Math.max(0, scrollPosition - (containerHeight - itemHeight));
+            listElement.scrollTop = targetScroll;
+          }
+        }, 0);
+      }
       break;
-    case "branch":
-      setMouseHoveredIndex(!selectedBranch ? 0 : -1);
+    }
+    case "branch": {
+      const index = selectedBranch ? filteredBranches.findIndex((branch) => branch.code === selectedBranch.code) : -1;
+      setSelectedIndex(index);
+      setMouseHoveredIndex(index === -1 && filteredBranches.length > 0 ? 0 : -1); // 如果有項目則設為 0
+
+      if (index !== -1) {
+        setTimeout(() => {
+          const listElement = document.querySelector(".branch-dropdown");
+          const selectedElement = listElement?.children[index];
+          if (selectedElement) {
+            const containerHeight = listElement.clientHeight;
+            const itemHeight = selectedElement.offsetHeight;
+            const scrollPosition = selectedElement.offsetTop;
+            const targetScroll = Math.max(0, scrollPosition - (containerHeight - itemHeight));
+            listElement.scrollTop = targetScroll;
+          }
+        }, 0);
+      }
       break;
+    }
     default:
+      setSelectedIndex(-1);
       setMouseHoveredIndex(-1);
       break;
   }
-}, [activeDropdown, selectedBank, selectedBranch]);
+}, [activeDropdown, selectedBank, selectedBranch, filteredBanks, filteredBranches]);
+
 
   useEffect(() => {
     setFilteredBanks(bankData);
@@ -58,10 +94,9 @@ useEffect(() => {
 
   useEffect(() => {
     if (activeDropdown === "bank") {
-      setFilteredBanks(bankData); 
+      setFilteredBanks(bankData);
     }
   }, [activeDropdown, bankData]);
-
 
   useEffect(() => {
     if (selectedBank) {
@@ -201,8 +236,7 @@ useEffect(() => {
   const handleBankSearch = (searchTerm) => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
     const filtered = bankData.filter(
-      (bank) => bank.code.toLowerCase().includes(lowerCaseSearchTerm) || 
-                bank.name.toLowerCase().includes(lowerCaseSearchTerm)
+      (bank) => bank.code.toLowerCase().includes(lowerCaseSearchTerm) || bank.name.toLowerCase().includes(lowerCaseSearchTerm)
     );
     setFilteredBanks(filtered);
     setBankSearchTerm(searchTerm);
@@ -221,8 +255,7 @@ useEffect(() => {
       const selectedBankData = bankData.find((bank) => bank.code === selectedBank.split(" ")[0]);
       if (selectedBankData) {
         const filtered = selectedBankData.branches.filter(
-          (branch) => branch.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                      branch.code.toLowerCase().includes(searchTerm.toLowerCase())
+          (branch) => branch.name.toLowerCase().includes(searchTerm.toLowerCase()) || branch.code.toLowerCase().includes(searchTerm.toLowerCase())
         );
         setFilteredBranches(filtered);
       }
