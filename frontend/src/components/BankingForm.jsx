@@ -10,6 +10,7 @@ const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selec
   const [bankSearchTerm, setBankSearchTerm] = useState("");
   const [branchSearchTerm, setBranchSearchTerm] = useState("");
   const [mouseHoveredIndex, setMouseHoveredIndex] = useState(-1);
+  const [isKeyboardNavigation, setIsKeyboardNavigation] = useState(false);
   const formRef = useRef(null);
 
   useEffect(() => {
@@ -111,101 +112,104 @@ useEffect(() => {
     }
   }, [selectedBank, bankData, setSelectedBranch]);
 
-  const handleKeyDown = (event) => {
-    if (!activeDropdown) return;
+const handleKeyDown = (event) => {
+  if (!activeDropdown) return;
 
-    const currentList = activeDropdown === "bank" ? filteredBanks : filteredBranches;
-    const listElement = document.querySelector(activeDropdown === "bank" ? ".bank-dropdown" : ".branch-dropdown");
+  const currentList = activeDropdown === "bank" ? filteredBanks : filteredBranches;
+  const listElement = document.querySelector(activeDropdown === "bank" ? ".bank-dropdown" : ".branch-dropdown");
 
-    switch (event.key) {
-      case "ArrowDown":
-        event.preventDefault();
-        setSelectedIndex((prev) => {
-          // 如果有滑鼠懸停的項目且目前沒有選中項目，從滑鼠懸停的位置開始
-          const startIndex = prev === -1 ? (mouseHoveredIndex !== -1 ? mouseHoveredIndex : -1) : prev;
-          let nextIndex;
+  // 只在使用方向鍵時清除滑鼠懸停狀態
+  if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+    setMouseHoveredIndex(-1);
+    setIsKeyboardNavigation(true); // 新增狀態來追蹤是否正在使用鍵盤導航
+  }
 
-          // 處理循環邏輯
-          if (startIndex === -1) {
-            nextIndex = 0; // 如果沒有起始位置，從第一個開始
-          } else if (startIndex === currentList.length - 1) {
-            listElement.scrollTop = 0; // 在最後一筆時跳回第一筆
-            nextIndex = 0;
-          } else {
-            nextIndex = startIndex + 1;
-          }
+  switch (event.key) {
+    case "ArrowDown":
+      event.preventDefault();
+      setSelectedIndex((prev) => {
+        // 只在還沒有選中項目時，才考慮滑鼠懸停的位置
+        const startIndex = prev === -1 ? (mouseHoveredIndex !== -1 ? mouseHoveredIndex : -1) : prev;
+        let nextIndex;
 
-          // 滾動到選中項目
-          const selectedElement = listElement?.children[nextIndex];
-          if (selectedElement) {
-            selectedElement.scrollIntoView({ block: "nearest", behavior: "auto" });
-          }
-
-          // 清除滑鼠懸停效果
-          setMouseHoveredIndex(-1);
-          return nextIndex;
-        });
-        break;
-
-      case "ArrowUp":
-        event.preventDefault();
-        setSelectedIndex((prev) => {
-          // 如果有滑鼠懸停的項目且目前沒有選中項目，從滑鼠懸停的位置開始
-          const startIndex = prev === -1 ? (mouseHoveredIndex !== -1 ? mouseHoveredIndex : -1) : prev;
-          let nextIndex;
-
-          // 處理循環邏輯
-          if (startIndex === -1) {
-            nextIndex = currentList.length - 1; // 如果沒有起始位置，從最後一個開始
-          } else if (startIndex === 0) {
-            listElement.scrollTop = listElement.scrollHeight; // 在第一筆時跳到最後一筆
-            nextIndex = currentList.length - 1;
-          } else {
-            nextIndex = startIndex - 1;
-          }
-
-          // 滾動到選中項目
-          const selectedElement = listElement?.children[nextIndex];
-          if (selectedElement) {
-            selectedElement.scrollIntoView({ block: "nearest", behavior: "auto" });
-          }
-
-          // 清除滑鼠懸停效果
-          setMouseHoveredIndex(-1);
-          return nextIndex;
-        });
-        break;
-
-      case "Enter":
-        event.preventDefault();
-        if (selectedIndex >= 0) {
-          if (activeDropdown === "bank") {
-            handleBankSelect(filteredBanks[selectedIndex]);
-          } else {
-            handleBranchSelect(filteredBranches[selectedIndex]);
-          }
-        } else if (mouseHoveredIndex >= 0) {
-          if (activeDropdown === "bank") {
-            handleBankSelect(filteredBanks[mouseHoveredIndex]);
-          } else {
-            handleBranchSelect(filteredBranches[mouseHoveredIndex]);
-          }
+        if (startIndex === -1) {
+          nextIndex = 0;
+        } else if (startIndex === currentList.length - 1) {
+          nextIndex = 0;
+          listElement.scrollTop = 0;
+        } else {
+          nextIndex = startIndex + 1;
         }
-        break;
 
-      case "Escape":
-        setActiveDropdown(null);
-        setSelectedIndex(-1);
-        setMouseHoveredIndex(-1);
-        break;
-    }
-  };
+        // 滾動到選中項目
+        const selectedElement = listElement?.children[nextIndex];
+        if (selectedElement) {
+          selectedElement.scrollIntoView({ block: "nearest", behavior: "auto" });
+        }
 
-  const handleMouseEnter = (index) => {
-    // 設置滑鼠懸停索引的同時，清除鍵盤選中狀態
+        return nextIndex;
+      });
+      break;
+
+    case "ArrowUp":
+      event.preventDefault();
+      setSelectedIndex((prev) => {
+        // 只在還沒有選中項目時，才考慮滑鼠懸停的位置
+        const startIndex = prev === -1 ? (mouseHoveredIndex !== -1 ? mouseHoveredIndex : -1) : prev;
+        let nextIndex;
+
+        if (startIndex === -1) {
+          nextIndex = currentList.length - 1;
+        } else if (startIndex === 0) {
+          nextIndex = currentList.length - 1;
+          listElement.scrollTop = listElement.scrollHeight;
+        } else {
+          nextIndex = startIndex - 1;
+        }
+
+        // 滾動到選中項目
+        const selectedElement = listElement?.children[nextIndex];
+        if (selectedElement) {
+          selectedElement.scrollIntoView({ block: "nearest", behavior: "auto" });
+        }
+
+        return nextIndex;
+      });
+      break;
+
+    case "Enter":
+      event.preventDefault();
+      if (selectedIndex >= 0) {
+        if (activeDropdown === "bank") {
+          handleBankSelect(filteredBanks[selectedIndex]);
+        } else {
+          handleBranchSelect(filteredBranches[selectedIndex]);
+        }
+      } else if (mouseHoveredIndex >= 0) {
+        if (activeDropdown === "bank") {
+          handleBankSelect(filteredBanks[mouseHoveredIndex]);
+        } else {
+          handleBranchSelect(filteredBranches[mouseHoveredIndex]);
+        }
+      }
+      break;
+
+    case "Escape":
+      setActiveDropdown(null);
+      setSelectedIndex(-1);
+      setMouseHoveredIndex(-1);
+      setIsKeyboardNavigation(false);
+      break;
+  }
+};
+
+const handleMouseEnter = (index) => {
+  if (!isKeyboardNavigation) {
+    // 只有在沒有使用鍵盤導航的時候才設置
     setMouseHoveredIndex(index);
-    setSelectedIndex(-1);
-  };
+    setIsKeyboardNavigation(false); // 切換為滑鼠懸停效果
+  }
+};
 
   const handleMouseLeave = () => {
     setMouseHoveredIndex(-1);
@@ -283,6 +287,8 @@ useEffect(() => {
             handleMouseEnter={handleMouseEnter}
             handleMouseLeave={handleMouseLeave}
             handleKeyDown={handleKeyDown}
+            isKeyboardNavigation={isKeyboardNavigation}
+            setIsKeyboardNavigation={setIsKeyboardNavigation}
           />
         </article>
         <article className="w-full md:w-[290px]" ref={formRef}>
@@ -301,6 +307,8 @@ useEffect(() => {
             handleMouseEnter={handleMouseEnter}
             handleMouseLeave={handleMouseLeave}
             handleKeyDown={handleKeyDown}
+            isKeyboardNavigation={isKeyboardNavigation}
+            setIsKeyboardNavigation={setIsKeyboardNavigation}
           />
         </article>
       </section>
