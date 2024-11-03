@@ -118,18 +118,22 @@ const handleKeyDown = (event) => {
   const currentList = activeDropdown === "bank" ? filteredBanks : filteredBranches;
   const listElement = document.querySelector(activeDropdown === "bank" ? ".bank-dropdown" : ".branch-dropdown");
 
-  // 只在使用方向鍵時清除滑鼠懸停狀態
   if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+    setIsKeyboardNavigation(true);
     setMouseHoveredIndex(-1);
-    setIsKeyboardNavigation(true); // 新增狀態來追蹤是否正在使用鍵盤導航
   }
 
   switch (event.key) {
     case "ArrowDown":
       event.preventDefault();
       setSelectedIndex((prev) => {
-        // 只在還沒有選中項目時，才考慮滑鼠懸停的位置
-        const startIndex = prev === -1 ? (mouseHoveredIndex !== -1 ? mouseHoveredIndex : -1) : prev;
+        let startIndex;
+        if(prev === -1) {
+          startIndex = mouseHoveredIndex !== -1 ? mouseHoveredIndex : -1 ;
+        } else {
+          startIndex = prev;
+        }
+
         let nextIndex;
 
         if (startIndex === -1) {
@@ -154,8 +158,13 @@ const handleKeyDown = (event) => {
     case "ArrowUp":
       event.preventDefault();
       setSelectedIndex((prev) => {
-        // 只在還沒有選中項目時，才考慮滑鼠懸停的位置
-        const startIndex = prev === -1 ? (mouseHoveredIndex !== -1 ? mouseHoveredIndex : -1) : prev;
+        let startIndex;
+        if (prev === -1) {
+          startIndex = mouseHoveredIndex !== -1 ? mouseHoveredIndex : -1;
+        } else {
+          startIndex = prev;
+        }
+
         let nextIndex;
 
         if (startIndex === -1) {
@@ -203,16 +212,28 @@ const handleKeyDown = (event) => {
   }
 };
 
-const handleMouseEnter = (index) => {
-  if (!isKeyboardNavigation) {
-    // 只有在沒有使用鍵盤導航的時候才設置
-    setMouseHoveredIndex(index);
-    setIsKeyboardNavigation(false); // 切換為滑鼠懸停效果
-  }
-};
+  const handleMouseEnter = (index) => {
+    if (!isKeyboardNavigation) {
+      setMouseHoveredIndex(index);
+      setSelectedIndex(-1);
+    }
+  };
 
   const handleMouseLeave = () => {
-    setMouseHoveredIndex(-1);
+    if (!isKeyboardNavigation) {
+      setMouseHoveredIndex(-1);
+    }
+  };
+
+  const handleMouseMove = (event) => {
+    setIsKeyboardNavigation(false);
+  };
+
+  const getItemClassName = (index) => {
+    if (isKeyboardNavigation) {
+      return selectedIndex === index ? 'hover-style' : "";
+    }
+      return mouseHoveredIndex === index ? 'hover-style' : "";
   };
 
   const handleBankSelect = (bank) => {
@@ -287,6 +308,8 @@ const handleMouseEnter = (index) => {
             handleMouseEnter={handleMouseEnter}
             handleMouseLeave={handleMouseLeave}
             handleKeyDown={handleKeyDown}
+            handleMouseMove={handleMouseMove}
+            getItemClassName={getItemClassName}
             isKeyboardNavigation={isKeyboardNavigation}
             setIsKeyboardNavigation={setIsKeyboardNavigation}
           />
@@ -307,6 +330,8 @@ const handleMouseEnter = (index) => {
             handleMouseEnter={handleMouseEnter}
             handleMouseLeave={handleMouseLeave}
             handleKeyDown={handleKeyDown}
+            handleMouseMove={handleMouseMove}
+            getItemClassName={getItemClassName}
             isKeyboardNavigation={isKeyboardNavigation}
             setIsKeyboardNavigation={setIsKeyboardNavigation}
           />
