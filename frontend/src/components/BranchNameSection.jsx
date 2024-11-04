@@ -94,14 +94,13 @@ const BranchNameSection = ({
                         className={`p-2 cursor-pointer ${
                         isSelected
                             ? "bg-blue-500 text-white"
-                            : getItemClassName(index) // 使用父組件的 getItemClassName 來決定 hover 效果
+                            : getItemClassName(index) 
                             ? "bg-gray-300"
                             : ""
                         }`}
                         onClick={() => handleBranchSelect(branch)}
                         onMouseEnter={() => handleMouseEnter(index)}
                         onMouseLeave={handleMouseLeave}
-                        // 新增滑鼠移動事件處理
                         onMouseMove={handleMouseMove}
                     >
                         {branch.code} {branch.name}

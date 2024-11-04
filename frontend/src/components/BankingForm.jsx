@@ -44,7 +44,7 @@ useEffect(() => {
     case "bank": {
       const index = selectedBank ? filteredBanks.findIndex((bank) => `${bank.code} ${bank.name}` === selectedBank) : -1;
       setSelectedIndex(index);
-      setMouseHoveredIndex(index === -1 && filteredBanks.length > 0 ? 0 : -1); // Set to 0 if there are items
+      setMouseHoveredIndex(index === -1 && filteredBanks.length > 0 ? 0 : -1); // 如果有項目則設為 0
 
       if (index !== -1) {
         setTimeout(() => {

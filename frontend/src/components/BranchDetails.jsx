@@ -27,7 +27,6 @@ const BranchDetails = ({ selectedBank, selectedBranch }) => {
         }, 2000);
     };
 
-    // 從 props 或 URL 參數獲取資料
     if (!selectedBank || !selectedBranch) {
         if (!bankCode || !branchCode) {
             navigate("/");
