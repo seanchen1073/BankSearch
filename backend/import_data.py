@@ -11,9 +11,7 @@ django.setup()
 
 from bank.models import Bank, Branch
 
-# CSV 文件路徑
 CSV_FILE_PATH = r"C:\Users\Joe\BankSearchData\banks.csv"
-# JSON 輸出文件路徑
 JSON_OUTPUT_PATH = r"C:\Users\Joe\BankSearch\backend\bank\bank_data.json"
 
 def remove_company_suffixes(name):

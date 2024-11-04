@@ -1,5 +1,3 @@
-# phone_utils.py
-
 import phonenumbers
 
 def format_phone_number(number, region=None):

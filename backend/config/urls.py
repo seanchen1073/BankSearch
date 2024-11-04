@@ -5,8 +5,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('bank.urls')),  # 保留 API 路徑
-    path('', include('bank.urls')),  # 處理不帶 'api/' 前綴的路徑
+    path('api/', include('bank.urls')),
+    path('', include('bank.urls')),
 ]
 
 if settings.DEBUG:

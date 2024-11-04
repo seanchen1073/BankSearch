@@ -2,13 +2,10 @@ import os
 from pathlib import Path
 from corsheaders.defaults import default_headers
 
-# BASE_DIR 是專案根目錄的路徑
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# 安全警告：在生產環境中保持密鑰的機密性
-SECRET_KEY = 'your_secret_key'  # 在生產環境中，應使用環境變數
+SECRET_KEY = 'your_secret_key'
 
-# 安全警告：不要在生產環境中運行除錯模式
 DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
@@ -20,13 +17,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',  # Django REST framework
-    'corsheaders',     # 處理跨域請求
-    'bank',            # 你的自定義應用
+    'rest_framework',
+    'corsheaders',
+    'bank',
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',  # 處理 CORS 請求
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -76,19 +73,16 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CORS 設定
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # 確保這個 URL 是你的前端應用的 URL
+    "http://localhost:5173", 
     "http://127.0.0.1:5173",
 ]
 
-# 確保允許 'Cache-Control' 和其他必要的標頭
 CORS_ALLOW_HEADERS = list(default_headers) + [
     'Cache-Control',
     'Expires',
     'Pragma',
 ]
-
 
 CORS_ALLOW_METHODS = [
     'GET',
@@ -101,11 +95,10 @@ REST_FRAMEWORK = {
     ]
 }
 
-# 保留 TEMPLATES 配置，僅用於管理界面
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],  # 不指定模板目錄
+        'DIRS': [],  
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
