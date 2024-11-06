@@ -15,7 +15,7 @@ function App() {
   const [selectedBranch, setSelectedBranch] = useState(null);
 
   const fetchBankData = async (bankCode = null) => {
-    let apiUrl = "http://localhost:8000/api/banks/";
+    let apiUrl = "http://banksearch-backend.hkg1.zeabur.app/";
     if (bankCode) {
       apiUrl += `${bankCode}/branches/`;
     }
