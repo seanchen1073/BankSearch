@@ -10,7 +10,7 @@ SECRET_KEY = 'your_secret_key'
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'banksearch-backend.hkg1.zeabur.app']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
