@@ -1,7 +1,6 @@
 {
   "name": "frontend",
   "version": "1.0.0",
-  "main": "eslint.config.js",
   "type": "module",
   "scripts": {
     "dev": "vite",
