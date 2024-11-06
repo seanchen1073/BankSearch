@@ -78,7 +78,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173", 
     "http://127.0.0.1:5173",
-    "https://banksearch-backend.hkg1.zeabur.app/"
+    "https://banksearch.hkg1.zeabur.app",
+    "https://banksearch-backend.hkg1.zeabur.app"
 ]
 
 CORS_ALLOW_HEADERS = list(default_headers) + [
@@ -89,8 +90,12 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
 
 CORS_ALLOW_METHODS = [
     'GET',
+    'POST',
+    'PUT',
+    'DELETE',
     'OPTIONS',
 ]
+
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
@@ -113,3 +118,4 @@ TEMPLATES = [
         },
     },
 ]
+CORS_ALLOW_CREDENTIALS = True
