@@ -2,6 +2,8 @@ import os
 from pathlib import Path
 from corsheaders.defaults import default_headers
 
+os.environ['ZBPACK_IGNORE_DOCKERFILE'] = 'true'
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'your_secret_key'
