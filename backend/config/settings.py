@@ -90,12 +90,8 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
 
 CORS_ALLOW_METHODS = [
     'GET',
-    'POST',
-    'PUT',
-    'DELETE',
     'OPTIONS',
 ]
-
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
