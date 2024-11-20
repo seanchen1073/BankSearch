@@ -1,4 +1,5 @@
 # 台灣銀行代碼查詢系統
+網址:https://banksearch.hkg1.zeabur.app/
 
 ## 一、實現前後端分離
 前端使用 JavaScript 和 React，後端採用 Python 和 Django，並透過 RESTful API 進行資料串接。
