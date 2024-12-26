@@ -1,38 +1,16 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useContext } from "react";
+import { BankContext } from "../contexts/BankContext";
 
 const BankNameSection = ({
-  selectedBank,
-  filteredBanks,
-  isDropdownActive,
-  setActiveDropdown,
-  bankSearchTerm,
   handleBankSearch,
   handleBankSelect,
-  selectedIndex,
-  mouseHoveredIndex,
-  setMouseHoveredIndex,
+  handleKeyDown,
   handleMouseEnter,
   handleMouseLeave,
-  handleKeyDown,
-  isKeyboardNavigation,
-  setIsKeyboardNavigation,
   handleMouseMove,
   getItemClassName,
 }) => {
-  const [inputWidth, setInputWidth] = useState("");
-  const inputRef = useRef(null);
-
-  useEffect(() => {
-    const updateWidth = () => {
-      if (inputRef.current) {
-        setInputWidth(inputRef.current.offsetWidth + "px");
-      }
-    };
-
-    updateWidth();
-    window.addEventListener("resize", updateWidth);
-    return () => window.removeEventListener("resize", updateWidth);
-  }, []);
+  const { selectedBank, filteredBanks, activeDropdown, setActiveDropdown, bankSearchTerm, inputRef, inputWidth } = useContext(BankContext);
 
   const handleInputChange = (e) => {
     handleBankSearch(e.target.value);
@@ -51,15 +29,19 @@ const BankNameSection = ({
           type="text"
           id="bank-selection"
           name="bank"
-          className={`w-full p-2 pr-10 border rounded-md ${isDropdownActive ? "border-blue-500 border-2" : "border-gray-300"} focus:outline-none`}
+          className={`w-full p-2 pr-10 border rounded-md ${
+            activeDropdown === "bank" ? "border-blue-500 border-2" : "border-gray-300"
+          } focus:outline-none`}
           placeholder="請輸入關鍵字或銀行代碼"
           value={bankSearchTerm}
           onChange={handleInputChange}
-          onClick={() => setActiveDropdown(isDropdownActive ? null : "bank")}
+          onClick={() => setActiveDropdown(activeDropdown === "bank" ? null : "bank")}
           onKeyDown={handleKeyDown}
         />
         <button
-          className={`absolute inset-y-0 right-0 flex items-center px-2 cursor-pointer ${isDropdownActive ? "text-black-500" : "text-gray-400"}`}
+          className={`absolute inset-y-0 right-0 flex items-center px-2 cursor-pointer ${
+            activeDropdown === "bank" ? "text-black-500" : "text-gray-400"
+          }`}
           onClick={handleInputClick}
         >
           <div className="w-px h-6 mr-2 bg-gray-300"></div>
@@ -68,7 +50,7 @@ const BankNameSection = ({
           </svg>
         </button>
       </div>
-      {isDropdownActive && (
+      {activeDropdown === "bank" && (
         <ul
           className="bank-dropdown absolute z-10 w-full mt-1 overflow-y-auto bg-white border rounded-md shadow-lg max-h-60"
           style={{ width: inputWidth, maxHeight: "290px" }}
@@ -82,13 +64,7 @@ const BankNameSection = ({
               return (
                 <li
                   key={bank.code}
-                  className={`p-2 cursor-pointer ${
-                    isSelected
-                      ? "bg-blue-500 text-white"
-                      : getItemClassName(index)
-                      ? "bg-gray-300"
-                      : ""
-                  }`}
+                  className={`p-2 cursor-pointer ${isSelected ? "bg-blue-500 text-white" : getItemClassName(index) ? "bg-gray-300" : ""}`}
                   onClick={() => handleBankSelect(bank)}
                   onMouseEnter={() => handleMouseEnter(index)}
                   onMouseLeave={handleMouseLeave}

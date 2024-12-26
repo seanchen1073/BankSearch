@@ -1,39 +1,17 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useContext } from "react";
+import { BankContext } from "../contexts/BankContext";
 
 const BranchNameSection = ({
-    selectedBank,
-    selectedBranch,
-    filteredBranches,
-    isDropdownActive,
-    setActiveDropdown,
-    branchSearchTerm,
     handleBranchSearch,
     handleBranchSelect,
-    selectedIndex,
-    mouseHoveredIndex,
-    setMouseHoveredIndex,
+    handleKeyDown,
     handleMouseEnter,
     handleMouseLeave,
-    handleKeyDown,
-    isKeyboardNavigation,
-    setIsKeyboardNavigation,
     handleMouseMove,
     getItemClassName,
     }) => {
-    const [inputWidth, setInputWidth] = useState("");
-    const inputRef = useRef(null);
-
-    useEffect(() => {
-        const updateWidth = () => {
-        if (inputRef.current) {
-            setInputWidth(inputRef.current.offsetWidth + "px");
-        }
-        };
-
-        updateWidth();
-        window.addEventListener("resize", updateWidth);
-        return () => window.removeEventListener("resize", updateWidth);
-    }, []);
+    const { selectedBank, selectedBranch, filteredBranches, activeDropdown, setActiveDropdown, branchSearchTerm, inputRef, inputWidth } =
+        useContext(BankContext);
 
     const handleInputChange = (e) => {
         handleBranchSearch(e.target.value);
@@ -54,9 +32,9 @@ const BranchNameSection = ({
             type="text"
             id="branch-selection"
             name="branch"
-            className={`w-full p-2 pr-10 border rounded-md ${isDropdownActive ? "border-blue-500 border-2" : "border-gray-300"} focus:outline-none ${
-                !selectedBank ? "bg-gray-100" : ""
-            }`}
+            className={`w-full p-2 pr-10 border rounded-md ${
+                activeDropdown === "branch" ? "border-blue-500 border-2" : "border-gray-300"
+            } focus:outline-none ${!selectedBank ? "bg-gray-100" : ""}`}
             placeholder={selectedBank ? "請選擇分行名稱" : "請先選擇銀行"}
             value={branchSearchTerm}
             onChange={handleInputChange}
@@ -66,7 +44,7 @@ const BranchNameSection = ({
             />
             <button
             className={`absolute inset-y-0 right-0 flex items-center px-2 ${selectedBank ? "cursor-pointer" : "cursor-not-allowed"} ${
-                isDropdownActive ? "text-black-500" : "text-gray-400"
+                activeDropdown === "branch" ? "text-black-500" : "text-gray-400"
             }`}
             onClick={handleInputClick}
             disabled={!selectedBank}
@@ -77,7 +55,7 @@ const BranchNameSection = ({
             </svg>
             </button>
         </div>
-        {isDropdownActive && selectedBank && (
+        {activeDropdown === "branch" && selectedBank && (
             <ul
             className="branch-dropdown absolute z-10 w-full mt-1 overflow-y-auto bg-white border rounded-md shadow-lg max-h-60"
             style={{ width: inputWidth, maxHeight: "290px" }}
@@ -90,20 +68,14 @@ const BranchNameSection = ({
 
                 return (
                     <li
-                        key={branch.code}
-                        className={`p-2 cursor-pointer ${
-                        isSelected
-                            ? "bg-blue-500 text-white"
-                            : getItemClassName(index) 
-                            ? "bg-gray-300"
-                            : ""
-                        }`}
-                        onClick={() => handleBranchSelect(branch)}
-                        onMouseEnter={() => handleMouseEnter(index)}
-                        onMouseLeave={handleMouseLeave}
-                        onMouseMove={handleMouseMove}
+                    key={branch.code}
+                    className={`p-2 cursor-pointer ${isSelected ? "bg-blue-500 text-white" : getItemClassName(index) ? "bg-gray-300" : ""}`}
+                    onClick={() => handleBranchSelect(branch)}
+                    onMouseEnter={() => handleMouseEnter(index)}
+                    onMouseLeave={handleMouseLeave}
+                    onMouseMove={handleMouseMove}
                     >
-                        {branch.code} {branch.name}
+                    {branch.code} {branch.name}
                     </li>
                 );
                 })

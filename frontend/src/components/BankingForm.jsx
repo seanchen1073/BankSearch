@@ -1,216 +1,196 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useContext, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import BankNameSection from "./BankNameSection";
 import BranchNameSection from "./BranchNameSection";
+import { BankContext } from "../contexts/BankContext";
+import { fetchBankData } from "./BankGetApi.jsx";
 
-const BankingForm = ({ bankData, selectedBank, setSelectedBank, updateUrl, selectedBranch, setSelectedBranch }) => {
-  const [filteredBanks, setFilteredBanks] = useState(bankData);
-  const [filteredBranches, setFilteredBranches] = useState([]);
-  const [activeDropdown, setActiveDropdown] = useState(null);
-  const [selectedIndex, setSelectedIndex] = useState(-1);
-  const [bankSearchTerm, setBankSearchTerm] = useState("");
-  const [branchSearchTerm, setBranchSearchTerm] = useState("");
-  const [mouseHoveredIndex, setMouseHoveredIndex] = useState(-1);
-  const [isKeyboardNavigation, setIsKeyboardNavigation] = useState(false);
-  const formRef = useRef(null);
+const BankingForm = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const {
+    bankData,
+    setBankData,
+    filteredBanks,
+    setFilteredBanks,
+    setFilteredBranches,
+    selectedBank,
+    setSelectedBank,
+    selectedBranch,
+    setSelectedBranch,
+    activeDropdown,
+    setActiveDropdown,
+    selectedIndex,
+    setSelectedIndex,
+    setBankSearchTerm,
+    setBranchSearchTerm,
+    mouseHoveredIndex,
+    setMouseHoveredIndex,
+    isKeyboardNavigation,
+    setIsKeyboardNavigation,
+    inputRef,
+    setInputWidth,
+  } = useContext(BankContext);
 
+  // 初始化銀行資料
   useEffect(() => {
-    if (selectedBank) {
-      setBankSearchTerm(selectedBank);
-    }
-  }, [selectedBank]);
-
-  useEffect(() => {
-    if (selectedBranch) {
-      setBranchSearchTerm(`${selectedBranch.code} ${selectedBranch.name}`);
-    }
-  }, [selectedBranch]);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (formRef.current && !formRef.current.contains(event.target)) {
-        setActiveDropdown(null);
-        setSelectedIndex(-1);
-        setMouseHoveredIndex(-1);
+    const loadBankData = async () => {
+      console.log("載入銀行資料中...");
+      const data = await fetchBankData();
+      if (data && Array.isArray(data)) {
+        setBankData(data);
+        setFilteredBanks(data);
+        console.log("銀行資料載入成功：", data);
+      } else {
+        console.error("無法載入銀行資料");
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    loadBankData();
   }, []);
 
-useEffect(() => {
-  switch (activeDropdown) {
-    case "bank": {
-      const index = selectedBank ? filteredBanks.findIndex((bank) => `${bank.code} ${bank.name}` === selectedBank) : -1;
-      setSelectedIndex(index);
-      setMouseHoveredIndex(index === -1 && filteredBanks.length > 0 ? 0 : -1); // 如果有項目則設為 0
-
-      if (index !== -1) {
-        setTimeout(() => {
-          const listElement = document.querySelector(".bank-dropdown");
-          const selectedElement = listElement?.children[index];
-          if (selectedElement) {
-            const containerHeight = listElement.clientHeight;
-            const itemHeight = selectedElement.offsetHeight;
-            const scrollPosition = selectedElement.offsetTop;
-            const targetScroll = Math.max(0, scrollPosition - (containerHeight - itemHeight));
-            listElement.scrollTop = targetScroll;
-          }
-        }, 0);
-      }
-      break;
-    }
-    case "branch": {
-      const index = selectedBranch ? filteredBranches.findIndex((branch) => branch.code === selectedBranch.code) : -1;
-      setSelectedIndex(index);
-      setMouseHoveredIndex(index === -1 && filteredBranches.length > 0 ? 0 : -1); // 如果有項目則設為 0
-
-      if (index !== -1) {
-        setTimeout(() => {
-          const listElement = document.querySelector(".branch-dropdown");
-          const selectedElement = listElement?.children[index];
-          if (selectedElement) {
-            const containerHeight = listElement.clientHeight;
-            const itemHeight = selectedElement.offsetHeight;
-            const scrollPosition = selectedElement.offsetTop;
-            const targetScroll = Math.max(0, scrollPosition - (containerHeight - itemHeight));
-            listElement.scrollTop = targetScroll;
-          }
-        }, 0);
-      }
-      break;
-    }
-    default:
-      setSelectedIndex(-1);
-      setMouseHoveredIndex(-1);
-      break;
-  }
-}, [activeDropdown, selectedBank, selectedBranch, filteredBanks, filteredBranches]);
-
-
+  // 從 URL 初始化
   useEffect(() => {
-    setFilteredBanks(bankData);
-  }, [bankData]);
+    const initializeFromUrl = async () => {
+      const pathParts = location.pathname.split("/");
+      if (pathParts.length === 4 && bankData.length > 0) {
+        const [, bankCode, branchCode] = pathParts;
 
+        try {
+          const bank = bankData.find((b) => b.code === bankCode);
+          if (bank) {
+            const bankWithCode = `${bank.code} ${bank.name}`;
+            setSelectedBank(bankWithCode);
+            setBankSearchTerm(bankWithCode);
+
+            const branches = await fetchBankData(bankCode);
+            if (branches) {
+              setFilteredBranches(branches);
+
+              const branch = branches.find((b) => b.code === branchCode);
+              if (branch) {
+                setSelectedBranch(branch);
+                setBranchSearchTerm(`${branch.code} ${branch.name}`);
+              }
+            }
+          }
+        } catch (error) {
+          console.error("初始化資料失敗:", error);
+          navigate("/");
+        }
+      }
+    };
+
+    initializeFromUrl();
+  }, [location.pathname, bankData]);
+
+  // 更新 URL
   useEffect(() => {
-    if (activeDropdown === "bank") {
-      setFilteredBanks(bankData);
-    }
-  }, [activeDropdown, bankData]);
+    const updateUrl = () => {
+      if (selectedBank && selectedBranch) {
+        const bankCode = selectedBank.split(" ")[0];
+        const branchCode = selectedBranch.code;
+        const bankName = selectedBank.split(" ").slice(1).join(" ");
+        const branchName = selectedBranch.name;
+        const names = `${bankName}-${branchName}.html`;
+        navigate(encodeURI(`/${bankCode}/${branchCode}/${names}`));
+      }
+    };
 
+    updateUrl();
+  }, [selectedBank, selectedBranch]);
+
+  // 更新輸入框寬度
+  useEffect(() => {
+    const updateWidth = () => {
+      if (inputRef.current) {
+        setInputWidth(inputRef.current.offsetWidth + "px");
+      }
+    };
+
+    updateWidth();
+    window.addEventListener("resize", updateWidth);
+    return () => window.removeEventListener("resize", updateWidth);
+  }, []);
+
+  // 當選擇銀行時載入分行資料
   useEffect(() => {
     if (selectedBank) {
-      const selectedBankData = bankData.find((bank) => bank.code === selectedBank.split(" ")[0]);
-      if (selectedBankData) {
-        setFilteredBranches(selectedBankData.branches);
-      }
+      const fetchBranches = async () => {
+        const bankCode = selectedBank.split(" ")[0];
+        const branches = await fetchBankData(bankCode);
+        if (branches) {
+          setFilteredBranches(branches);
+        }
+      };
+      fetchBranches();
     } else {
       setFilteredBranches([]);
       setBranchSearchTerm("");
       setSelectedBranch(null);
     }
-  }, [selectedBank, bankData, setSelectedBranch]);
+  }, [selectedBank]);
 
-const handleKeyDown = (event) => {
-  if (!activeDropdown) return;
+  const handleKeyDown = (event) => {
+    if (!activeDropdown) return;
 
-  const currentList = activeDropdown === "bank" ? filteredBanks : filteredBranches;
-  const listElement = document.querySelector(activeDropdown === "bank" ? ".bank-dropdown" : ".branch-dropdown");
+    const currentList = activeDropdown === "bank" ? filteredBanks : filteredBranches;
+    const listElement = document.querySelector(activeDropdown === "bank" ? ".bank-dropdown" : ".branch-dropdown");
 
-  if (event.key === "ArrowDown" || event.key === "ArrowUp") {
-    setIsKeyboardNavigation(true);
-    setMouseHoveredIndex(-1);
-  }
-
-  switch (event.key) {
-    case "ArrowDown":
-      event.preventDefault();
-      setSelectedIndex((prev) => {
-        let startIndex;
-        if(prev === -1) {
-          startIndex = mouseHoveredIndex !== -1 ? mouseHoveredIndex : -1 ;
-        } else {
-          startIndex = prev;
-        }
-
-        let nextIndex;
-
-        if (startIndex === -1) {
-          nextIndex = 0;
-        } else if (startIndex === currentList.length - 1) {
-          nextIndex = 0;
-          listElement.scrollTop = 0;
-        } else {
-          nextIndex = startIndex + 1;
-        }
-
-        // 滾動到選中項目
-        const selectedElement = listElement?.children[nextIndex];
-        if (selectedElement) {
-          selectedElement.scrollIntoView({ block: "nearest", behavior: "auto" });
-        }
-
-        return nextIndex;
-      });
-      break;
-
-    case "ArrowUp":
-      event.preventDefault();
-      setSelectedIndex((prev) => {
-        let startIndex;
-        if (prev === -1) {
-          startIndex = mouseHoveredIndex !== -1 ? mouseHoveredIndex : -1;
-        } else {
-          startIndex = prev;
-        }
-
-        let nextIndex;
-
-        if (startIndex === -1) {
-          nextIndex = currentList.length - 1;
-        } else if (startIndex === 0) {
-          nextIndex = currentList.length - 1;
-          listElement.scrollTop = listElement.scrollHeight;
-        } else {
-          nextIndex = startIndex - 1;
-        }
-
-        // 滾動到選中項目
-        const selectedElement = listElement?.children[nextIndex];
-        if (selectedElement) {
-          selectedElement.scrollIntoView({ block: "nearest", behavior: "auto" });
-        }
-
-        return nextIndex;
-      });
-      break;
-
-    case "Enter":
-      event.preventDefault();
-      if (selectedIndex >= 0) {
-        if (activeDropdown === "bank") {
-          handleBankSelect(filteredBanks[selectedIndex]);
-        } else {
-          handleBranchSelect(filteredBranches[selectedIndex]);
-        }
-      } else if (mouseHoveredIndex >= 0) {
-        if (activeDropdown === "bank") {
-          handleBankSelect(filteredBanks[mouseHoveredIndex]);
-        } else {
-          handleBranchSelect(filteredBranches[mouseHoveredIndex]);
-        }
-      }
-      break;
-
-    case "Escape":
-      setActiveDropdown(null);
-      setSelectedIndex(-1);
+    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+      setIsKeyboardNavigation(true);
       setMouseHoveredIndex(-1);
-      setIsKeyboardNavigation(false);
-      break;
-  }
-};
+    }
+
+    switch (event.key) {
+      case "ArrowDown":
+        event.preventDefault();
+        setSelectedIndex((prev) => {
+          let startIndex = prev === -1 ? -1 : prev;
+          let nextIndex = startIndex === currentList.length - 1 ? 0 : startIndex + 1;
+
+          const selectedElement = listElement?.children[nextIndex];
+          if (selectedElement) {
+            selectedElement.scrollIntoView({ block: "nearest", behavior: "auto" });
+          }
+
+          return nextIndex;
+        });
+        break;
+
+      case "ArrowUp":
+        event.preventDefault();
+        setSelectedIndex((prev) => {
+          let startIndex = prev === -1 ? 0 : prev;
+          let nextIndex = startIndex === 0 ? currentList.length - 1 : startIndex - 1;
+
+          const selectedElement = listElement?.children[nextIndex];
+          if (selectedElement) {
+            selectedElement.scrollIntoView({ block: "nearest", behavior: "auto" });
+          }
+
+          return nextIndex;
+        });
+        break;
+
+      case "Enter":
+        event.preventDefault();
+        if (selectedIndex >= 0) {
+          if (activeDropdown === "bank") {
+            handleBankSelect(filteredBanks[selectedIndex]);
+          } else {
+            handleBranchSelect(filteredBranches[selectedIndex]);
+          }
+        }
+        break;
+
+      case "Escape":
+        setActiveDropdown(null);
+        setSelectedIndex(-1);
+        setMouseHoveredIndex(-1);
+        setIsKeyboardNavigation(false);
+        break;
+    }
+  };
 
   const handleMouseEnter = (index) => {
     if (!isKeyboardNavigation) {
@@ -225,15 +205,15 @@ const handleKeyDown = (event) => {
     }
   };
 
-  const handleMouseMove = (event) => {
+  const handleMouseMove = () => {
     setIsKeyboardNavigation(false);
   };
 
   const getItemClassName = (index) => {
     if (isKeyboardNavigation) {
-      return selectedIndex === index ? 'hover-style' : "";
+      return selectedIndex === index ? "hover-style" : "";
     }
-      return mouseHoveredIndex === index ? 'hover-style' : "";
+    return mouseHoveredIndex === index ? "hover-style" : "";
   };
 
   const handleBankSelect = (bank) => {
@@ -252,7 +232,6 @@ const handleKeyDown = (event) => {
   const handleBranchSelect = (branch) => {
     setSelectedBranch(branch);
     setBranchSearchTerm(`${branch.code} ${branch.name}`);
-    updateUrl();
     setActiveDropdown(null);
     setSelectedIndex(-1);
     setMouseHoveredIndex(-1);
@@ -277,13 +256,10 @@ const handleKeyDown = (event) => {
     setSelectedIndex(-1);
     setMouseHoveredIndex(-1);
     if (selectedBank) {
-      const selectedBankData = bankData.find((bank) => bank.code === selectedBank.split(" ")[0]);
-      if (selectedBankData) {
-        const filtered = selectedBankData.branches.filter(
-          (branch) => branch.name.toLowerCase().includes(searchTerm.toLowerCase()) || branch.code.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        setFilteredBranches(filtered);
-      }
+      const filtered = filteredBranches.filter(
+        (branch) => branch.name.toLowerCase().includes(searchTerm.toLowerCase()) || branch.code.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredBranches(filtered);
     }
     if (searchTerm === "") {
       setSelectedBranch(null);
@@ -293,47 +269,26 @@ const handleKeyDown = (event) => {
   return (
     <main className="flex flex-col items-center w-full max-w-[600px] mx-auto">
       <section className="flex flex-col w-full md:flex-row md:justify-between">
-        <article className="w-full md:w-[290px] mb-4 md:mb-0" ref={formRef}>
+        <article className="w-full md:w-[290px] mb-4 md:mb-0">
           <BankNameSection
-            selectedBank={selectedBank}
-            filteredBanks={filteredBanks}
-            isDropdownActive={activeDropdown === "bank"}
-            setActiveDropdown={setActiveDropdown}
-            bankSearchTerm={bankSearchTerm}
             handleBankSearch={handleBankSearch}
             handleBankSelect={handleBankSelect}
-            selectedIndex={selectedIndex}
-            mouseHoveredIndex={mouseHoveredIndex}
-            setMouseHoveredIndex={setMouseHoveredIndex}
+            handleKeyDown={handleKeyDown}
             handleMouseEnter={handleMouseEnter}
             handleMouseLeave={handleMouseLeave}
-            handleKeyDown={handleKeyDown}
             handleMouseMove={handleMouseMove}
             getItemClassName={getItemClassName}
-            isKeyboardNavigation={isKeyboardNavigation}
-            setIsKeyboardNavigation={setIsKeyboardNavigation}
           />
         </article>
-        <article className="w-full md:w-[290px]" ref={formRef}>
+        <article className="w-full md:w-[290px]">
           <BranchNameSection
-            selectedBank={selectedBank}
-            selectedBranch={selectedBranch}
-            filteredBranches={filteredBranches}
-            isDropdownActive={activeDropdown === "branch"}
-            setActiveDropdown={setActiveDropdown}
-            branchSearchTerm={branchSearchTerm}
             handleBranchSearch={handleBranchSearch}
             handleBranchSelect={handleBranchSelect}
-            selectedIndex={selectedIndex}
-            mouseHoveredIndex={mouseHoveredIndex}
-            setMouseHoveredIndex={setMouseHoveredIndex}
+            handleKeyDown={handleKeyDown}
             handleMouseEnter={handleMouseEnter}
             handleMouseLeave={handleMouseLeave}
-            handleKeyDown={handleKeyDown}
             handleMouseMove={handleMouseMove}
             getItemClassName={getItemClassName}
-            isKeyboardNavigation={isKeyboardNavigation}
-            setIsKeyboardNavigation={setIsKeyboardNavigation}
           />
         </article>
       </section>
