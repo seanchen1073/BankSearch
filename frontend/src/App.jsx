@@ -4,6 +4,7 @@ import Header from "./components/Header";
 import BankingForm from "./components/BankingForm";
 import BranchDetails from "./components/BranchDetails";
 import { BankProvider } from "./contexts/BankContext";
+import NotFound from "./components/NotFoundPage"; // 引入404頁面
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Routes>
             <Route path="/" element={<div />} />
             <Route path="/:bankCode/:branchCode/:names" element={<BranchDetails />} />
+            <Route path="*" element={<NotFound />} /> {/* 404 頁面 */}
           </Routes>
         </div>
       </BankProvider>

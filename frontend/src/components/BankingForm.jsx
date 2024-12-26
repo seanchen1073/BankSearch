@@ -76,7 +76,7 @@ const BankingForm = () => {
           }
         } catch (error) {
           console.error("初始化資料失敗:", error);
-          navigate("/");
+          navigate("/not-found"); // 導航到 404 頁面
         }
       }
     };
