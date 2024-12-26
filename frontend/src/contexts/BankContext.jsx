@@ -15,7 +15,7 @@ export const BankProvider = ({ children }) => {
   const [mouseHoveredIndex, setMouseHoveredIndex] = useState(-1);
   const [isKeyboardNavigation, setIsKeyboardNavigation] = useState(false);
   const [inputWidth, setInputWidth] = useState("");
-  const inputRef = useRef(null);
+  const formRef = useRef(null);
 
   const contextValue = {
     bankData,
@@ -42,7 +42,7 @@ export const BankProvider = ({ children }) => {
     setIsKeyboardNavigation,
     inputWidth,
     setInputWidth,
-    inputRef,
+    formRef,
   };
 
   return <BankContext.Provider value={contextValue}>{children}</BankContext.Provider>;

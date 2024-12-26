@@ -10,7 +10,7 @@ const BankNameSection = ({
   handleMouseMove,
   getItemClassName,
 }) => {
-  const { selectedBank, filteredBanks, activeDropdown, setActiveDropdown, bankSearchTerm, inputRef, inputWidth } = useContext(BankContext);
+  const { selectedBank, filteredBanks, activeDropdown, setActiveDropdown, bankSearchTerm, formRef, inputWidth } = useContext(BankContext);
 
   const handleInputChange = (e) => {
     handleBankSearch(e.target.value);
@@ -25,7 +25,7 @@ const BankNameSection = ({
       <h2 className="mb-2 text-xl font-semibold">銀行名稱</h2>
       <div className="relative w-full">
         <input
-          ref={inputRef}
+          ref={formRef}
           type="text"
           id="bank-selection"
           name="bank"

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import BankNameSection from "./BankNameSection";
 import BranchNameSection from "./BranchNameSection";
@@ -12,6 +12,7 @@ const BankingForm = () => {
     bankData,
     setBankData,
     filteredBanks,
+    filteredBranches,
     setFilteredBanks,
     setFilteredBranches,
     selectedBank,
@@ -28,7 +29,7 @@ const BankingForm = () => {
     setMouseHoveredIndex,
     isKeyboardNavigation,
     setIsKeyboardNavigation,
-    inputRef,
+    formRef,
     setInputWidth,
   } = useContext(BankContext);
 
@@ -102,8 +103,8 @@ const BankingForm = () => {
   // 更新輸入框寬度
   useEffect(() => {
     const updateWidth = () => {
-      if (inputRef.current) {
-        setInputWidth(inputRef.current.offsetWidth + "px");
+      if (formRef.current) {
+        setInputWidth(formRef.current.offsetWidth + "px");
       }
     };
 
@@ -129,6 +130,81 @@ const BankingForm = () => {
       setSelectedBranch(null);
     }
   }, [selectedBank]);
+
+  useEffect(() => {
+    switch (activeDropdown) {
+      case "bank": {
+        const index = selectedBank ? filteredBanks.findIndex((bank) => `${bank.code} ${bank.name}` === selectedBank) : -1;
+        setSelectedIndex(index);
+        setMouseHoveredIndex(index === -1 && filteredBanks.length > 0 ? 0 : -1); // 如果有項目則設為 0
+        if (index !== -1) {
+          setTimeout(() => {
+            const listElement = document.querySelector(".bank-dropdown");
+            const selectedElement = listElement?.children[index];
+            if (selectedElement) {
+              const containerHeight = listElement.clientHeight;
+              const itemHeight = selectedElement.offsetHeight;
+              const scrollPosition = selectedElement.offsetTop;
+              const targetScroll = Math.max(0, scrollPosition - (containerHeight - itemHeight));
+              listElement.scrollTop = targetScroll;
+            }
+          }, 0);
+        }
+        break;
+      }
+      case "branch": {
+      const index = selectedBranch ? filteredBranches.findIndex((branch) => branch.code === selectedBranch.code) : -1;
+      setSelectedIndex(index);
+      setMouseHoveredIndex(index === -1 && filteredBranches.length > 0 ? 0 : -1); // 如果有項目則設為 0
+      if (index !== -1) {
+        setTimeout(() => {
+          const listElement = document.querySelector(".branch-dropdown");
+          const selectedElement = listElement?.children[index];
+          if (selectedElement) {
+            const containerHeight = listElement.clientHeight;
+            const itemHeight = selectedElement.offsetHeight;
+            const scrollPosition = selectedElement.offsetTop;
+            const targetScroll = Math.max(0, scrollPosition - (containerHeight - itemHeight));
+            listElement.scrollTop = targetScroll;
+          }
+        }, 0);
+      }
+      break;
+    }
+    default:
+      setSelectedIndex(-1);
+      setMouseHoveredIndex(-1);
+      break;
+    }
+  }, [activeDropdown, selectedBank, selectedBranch, filteredBanks, filteredBranches]);
+      
+  useEffect(() => {
+    setFilteredBanks(bankData);
+  }, [bankData]);
+
+  useEffect(() => {
+    if (activeDropdown === "bank") {
+      setFilteredBanks(bankData);
+    }
+  }, [activeDropdown, bankData]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (formRef.current && !formRef.current.contains(event.target)) {
+        setActiveDropdown(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleDropdownToggle = (dropdownName) => {
+    setActiveDropdown((prevDropdown) => (prevDropdown === dropdownName ? null : dropdownName));
+  };
 
   const handleKeyDown = (event) => {
     if (!activeDropdown) return;
@@ -278,6 +354,7 @@ const BankingForm = () => {
             handleMouseLeave={handleMouseLeave}
             handleMouseMove={handleMouseMove}
             getItemClassName={getItemClassName}
+            setActiveDropdown={() => handleDropdownToggle("bank")}
           />
         </article>
         <article className="w-full md:w-[290px]">
@@ -289,6 +366,7 @@ const BankingForm = () => {
             handleMouseLeave={handleMouseLeave}
             handleMouseMove={handleMouseMove}
             getItemClassName={getItemClassName}
+            setActiveDropdown={() => handleDropdownToggle("branch")}
           />
         </article>
       </section>
