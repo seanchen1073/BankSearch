@@ -212,49 +212,42 @@ const BankingForm = () => {
     const currentList = activeDropdown === "bank" ? filteredBanks : filteredBranches;
     const listElement = document.querySelector(activeDropdown === "bank" ? ".bank-dropdown" : ".branch-dropdown");
 
-    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
-      setIsKeyboardNavigation(true);
-      setMouseHoveredIndex(-1);
-    }
-
     switch (event.key) {
       case "ArrowDown":
+      case "ArrowUp": {
         event.preventDefault();
-        setSelectedIndex((prev) => {
-          let startIndex = prev === -1 ? -1 : prev;
-          let nextIndex = startIndex === currentList.length - 1 ? 0 : startIndex + 1;
+        setIsKeyboardNavigation(true);
 
-          const selectedElement = listElement?.children[nextIndex];
-          if (selectedElement) {
-            selectedElement.scrollIntoView({ block: "nearest", behavior: "auto" });
-          }
+        // 使用當前滑鼠懸停索引或已選擇索引作為起始點
+        const startIndex = mouseHoveredIndex !== -1 ? mouseHoveredIndex : selectedIndex;
+        const nextIndex =
+          event.key === "ArrowDown"
+            ? startIndex === currentList.length - 1
+              ? 0
+              : startIndex + 1
+            : startIndex === -1 || startIndex === 0
+            ? currentList.length - 1
+            : startIndex - 1;
 
-          return nextIndex;
-        });
+        setSelectedIndex(nextIndex);
+        setMouseHoveredIndex(-1);
+
+        const selectedElement = listElement?.children[nextIndex];
+        if (selectedElement) {
+          selectedElement.scrollIntoView({ block: "nearest", behavior: "auto" });
+        }
         break;
-
-      case "ArrowUp":
-        event.preventDefault();
-        setSelectedIndex((prev) => {
-          let startIndex = prev === -1 ? 0 : prev;
-          let nextIndex = startIndex === 0 ? currentList.length - 1 : startIndex - 1;
-
-          const selectedElement = listElement?.children[nextIndex];
-          if (selectedElement) {
-            selectedElement.scrollIntoView({ block: "nearest", behavior: "auto" });
-          }
-
-          return nextIndex;
-        });
-        break;
+      }
 
       case "Enter":
         event.preventDefault();
-        if (selectedIndex >= 0) {
+        // 使用滑鼠懸停索引或已選擇索引
+        const indexToUse = mouseHoveredIndex !== -1 ? mouseHoveredIndex : selectedIndex;
+        if (indexToUse >= 0) {
           if (activeDropdown === "bank") {
-            handleBankSelect(filteredBanks[selectedIndex]);
+            handleBankSelect(filteredBanks[indexToUse]);
           } else {
-            handleBranchSelect(filteredBranches[selectedIndex]);
+            handleBranchSelect(filteredBranches[indexToUse]);
           }
         }
         break;
