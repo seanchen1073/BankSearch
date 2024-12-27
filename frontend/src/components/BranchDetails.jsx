@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { BankContext } from "../contexts/BankContext";
+import BankMap from "./BankMap";
 
 const BranchDetails = () => {
   const { selectedBank, selectedBranch } = useContext(BankContext);
@@ -61,7 +62,12 @@ const BranchDetails = () => {
         </div>
         <div className="self-start mt-4 text-green-900 sm:self-end">
           資料來源：
-          <a className="font-bold text-green-900 gov-link hover:text-blue-700" href="https://data.gov.tw/dataset/6041" target="_blank">
+          <a
+            className="font-bold text-green-900 gov-link hover:text-blue-700"
+            href="https://data.gov.tw/dataset/6041"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             政府資料開放平台
           </a>
         </div>
@@ -74,6 +80,11 @@ const BranchDetails = () => {
           {linkCopied ? "已複製" : "複製此頁面連結"}
         </button>
       </section>
+      {selectedBranch && (
+        <section className="w-full mt-4">
+          <BankMap address={selectedBranch.address} />
+        </section>
+      )}
     </div>
   );
 };
