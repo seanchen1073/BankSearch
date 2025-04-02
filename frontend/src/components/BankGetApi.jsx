@@ -2,7 +2,7 @@ import axios from "axios";
 
 // 使用具名匯出
 export const fetchBankData = async (bankCode = null) => {
-    let apiUrl = "https://banksearch-backend.hkg1.zeabur.app/banks/";
+    let apiUrl = "https://banksearch-backend.zeabur.app/";
     if (bankCode) {
         apiUrl += `${bankCode}/branches/`;
     }

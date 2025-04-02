@@ -10,7 +10,7 @@ SECRET_KEY = 'your_secret_key'
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'banksearch-backend.hkg1.zeabur.app']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'banksearch-backend.zeabur.app']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -78,8 +78,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173", 
     "http://127.0.0.1:5173",
-    "https://banksearch.hkg1.zeabur.app",
-    "https://banksearch-backend.hkg1.zeabur.app"
+    "https://banksearchbysean.zeabur.app/",
+    "https://banksearch-backend.zeabur.app/"
 ]
 
 CORS_ALLOW_HEADERS = list(default_headers) + [
