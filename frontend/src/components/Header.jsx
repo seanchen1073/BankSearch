@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+
+import { BankContext } from "../contexts/BankContext";
 
 const navItems = [
   {
@@ -7,7 +9,7 @@ const navItems = [
   },
   {
     label: "附近分行",
-    href: "#search",
+    action: "nearby",
   },
   {
     label: "關於本站",
@@ -18,8 +20,65 @@ const navItems = [
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const handleNavClick = () => {
+  // 取得附近分行定位視窗的控制狀態
+  const { setIsNearbyModalOpen, setLocationError } = useContext(BankContext);
+
+  // 處理導覽選單點擊
+  const handleNavClick = (item) => {
+    // 手機版點擊選單後自動關閉
     setIsMenuOpen(false);
+
+    // 點擊附近分行時開啟定位說明視窗
+    if (item.action === "nearby") {
+      setLocationError("");
+      setIsNearbyModalOpen(true);
+    }
+  };
+
+  // 渲染桌機版導覽項目
+  const renderDesktopNavItem = (item) => {
+    if (item.action === "nearby") {
+      return (
+        <button
+          key={item.label}
+          type="button"
+          onClick={() => handleNavClick(item)}
+          className="text-sm font-semibold transition-colors text-slate-600 hover:text-blue-700"
+        >
+          {item.label}
+        </button>
+      );
+    }
+
+    return (
+      <a
+        key={item.label}
+        href={item.href}
+        onClick={() => handleNavClick(item)}
+        className="text-sm font-semibold transition-colors text-slate-600 hover:text-blue-700"
+      >
+        {item.label}
+      </a>
+    );
+  };
+
+  // 渲染手機版導覽項目
+  const renderMobileNavItem = (item) => {
+    const className = "w-full px-3 py-3 text-sm font-semibold text-left transition rounded-lg text-slate-700 hover:bg-blue-50 hover:text-blue-700";
+
+    if (item.action === "nearby") {
+      return (
+        <button key={item.label} type="button" onClick={() => handleNavClick(item)} className={className}>
+          {item.label}
+        </button>
+      );
+    }
+
+    return (
+      <a key={item.label} href={item.href} onClick={() => handleNavClick(item)} className={className}>
+        {item.label}
+      </a>
+    );
   };
 
   return (
@@ -46,13 +105,7 @@ const Header = () => {
           </a>
 
           {/* 桌機與平板選單 */}
-          <div className="items-center hidden gap-6 md:flex lg:gap-8">
-            {navItems.map((item) => (
-              <a key={item.label} href={item.href} className="text-sm font-semibold transition-colors text-slate-600 hover:text-blue-700">
-                {item.label}
-              </a>
-            ))}
-          </div>
+          <div className="items-center hidden gap-6 md:flex lg:gap-8">{navItems.map(renderDesktopNavItem)}</div>
 
           {/* 手機版選單按鈕 */}
           <button
@@ -80,18 +133,7 @@ const Header = () => {
         {/* 手機版下拉選單 */}
         {isMenuOpen && (
           <div className="px-4 py-3 bg-white border-t border-slate-200 md:hidden">
-            <div className="flex flex-col mx-auto max-w-7xl">
-              {navItems.map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  onClick={handleNavClick}
-                  className="px-3 py-3 text-sm font-semibold transition rounded-lg text-slate-700 hover:bg-blue-50 hover:text-blue-700"
-                >
-                  {item.label}
-                </a>
-              ))}
-            </div>
+            <div className="flex flex-col mx-auto max-w-7xl">{navItems.map(renderMobileNavItem)}</div>
           </div>
         )}
       </nav>
@@ -112,7 +154,7 @@ const Header = () => {
           <h1 className="max-w-4xl mx-auto mt-5 text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">台灣所有銀行查詢系統</h1>
 
           <p className="max-w-3xl mx-auto mt-5 text-base leading-7 text-blue-100 sm:text-lg sm:leading-8">
-            快速查詢全台銀行與分行資訊，找到離你最近的服務據點， 並一鍵開啟 Google 地圖導航。
+            快速查詢全台銀行與分行資訊 找到離你最近的服務據點 並一鍵開啟 Google 地圖導航
           </p>
         </div>
       </section>

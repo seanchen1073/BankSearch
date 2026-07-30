@@ -8,6 +8,7 @@ import BranchDetails from "./components/BranchDetails";
 import AboutSection from "./components/AboutSection";
 import Footer from "./components/Footer";
 import NotFound from "./components/NotFoundPage";
+import NearbyBranchModal from "./components/NearbyBranchModal";
 import { BankProvider } from "./contexts/BankContext";
 
 function App() {
@@ -15,9 +16,12 @@ function App() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
-      <Header />
-
       <BankProvider>
+        <Header />
+
+        {/* 附近分行定位說明視窗 */}
+        <NearbyBranchModal />
+
         <LoadScript
           googleMapsApiKey={googleMapsApiKey}
           loadingElement={<div className="flex min-h-[320px] items-center justify-center px-4 text-slate-500">正在載入地圖服務…</div>}
@@ -26,7 +30,7 @@ function App() {
             {/* 銀行與分行搜尋區 */}
             <BankingForm />
 
-            {/* 選擇分行後，詳細資料與地圖會出現在這裡 */}
+            {/* 選擇分行後顯示詳細資料與地圖 */}
             <Routes>
               <Route path="/" element={null} />
 

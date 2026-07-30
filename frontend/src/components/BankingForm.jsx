@@ -33,6 +33,8 @@ const BankingForm = () => {
     setMouseHoveredIndex,
     isKeyboardNavigation,
     setIsKeyboardNavigation,
+    isNearbySearch,
+    resetNearbyState,
     formRef,
     setInputWidth,
   } = useContext(BankContext);
@@ -82,7 +84,19 @@ const BankingForm = () => {
             const branch = branches.find((item) => item.code === branchCode);
 
             if (branch) {
-              setSelectedBranch(branch);
+              // 保留附近分行 API 提供的經緯度與距離資料
+              // 避免網址更新後被一般分行資料覆蓋
+              setSelectedBranch((currentBranch) => {
+                if (currentBranch && currentBranch.code === branch.code) {
+                  return {
+                    ...branch,
+                    ...currentBranch,
+                  };
+                }
+
+                return branch;
+              });
+
               setBranchSearchTerm(`${branch.code} ${branch.name}`);
             }
           }
@@ -119,7 +133,7 @@ const BankingForm = () => {
     }
   }, [navigate, selectedBank, selectedBranch]);
 
-  // 暫時保留輸入框寬度計算，確保尚未修改的下拉選單可運作
+  // 保留輸入框寬度計算
   useEffect(() => {
     const updateWidth = () => {
       if (formRef.current) {
@@ -215,7 +229,7 @@ const BankingForm = () => {
     }
   }, [activeDropdown, selectedBank, selectedBranch, filteredBanks, filteredBranches, setMouseHoveredIndex, setSelectedIndex]);
 
-  // 銀行資料更新時，重設銀行搜尋結果
+  // 銀行資料更新時重設銀行搜尋結果
   useEffect(() => {
     setFilteredBanks(bankData);
   }, [bankData, setFilteredBanks]);
@@ -352,6 +366,11 @@ const BankingForm = () => {
   };
 
   const handleBankSelect = (bank) => {
+    // 使用者手動選擇銀行時離開附近分行模式
+    if (isNearbySearch) {
+      resetNearbyState();
+    }
+
     const bankString = `${bank.code} ${bank.name}`;
 
     if (bankString !== selectedBank) {
@@ -368,7 +387,13 @@ const BankingForm = () => {
   };
 
   const handleBranchSelect = (branch) => {
+    // 使用者手動選擇分行時離開附近分行模式
+    if (isNearbySearch) {
+      resetNearbyState();
+    }
+
     setSelectedBranch(branch);
+
     setBranchSearchTerm(`${branch.code} ${branch.name}`);
 
     setActiveDropdown(null);
@@ -377,6 +402,11 @@ const BankingForm = () => {
   };
 
   const handleBankSearch = (searchTerm) => {
+    // 使用者手動輸入銀行時離開附近分行模式
+    if (isNearbySearch) {
+      resetNearbyState();
+    }
+
     const normalizedSearchTerm = searchTerm.trim().toLowerCase();
 
     const filtered = bankData.filter(
@@ -396,6 +426,11 @@ const BankingForm = () => {
   };
 
   const handleBranchSearch = (searchTerm) => {
+    // 使用者手動輸入分行時離開附近分行模式
+    if (isNearbySearch) {
+      resetNearbyState();
+    }
+
     const normalizedSearchTerm = searchTerm.trim().toLowerCase();
 
     setBranchSearchTerm(searchTerm);
@@ -427,7 +462,7 @@ const BankingForm = () => {
           <p className="mt-2 text-sm leading-6 text-slate-500 sm:text-base">輸入銀行名稱、簡稱或代碼，再選擇欲查詢的分行。</p>
         </div>
 
-        {/* 手機單欄，平板與桌機雙欄 */}
+        {/* 手機單欄 平板與桌機雙欄 */}
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6">
           <article className="relative w-full">
             <BankNameSection

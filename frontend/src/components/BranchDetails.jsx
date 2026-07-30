@@ -21,10 +21,18 @@ const BranchDetails = () => {
     setActiveDropdown,
     setSelectedIndex,
     setMouseHoveredIndex,
+
+    // 附近分行相關狀態
+    userLocation,
+    nearbyBranches,
+    isNearbySearch,
+    resetNearbyState,
   } = useContext(BankContext);
 
+  // 記錄目前已複製的項目
   const [copiedItem, setCopiedItem] = useState("");
 
+  // 選擇分行後自動捲動到結果區
   useEffect(() => {
     if (selectedBank && selectedBranch && resultRef.current) {
       const timer = window.setTimeout(() => {
@@ -42,6 +50,7 @@ const BranchDetails = () => {
     return undefined;
   }, [selectedBank, selectedBranch]);
 
+  // 複製成功提示兩秒後自動消失
   useEffect(() => {
     if (!copiedItem) {
       return undefined;
@@ -56,23 +65,45 @@ const BranchDetails = () => {
     };
   }, [copiedItem]);
 
+  // 複製文字
   const copyText = async (text, itemName) => {
     if (!text) {
       return;
     }
 
     try {
-      await navigator.clipboard.writeText(text);
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        // 非安全連線時使用備用複製方式
+        const textArea = document.createElement("textarea");
+
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.opacity = "0";
+
+        document.body.appendChild(textArea);
+
+        textArea.focus();
+        textArea.select();
+
+        document.execCommand("copy");
+
+        document.body.removeChild(textArea);
+      }
+
       setCopiedItem(itemName);
     } catch (error) {
-      console.error("複製失敗：", error);
+      console.error("複製失敗", error);
     }
   };
 
+  // 複製目前分行查詢網址
   const handleCopyUrl = () => {
     copyText(window.location.href, "url");
   };
 
+  // 清除目前查詢結果
   const handleReset = () => {
     setSelectedBank(null);
     setSelectedBranch(null);
@@ -87,6 +118,9 @@ const BranchDetails = () => {
     setSelectedIndex(-1);
     setMouseHoveredIndex(-1);
 
+    // 清除附近分行與定位資料
+    resetNearbyState();
+
     navigate("/");
 
     window.scrollTo({
@@ -95,7 +129,24 @@ const BranchDetails = () => {
     });
   };
 
-  // 已選擇銀行，但尚未選擇分行
+  // 格式化分行與使用者之間的距離
+  const formatDistance = (distanceMeters) => {
+    const distance = Number(distanceMeters);
+
+    if (!Number.isFinite(distance)) {
+      return null;
+    }
+
+    if (distance < 1000) {
+      return `距離你約 ${Math.round(distance)} 公尺`;
+    }
+
+    const distanceKilometers = distance / 1000;
+
+    return `距離你約 ${distanceKilometers.toFixed(distanceKilometers >= 10 ? 0 : 1)} 公里`;
+  };
+
+  // 已選擇銀行但尚未選擇分行
   if (selectedBank && !selectedBranch) {
     return (
       <section className="px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
@@ -109,13 +160,13 @@ const BranchDetails = () => {
 
           <h2 className="mt-4 text-xl font-bold text-slate-900">請選擇分行</h2>
 
-          <p className="mt-2 text-sm leading-6 text-slate-600">銀行已選擇完成，請在上方分行欄位選擇要查詢的分行。</p>
+          <p className="mt-2 text-sm leading-6 text-slate-600">銀行已選擇完成 請在上方分行欄位選擇要查詢的分行</p>
         </div>
       </section>
     );
   }
 
-  // 使用者直接開啟分行網址時，等待銀行與分行資料載入
+  // 使用者直接開啟分行網址時等待資料載入
   if (!selectedBank || !selectedBranch) {
     return (
       <section className="px-4 py-12 sm:px-6 lg:px-8">
@@ -142,18 +193,43 @@ const BranchDetails = () => {
 
   const branchPhone = selectedBranch.tel || selectedBranch.phone || selectedBranch.telephone || "目前沒有電話資料";
 
-  const googleMapsUrl =
-    branchAddress !== "目前沒有地址資料" ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(branchAddress)}` : null;
+  const selectedLatitude = Number(selectedBranch.latitude);
+
+  const selectedLongitude = Number(selectedBranch.longitude);
+
+  const hasCoordinates = Number.isFinite(selectedLatitude) && Number.isFinite(selectedLongitude);
+
+  const distanceText = isNearbySearch ? formatDistance(selectedBranch.distance_meters) : null;
+
+  // 優先使用經緯度開啟 Google 地圖
+  const googleMapsQuery = hasCoordinates ? `${selectedLatitude},${selectedLongitude}` : branchAddress !== "目前沒有地址資料" ? branchAddress : null;
+
+  const googleMapsUrl = googleMapsQuery ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(googleMapsQuery)}` : null;
 
   return (
     <section ref={resultRef} className="px-4 py-10 scroll-mt-24 sm:px-6 sm:py-12 lg:px-8">
       <div className="max-w-6xl mx-auto">
         <div className="mb-6">
-          <p className="text-sm font-bold text-blue-700">查詢結果</p>
+          <div className="flex flex-wrap items-center gap-3">
+            <p className="text-sm font-bold text-blue-700">查詢結果</p>
+
+            {isNearbySearch && (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700">
+                <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                  <circle cx="12" cy="12" r="3" />
+                  <path d="M12 2v3" />
+                  <path d="M12 19v3" />
+                  <path d="M2 12h3" />
+                  <path d="M19 12h3" />
+                </svg>
+                附近分行
+              </span>
+            )}
+          </div>
 
           <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">分行詳細資訊</h2>
 
-          <p className="mt-2 text-sm leading-6 text-slate-500 sm:text-base">查看分行代碼、地址、電話與 Google 地圖位置。</p>
+          <p className="mt-2 text-sm leading-6 text-slate-500 sm:text-base">查看分行代碼 地址 電話與 Google 地圖位置</p>
         </div>
 
         <div className="overflow-hidden bg-white border shadow-xl rounded-3xl border-slate-200 shadow-slate-900/5">
@@ -180,6 +256,17 @@ const BranchDetails = () => {
                   <h3 className="mt-1 text-xl font-bold break-words text-slate-900 sm:text-2xl">{selectedBankName}</h3>
 
                   <p className="mt-1 text-base font-semibold break-words text-slate-600">{selectedBranchName}</p>
+
+                  {distanceText && (
+                    <p className="inline-flex items-center gap-1.5 px-3 py-1.5 mt-3 text-sm font-bold rounded-full bg-emerald-50 text-emerald-700">
+                      <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                        <path d="M12 21s6-5.1 6-11a6 6 0 1 0-12 0c0 5.9 6 11 6 11Z" />
+                        <circle cx="12" cy="10" r="2" />
+                      </svg>
+
+                      {distanceText}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -195,11 +282,21 @@ const BranchDetails = () => {
                       </svg>
                     </span>
 
-                    <div className="min-w-0">
+                    <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-slate-500">分行代碼</p>
 
                       <p className="mt-1 font-bold break-all text-slate-900">{selectedBranchCode}</p>
                     </div>
+
+                    {selectedBranchCode && (
+                      <button
+                        type="button"
+                        onClick={() => copyText(selectedBranchCode, "branchCode")}
+                        className="inline-flex items-center justify-center px-3 py-2 text-sm font-bold text-blue-700 transition bg-white border border-blue-200 rounded-lg shrink-0 hover:border-blue-300 hover:bg-blue-50"
+                      >
+                        {copiedItem === "branchCode" ? "已複製" : "複製"}
+                      </button>
+                    )}
                   </div>
                 </div>
 
@@ -223,7 +320,7 @@ const BranchDetails = () => {
                       <button
                         type="button"
                         onClick={() => copyText(selectedBranch.address, "address")}
-                        className="px-2 py-1 text-sm font-semibold text-blue-700 transition rounded-lg shrink-0 hover:bg-blue-100"
+                        className="inline-flex items-center justify-center px-3 py-2 text-sm font-bold text-blue-700 transition bg-white border border-blue-200 rounded-lg shrink-0 hover:border-blue-300 hover:bg-blue-50"
                       >
                         {copiedItem === "address" ? "已複製" : "複製"}
                       </button>
@@ -298,12 +395,20 @@ const BranchDetails = () => {
                 重新查詢
               </button>
 
-              <p className="mt-6 text-xs leading-5 text-slate-400">資料僅供查詢參考，實際資訊請以各銀行官方公告為準。</p>
+              <p className="mt-6 text-xs leading-5 text-slate-400">資料僅供查詢參考 實際資訊請以各銀行官方公告為準</p>
             </div>
 
             {/* 右側 Google 地圖 */}
             <div className="min-h-[320px] border-t border-slate-200 bg-slate-100 lg:min-h-full lg:border-l lg:border-t-0">
-              <BankMap address={selectedBranch.address} />
+              <BankMap
+                address={selectedBranch.address}
+                latitude={selectedBranch.latitude}
+                longitude={selectedBranch.longitude}
+                selectedBranch={selectedBranch}
+                userLocation={userLocation}
+                nearbyBranches={nearbyBranches}
+                isNearbySearch={isNearbySearch}
+              />
             </div>
           </div>
         </div>

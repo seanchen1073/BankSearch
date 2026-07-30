@@ -75,11 +75,12 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# 允許前端網站呼叫 Django API
+# Origin 只能包含通訊協定、網域與連接埠
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173", 
+    "http://localhost:5173",
     "http://127.0.0.1:5173",
-    "https://banksearchbysean.zeabur.app/",
-    "https://banksearch-backend.zeabur.app/"
+    "https://banksearchbysean.zeabur.app",
 ]
 
 CORS_ALLOW_HEADERS = list(default_headers) + [
@@ -102,7 +103,7 @@ REST_FRAMEWORK = {
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],  
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
