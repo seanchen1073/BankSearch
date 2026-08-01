@@ -23,10 +23,10 @@ _BANK_DATA_CACHE = {
 
 def parse_float(value):
     """
-    嘗試把資料轉換成浮點數。
+    嘗試把資料轉換成浮點數
 
-    無法轉換或資料為空時回傳 None，
-    避免某一筆錯誤座標造成整支 API 失敗。
+    無法轉換或資料為空時回傳 None
+    避免某一筆錯誤座標造成整支 API 失敗
     """
     try:
         if value in (None, ""):
@@ -39,19 +39,19 @@ def parse_float(value):
 
 def load_bank_data():
     """
-    載入 bank_data.json 並建立快取。
+    載入 bank_data.json 並建立快取
 
-    當 JSON 檔案沒有變更時，直接使用記憶體中的資料。
-    如果 JSON 的修改時間改變，則自動重新讀取檔案。
+    當 JSON 檔案沒有變更時直接使用記憶體中的資料
+    如果 JSON 的修改時間改變則自動重新讀取檔案
 
-    回傳內容包含：
-    1. banks：完整銀行資料
-    2. bank_by_code：依銀行代碼建立的快速查詢字典
-    3. geocoded_branches：已經有經緯度的分行平面清單
+    回傳內容包含
+    1 banks 完整銀行資料
+    2 bank_by_code 依銀行代碼建立的快速查詢字典
+    3 geocoded_branches 已經有經緯度的分行平面清單
     """
     modified_time_ns = DATA_FILE_PATH.stat().st_mtime_ns
 
-    # 檔案沒有變更時，直接使用現有快取
+    # 檔案沒有變更時直接使用現有快取
     if (
         _BANK_DATA_CACHE["modified_time_ns"] == modified_time_ns
         and _BANK_DATA_CACHE["banks"]
@@ -76,7 +76,7 @@ def load_bank_data():
         if not bank_code:
             continue
 
-        # 建立銀行代碼索引，之後不必每次逐筆尋找銀行
+        # 建立銀行代碼索引讓後續查詢可以直接取得銀行
         bank_by_code[bank_code] = bank
 
         branches = bank.get("branches", [])
@@ -120,7 +120,7 @@ def load_bank_data():
 
 def create_data_error_response(error):
     """
-    統一處理 JSON 檔案不存在、格式錯誤等問題。
+    統一處理 JSON 檔案不存在與格式錯誤等問題
     """
     if isinstance(error, FileNotFoundError):
         return JsonResponse(
@@ -142,10 +142,10 @@ def create_data_error_response(error):
 
 def add_public_cache_header(response, max_age=86400):
     """
-    靜態銀行資料不會頻繁更新，
-    允許瀏覽器在指定秒數內使用快取。
+    靜態銀行資料不會頻繁更新
+    允許瀏覽器在指定秒數內使用快取
 
-    預設 86400 秒，也就是 24 小時。
+    預設 86400 秒也就是 24 小時
     """
     response["Cache-Control"] = f"public, max-age={max_age}"
     return response
@@ -153,7 +153,7 @@ def add_public_cache_header(response, max_age=86400):
 
 def find_branch(bank, branch_code):
     """
-    在指定銀行中尋找分行。
+    在指定銀行中尋找分行
     """
     for branch in bank.get("branches", []):
         if str(branch.get("code", "")) == str(branch_code):
@@ -164,7 +164,7 @@ def find_branch(bank, branch_code):
 
 def build_branch_detail(bank, branch):
     """
-    將銀行與分行資料整理成統一的 API 回傳格式。
+    將銀行與分行資料整理成統一的 API 回傳格式
     """
     result = {
         "bank_name": bank.get("name"),
@@ -178,7 +178,7 @@ def build_branch_detail(bank, branch):
     latitude = parse_float(branch.get("latitude"))
     longitude = parse_float(branch.get("longitude"))
 
-    # 已有經緯度時才回傳，避免輸出無效值
+    # 已有經緯度時才回傳避免輸出無效值
     if latitude is not None and longitude is not None:
         result["latitude"] = latitude
         result["longitude"] = longitude
@@ -193,10 +193,10 @@ def haversine_distance_meters(
     end_longitude,
 ):
     """
-    使用 Haversine 公式計算兩個經緯度之間的直線距離。
+    使用 Haversine 公式計算兩個經緯度之間的直線距離
 
-    回傳單位為公尺。
-    這是地球表面的近似直線距離，不是實際道路距離。
+    回傳單位為公尺
+    這是地球表面的近似直線距離不是實際道路距離
     """
     earth_radius_meters = 6371000
 
@@ -206,6 +206,7 @@ def haversine_distance_meters(
     latitude_difference = math.radians(
         end_latitude - start_latitude
     )
+
     longitude_difference = math.radians(
         end_longitude - start_longitude
     )
@@ -228,10 +229,10 @@ def haversine_distance_meters(
 @require_GET
 def get_banks(request):
     """
-    取得所有銀行基本清單。
+    取得所有銀行基本清單
 
-    只回傳銀行代碼與名稱，
-    不再把 4,554 間分行全部放進首頁 API。
+    只回傳銀行代碼與名稱
+    不再把 4554 間分行全部放進首頁 API
     """
     try:
         bank_data = load_bank_data()
@@ -244,7 +245,10 @@ def get_banks(request):
             for bank in bank_data["banks"]
         ]
 
-        response = JsonResponse(bank_list, safe=False)
+        response = JsonResponse(
+            bank_list,
+            safe=False,
+        )
 
         return add_public_cache_header(response)
 
@@ -260,15 +264,17 @@ def get_banks(request):
 @require_GET
 def get_branches(request, bank_code):
     """
-    根據銀行代碼取得該銀行的分行。
+    根據銀行代碼取得該銀行的分行
 
-    使用者選擇銀行後才呼叫此 API，
-    避免首頁一次載入所有銀行的分行。
+    使用者選擇銀行後才呼叫此 API
+    避免首頁一次載入所有銀行的分行
     """
     try:
         bank_data = load_bank_data()
 
-        bank = bank_data["bank_by_code"].get(bank_code)
+        bank = bank_data["bank_by_code"].get(
+            bank_code
+        )
 
         if bank is None:
             return JsonResponse(
@@ -278,7 +284,10 @@ def get_branches(request, bank_code):
 
         branches = bank.get("branches", [])
 
-        response = JsonResponse(branches, safe=False)
+        response = JsonResponse(
+            branches,
+            safe=False,
+        )
 
         return add_public_cache_header(response)
 
@@ -292,14 +301,20 @@ def get_branches(request, bank_code):
 
 
 @require_GET
-def get_branch_details(request, bank_code, branch_code):
+def get_branch_details(
+    request,
+    bank_code,
+    branch_code,
+):
     """
-    根據銀行代碼與分行代碼取得分行詳細資訊。
+    根據銀行代碼與分行代碼取得分行詳細資訊
     """
     try:
         bank_data = load_bank_data()
 
-        bank = bank_data["bank_by_code"].get(bank_code)
+        bank = bank_data["bank_by_code"].get(
+            bank_code
+        )
 
         if bank is None:
             return JsonResponse(
@@ -307,7 +322,10 @@ def get_branch_details(request, bank_code, branch_code):
                 status=404,
             )
 
-        branch = find_branch(bank, branch_code)
+        branch = find_branch(
+            bank,
+            branch_code,
+        )
 
         if branch is None:
             return JsonResponse(
@@ -316,7 +334,10 @@ def get_branch_details(request, bank_code, branch_code):
             )
 
         response = JsonResponse(
-            build_branch_detail(bank, branch)
+            build_branch_detail(
+                bank,
+                branch,
+            )
         )
 
         return add_public_cache_header(response)
@@ -339,13 +360,15 @@ def bank_branch_detail(
     branch_name,
 ):
     """
-    驗證網址中的銀行名稱與分行名稱，
-    並回傳指定分行詳細資訊。
+    驗證網址中的銀行名稱與分行名稱
+    並回傳指定分行詳細資訊
     """
     try:
         bank_data = load_bank_data()
 
-        bank = bank_data["bank_by_code"].get(bank_code)
+        bank = bank_data["bank_by_code"].get(
+            bank_code
+        )
 
         if bank is None:
             return JsonResponse(
@@ -353,7 +376,10 @@ def bank_branch_detail(
                 status=404,
             )
 
-        branch = find_branch(bank, branch_code)
+        branch = find_branch(
+            bank,
+            branch_code,
+        )
 
         if branch is None:
             return JsonResponse(
@@ -366,12 +392,18 @@ def bank_branch_detail(
             or branch.get("name") != branch_name
         ):
             return JsonResponse(
-                {"error": "銀行或分行名稱不匹配"},
+                {
+                    "error":
+                        "銀行或分行名稱不匹配"
+                },
                 status=404,
             )
 
         response = JsonResponse(
-            build_branch_detail(bank, branch)
+            build_branch_detail(
+                bank,
+                branch,
+            )
         )
 
         return add_public_cache_header(response)
@@ -388,22 +420,32 @@ def bank_branch_detail(
 @require_GET
 def get_nearby_branches(request):
     """
-    根據使用者目前位置回傳最近的分行。
+    根據使用者目前位置回傳附近分行
 
-    使用方式：
-    /branches/nearby/?lat=25.033&lng=121.565&limit=10
+    使用方式
+    /branches/nearby/?lat=25.033&lng=121.565&limit=10&radius=10
 
-    前端只會收到最近的幾間分行，
-    不會下載完整 4,554 筆分行資料。
+    radius 單位為公里
+    預設搜尋半徑為 10 公里
+
+    只回傳搜尋半徑內的分行
+    最多回傳 limit 指定的筆數
     """
     latitude_value = request.GET.get("lat")
     longitude_value = request.GET.get("lng")
     limit_value = request.GET.get("limit", "10")
+    radius_value = request.GET.get("radius", "10")
 
     # 必須同時提供緯度與經度
-    if latitude_value is None or longitude_value is None:
+    if (
+        latitude_value is None
+        or longitude_value is None
+    ):
         return JsonResponse(
-            {"error": "請提供 lat 與 lng 參數"},
+            {
+                "error":
+                    "請提供 lat 與 lng 參數"
+            },
             status=400,
         )
 
@@ -411,77 +453,123 @@ def get_nearby_branches(request):
         user_latitude = float(latitude_value)
         user_longitude = float(longitude_value)
         limit = int(limit_value)
+        radius_kilometers = float(radius_value)
+
     except (TypeError, ValueError):
         return JsonResponse(
-            {"error": "lat、lng 或 limit 格式錯誤"},
+            {
+                "error":
+                    "lat lng limit 或 radius 格式錯誤"
+            },
             status=400,
         )
 
-    # 驗證經緯度範圍
+    # 驗證緯度範圍
     if not -90 <= user_latitude <= 90:
         return JsonResponse(
-            {"error": "緯度必須介於 -90 至 90"},
+            {
+                "error":
+                    "緯度必須介於 -90 至 90"
+            },
             status=400,
         )
 
+    # 驗證經度範圍
     if not -180 <= user_longitude <= 180:
         return JsonResponse(
-            {"error": "經度必須介於 -180 至 180"},
+            {
+                "error":
+                    "經度必須介於 -180 至 180"
+            },
             status=400,
         )
 
-    # 限制單次最多取得 50 間，避免 API 被不當大量查詢
+    # 限制單次最多取得 50 間
     if not 1 <= limit <= 50:
         return JsonResponse(
-            {"error": "limit 必須介於 1 至 50"},
+            {
+                "error":
+                    "limit 必須介於 1 至 50"
+            },
             status=400,
         )
+
+    # 搜尋半徑限制為 1 至 100 公里
+    if not 1 <= radius_kilometers <= 100:
+        return JsonResponse(
+            {
+                "error":
+                    "radius 必須介於 1 至 100 公里"
+            },
+            status=400,
+        )
+
+    maximum_distance_meters = (
+        radius_kilometers * 1000
+    )
 
     try:
         bank_data = load_bank_data()
 
-        geocoded_branches = bank_data["geocoded_branches"]
+        geocoded_branches = (
+            bank_data["geocoded_branches"]
+        )
 
         if not geocoded_branches:
             return JsonResponse(
                 {
                     "error": (
-                        "目前尚無分行座標資料，"
+                        "目前尚無分行座標資料 "
                         "請先執行 geocode_branches.py"
                     )
                 },
                 status=503,
             )
 
-        # 使用產生器逐筆計算距離
-        distance_candidates = (
-            (
-                haversine_distance_meters(
-                    user_latitude,
-                    user_longitude,
-                    branch["latitude"],
-                    branch["longitude"],
-                ),
-                branch,
-            )
-            for branch in geocoded_branches
-        )
+        # 只產生搜尋半徑內的分行候選資料
+        def create_distance_candidates():
+            for branch in geocoded_branches:
+                distance_meters = (
+                    haversine_distance_meters(
+                        user_latitude,
+                        user_longitude,
+                        branch["latitude"],
+                        branch["longitude"],
+                    )
+                )
 
-        # nsmallest 只保留距離最近的指定筆數，
-        # 不需要把全部 4,554 筆完整排序
-        nearest_branch_pairs = heapq.nsmallest(
-            limit,
-            distance_candidates,
-            key=lambda item: item[0],
+                # 超過搜尋半徑的分行直接排除
+                if (
+                    distance_meters
+                    > maximum_distance_meters
+                ):
+                    continue
+
+                yield (
+                    distance_meters,
+                    branch,
+                )
+
+        # 從半徑內的分行取得距離最近的指定筆數
+        nearest_branch_pairs = (
+            heapq.nsmallest(
+                limit,
+                create_distance_candidates(),
+                key=lambda item: item[0],
+            )
         )
 
         nearby_branches = []
 
-        for distance_meters, branch in nearest_branch_pairs:
+        for (
+            distance_meters,
+            branch,
+        ) in nearest_branch_pairs:
             nearby_branches.append(
                 {
                     **branch,
-                    "distance_meters": round(distance_meters),
+                    "distance_meters":
+                        round(distance_meters),
                 }
             )
 
@@ -490,7 +578,7 @@ def get_nearby_branches(request):
             safe=False,
         )
 
-        # 定位結果與使用者位置有關，不應由瀏覽器長期快取
+        # 定位結果與使用者位置有關所以不使用快取
         response["Cache-Control"] = "no-store"
 
         return response
@@ -507,13 +595,15 @@ def get_nearby_branches(request):
 @require_GET
 def api_root(request):
     """
-    API 入口，顯示目前可以使用的 API。
+    API 入口顯示目前可以使用的 API
     """
     return JsonResponse(
         {
-            "message": "Welcome to the Bank API",
+            "message":
+                "Welcome to the Bank API",
             "endpoints": {
-                "banks": "/banks/",
+                "banks":
+                    "/banks/",
                 "branches": (
                     "/banks/<bank_code>/branches/"
                 ),
@@ -522,6 +612,7 @@ def api_root(request):
                     "?lat=<latitude>"
                     "&lng=<longitude>"
                     "&limit=10"
+                    "&radius=10"
                 ),
                 "branch_details": (
                     "/<bank_code>/<branch_code>/"
