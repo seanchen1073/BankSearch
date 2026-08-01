@@ -28,6 +28,7 @@ export const fetchBankData = async (bankCode = null) => {
     }
 
     console.error("銀行 API 回傳格式錯誤", response.data);
+
     return null;
   } catch (error) {
     if (error.response) {
@@ -38,10 +39,12 @@ export const fetchBankData = async (bankCode = null) => {
 
     if (error.request) {
       console.error("後端沒有回應", error.request);
+
       return null;
     }
 
     console.error("取得銀行資料失敗", error.message);
+
     return null;
   }
 };
@@ -49,12 +52,28 @@ export const fetchBankData = async (bankCode = null) => {
 /**
  * 根據使用者位置取得附近分行
  *
- * 後端只回傳距離最近的指定筆數
+ * 預設搜尋十公里內的分行
+ * 最多回傳距離最近的十間
  */
-export const fetchNearbyBranches = async (latitude, longitude, limit = 10) => {
+export const fetchNearbyBranches = async (latitude, longitude, limit = 10, radius = 10) => {
   // 檢查經緯度格式
   if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
     console.error("附近分行查詢失敗 經緯度格式錯誤");
+
+    return null;
+  }
+
+  // 檢查搜尋筆數
+  if (!Number.isFinite(limit) || limit < 1) {
+    console.error("附近分行查詢失敗 limit 格式錯誤");
+
+    return null;
+  }
+
+  // 檢查搜尋半徑
+  if (!Number.isFinite(radius) || radius <= 0) {
+    console.error("附近分行查詢失敗 radius 格式錯誤");
+
     return null;
   }
 
@@ -64,6 +83,7 @@ export const fetchNearbyBranches = async (latitude, longitude, limit = 10) => {
         lat: latitude,
         lng: longitude,
         limit,
+        radius,
       },
     });
 

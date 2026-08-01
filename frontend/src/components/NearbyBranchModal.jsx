@@ -53,6 +53,7 @@ const NearbyBranchModal = () => {
 
     return () => {
       document.body.style.overflow = originalOverflow;
+
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [isNearbyModalOpen, isLocating, setIsNearbyModalOpen, setLocationError]);
@@ -99,6 +100,7 @@ const NearbyBranchModal = () => {
     // 瀏覽器不支援定位時顯示錯誤
     if (!navigator.geolocation) {
       setLocationError("目前的瀏覽器不支援定位功能");
+
       return;
     }
 
@@ -107,9 +109,10 @@ const NearbyBranchModal = () => {
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const latitude = position.coords.latitude;
+
         const longitude = position.coords.longitude;
 
-        // 先儲存使用者位置
+        // 儲存使用者目前位置
         const currentLocation = {
           lat: latitude,
           lng: longitude,
@@ -118,20 +121,24 @@ const NearbyBranchModal = () => {
         setUserLocation(currentLocation);
 
         try {
-          // 呼叫後端附近分行 API
-          const branches = await fetchNearbyBranches(latitude, longitude, 10);
+          // 查詢十公里內最多十間最近分行
+          const branches = await fetchNearbyBranches(latitude, longitude, 10, 10);
 
           if (!branches) {
             setLocationError("附近分行資料載入失敗 請確認後端服務後再試一次");
+
             return;
           }
 
           if (branches.length === 0) {
-            setLocationError("目前找不到具有位置資料的附近分行");
+            setNearbyBranches([]);
+
+            setLocationError("目前位置十公里內找不到可用的分行資料");
+
             return;
           }
 
-          // 儲存最近十間分行
+          // 儲存十公里內最多十間最近分行
           setNearbyBranches(branches);
 
           // 自動選取距離最近的第一間分行
@@ -144,6 +151,7 @@ const NearbyBranchModal = () => {
 
           setSelectedBank(bankValue);
           setSelectedBranch(nearestBranch);
+
           setBankSearchTerm(bankValue);
           setBranchSearchTerm(branchValue);
 
@@ -204,13 +212,13 @@ const NearbyBranchModal = () => {
       onMouseDown={handleOverlayClick}
     >
       <section
-        className="relative w-full max-w-lg overflow-hidden bg-white border shadow-2xl rounded-3xl border-slate-200 shadow-slate-950/25"
+        className="relative w-full max-w-md overflow-hidden bg-white border shadow-2xl rounded-3xl border-slate-200 shadow-slate-950/25"
         role="dialog"
         aria-modal="true"
         aria-labelledby="nearby-branch-title"
         aria-describedby="nearby-branch-description"
       >
-        <div className="p-6 sm:p-8">
+        <div className="p-6 sm:p-7">
           <button
             type="button"
             className="absolute inline-flex items-center justify-center w-10 h-10 transition rounded-full right-4 top-4 text-slate-500 hover:bg-slate-100 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-40"
@@ -232,59 +240,12 @@ const NearbyBranchModal = () => {
           </div>
 
           <h2 id="nearby-branch-title" className="pr-10 mt-5 text-2xl font-bold tracking-tight text-slate-900">
-            尋找附近分行
+            快速找附近分行
           </h2>
 
           <p id="nearby-branch-description" className="mt-3 text-sm leading-7 text-slate-600 sm:text-base">
-            允許網站取得你目前的位置後 系統會自動找出距離最近的銀行分行
+            開啟定位後，幫你快速找到 10 公里內最近的銀行分行。
           </p>
-
-          <div className="p-4 mt-6 space-y-3 rounded-2xl bg-slate-50">
-            <div className="flex items-start gap-3">
-              <svg
-                viewBox="0 0 24 24"
-                className="mt-0.5 h-5 w-5 shrink-0 text-blue-700"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                aria-hidden="true"
-              >
-                <path d="m5 12 4 4L19 6" />
-              </svg>
-
-              <p className="text-sm leading-6 text-slate-600">只會取得本次查詢所需的位置</p>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <svg
-                viewBox="0 0 24 24"
-                className="mt-0.5 h-5 w-5 shrink-0 text-blue-700"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                aria-hidden="true"
-              >
-                <path d="m5 12 4 4L19 6" />
-              </svg>
-
-              <p className="text-sm leading-6 text-slate-600">系統只會載入距離最近的十間分行</p>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <svg
-                viewBox="0 0 24 24"
-                className="mt-0.5 h-5 w-5 shrink-0 text-blue-700"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                aria-hidden="true"
-              >
-                <path d="m5 12 4 4L19 6" />
-              </svg>
-
-              <p className="text-sm leading-6 text-slate-600">查詢完成後會自動選取最近的分行</p>
-            </div>
-          </div>
 
           {locationError && (
             <div
@@ -293,6 +254,7 @@ const NearbyBranchModal = () => {
             >
               <svg viewBox="0 0 24 24" className="mt-0.5 h-5 w-5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                 <circle cx="12" cy="12" r="9" />
+
                 <path d="M12 7v6" />
                 <path d="M12 17h.01" />
               </svg>
@@ -301,7 +263,24 @@ const NearbyBranchModal = () => {
             </div>
           )}
 
-          <div className="flex flex-col-reverse gap-3 mt-7 sm:flex-row sm:justify-end">
+          {/* 定位權限提醒 */}
+          <div className="flex items-start gap-3 px-4 py-3.5 mt-5 border border-amber-200 rounded-2xl bg-amber-50">
+            <span className="flex items-center justify-center shrink-0 w-8 h-8 text-amber-700 bg-amber-100 rounded-full">
+              <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <path d="M12 9v4" />
+                <path d="M12 17h.01" />
+                <path d="M10.3 3.7 2.8 17a2 2 0 0 0 1.7 3h15a2 2 0 0 0 1.7-3L13.7 3.7a2 2 0 0 0-3.4 0Z" />
+              </svg>
+            </span>
+
+            <div>
+              <p className="text-sm font-bold text-amber-900">請允許定位權限</p>
+
+              <p className="mt-1 text-sm font-medium leading-6 text-amber-800">下一步請在瀏覽器的定位權限視窗點選「允許」</p>
+            </div>
+          </div>
+
+          <div className="flex flex-col-reverse gap-3 mt-6 sm:flex-row sm:justify-center">
             <button
               type="button"
               className="inline-flex items-center justify-center h-12 px-5 text-sm font-semibold transition border rounded-xl border-slate-300 text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
@@ -326,6 +305,7 @@ const NearbyBranchModal = () => {
                 <>
                   <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                     <circle cx="12" cy="12" r="3" />
+
                     <path d="M12 2v3" />
                     <path d="M12 19v3" />
                     <path d="M2 12h3" />
@@ -336,8 +316,6 @@ const NearbyBranchModal = () => {
               )}
             </button>
           </div>
-
-          <p className="mt-4 text-xs leading-5 text-center text-slate-400">瀏覽器會在下一步顯示定位權限視窗</p>
         </div>
       </section>
     </div>
