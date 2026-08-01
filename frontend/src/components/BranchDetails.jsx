@@ -201,10 +201,32 @@ const BranchDetails = () => {
 
   const distanceText = isNearbySearch ? formatDistance(selectedBranch.distance_meters) : null;
 
-  // 優先使用經緯度開啟 Google 地圖
-  const googleMapsQuery = hasCoordinates ? `${selectedLatitude},${selectedLongitude}` : branchAddress !== "目前沒有地址資料" ? branchAddress : null;
+  // 與右側 BankMap「開始導航」使用相同 Google Maps 目的地邏輯
+  const branchDisplayName = [selectedBranch.bank_name || selectedBankName, selectedBranchName].filter(Boolean).join(" ");
 
-  const googleMapsUrl = googleMapsQuery ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(googleMapsQuery)}` : null;
+  const destinationQuery = [branchDisplayName, branchAddress !== "目前沒有地址資料" ? branchAddress : ""].filter(Boolean).join(" ");
+
+  let googleMapsUrl = null;
+
+  if (isNearbySearch && userLocation && hasCoordinates) {
+    const originLatitude = Number(userLocation.lat);
+    const originLongitude = Number(userLocation.lng);
+
+    if (Number.isFinite(originLatitude) && Number.isFinite(originLongitude)) {
+      const originValue = `${originLatitude},${originLongitude}`;
+
+      const destinationValue = destinationQuery || `${selectedLatitude},${selectedLongitude}`;
+
+      googleMapsUrl =
+        "https://www.google.com/maps/dir/" +
+        "?api=1" +
+        `&origin=${encodeURIComponent(originValue)}` +
+        `&destination=${encodeURIComponent(destinationValue)}` +
+        "&travelmode=driving";
+    }
+  } else if (destinationQuery) {
+    googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(destinationQuery)}`;
+  }
 
   return (
     <section ref={resultRef} className="px-4 py-10 scroll-mt-24 sm:px-6 sm:py-12 lg:px-8">
