@@ -190,19 +190,23 @@ const BankMap = ({ address, latitude, longitude, bankName, selectedBranch, userL
       bounds.extend(branch.coordinates);
     });
 
-    // 讓所有附近位置保持在畫面內
+    const isMobile = window.innerWidth < 768;
+
     mapInstance.fitBounds(bounds, {
-      top: 100,
-      right: 70,
-      bottom: 100,
-      left: 70,
+      top: isMobile ? 40 : 100,
+      right: isMobile ? 30 : 70,
+      bottom: isMobile ? 80 : 100,
+      left: isMobile ? 30 : 70,
     });
 
-    // 避免距離太近時過度放大
     const listener = window.google.maps.event.addListenerOnce(mapInstance, "idle", () => {
       const currentZoom = mapInstance.getZoom();
 
-      if (currentZoom && currentZoom > 15) {
+      if (isMobile && currentZoom && currentZoom < 15) {
+        mapInstance.setZoom(15);
+      }
+
+      if (!isMobile && currentZoom && currentZoom > 15) {
         mapInstance.setZoom(15);
       }
     });
