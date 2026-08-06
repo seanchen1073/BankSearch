@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { CircleF, DirectionsRenderer, GoogleMap, MarkerF } from "@react-google-maps/api";
+import { CircleF, GoogleMap, MarkerF } from "@react-google-maps/api";
 
 const mapOptions = {
   streetViewControl: false,
@@ -37,10 +37,6 @@ const BankMap = ({ address, latitude, longitude, bankName, selectedBranch, userL
   const [isLoading, setIsLoading] = useState(true);
 
   const [errorMessage, setErrorMessage] = useState("");
-
-  const [directionsResult, setDirectionsResult] = useState(null);
-
-  const [directionsError, setDirectionsError] = useState("");
 
   // 讀取目前分行的後端座標
   const backendCoordinates = useMemo(() => createCoordinates(latitude, longitude), [latitude, longitude]);
@@ -142,8 +138,6 @@ const BankMap = ({ address, latitude, longitude, bankName, selectedBranch, userL
 
             setErrorMessage("");
           } else {
-            console.error("地址轉換座標失敗", status);
-
             setErrorMessage("目前無法在地圖上找到這個地址");
           }
 
@@ -219,68 +213,6 @@ const BankMap = ({ address, latitude, longitude, bankName, selectedBranch, userL
       }
     };
   }, [mapInstance, coordinates, isNearbySearch, validUserLocation, validNearbyBranches]);
-
-  // 附近模式取得目前位置到最近分行的路線
-  useEffect(() => {
-    let isComponentMounted = true;
-
-    setDirectionsResult(null);
-    setDirectionsError("");
-
-    if (!isNearbySearch) {
-      return undefined;
-    }
-
-    if (!validUserLocation) {
-      return undefined;
-    }
-
-    if (!coordinates) {
-      return undefined;
-    }
-
-    const googleMapsReady =
-      typeof window !== "undefined" && window.google && window.google.maps && window.google.maps.DirectionsService && window.google.maps.TravelMode;
-
-    if (!googleMapsReady) {
-      setDirectionsError("Google 路線服務尚未完成載入");
-
-      return undefined;
-    }
-
-    const directionsService = new window.google.maps.DirectionsService();
-
-    directionsService.route(
-      {
-        origin: validUserLocation,
-        destination: coordinates,
-        travelMode: window.google.maps.TravelMode.DRIVING,
-      },
-      (result, status) => {
-        if (!isComponentMounted) {
-          return;
-        }
-
-        if (status === "OK" && result) {
-          setDirectionsResult(result);
-
-          setDirectionsError("");
-
-          return;
-        }
-
-        console.error("導航路線取得失敗", status);
-
-        setDirectionsResult(null);
-
-        setDirectionsError("目前無法取得導航路線");
-      }
-    );
-
-    return () => {
-      isComponentMounted = false;
-    };
-  }, [isNearbySearch, validUserLocation, coordinates]);
 
   // 組合分行名稱
   const createBranchDisplayName = (branch, fallbackBankName = "") => {
@@ -481,22 +413,6 @@ const BankMap = ({ address, latitude, longitude, bankName, selectedBranch, userL
               onClick={() => handleOpenNearbyBranch(branch)}
             />
           ))}
-
-        {/* 附近搜尋顯示目前位置到最近分行的路線 */}
-        {isNearbySearch && directionsResult && (
-          <DirectionsRenderer
-            directions={directionsResult}
-            options={{
-              preserveViewport: true,
-              suppressMarkers: true,
-              polylineOptions: {
-                strokeColor: "#2563eb",
-                strokeOpacity: 0.9,
-                strokeWeight: 6,
-              },
-            }}
-          />
-        )}
       </GoogleMap>
 
       {/* 地圖左上角資訊 */}
@@ -542,13 +458,6 @@ const BankMap = ({ address, latitude, longitude, bankName, selectedBranch, userL
               <span>其他附近分行</span>
             </div>
           </div>
-        </div>
-      )}
-
-      {/* 導航失敗時顯示提示 */}
-      {isNearbySearch && directionsError && (
-        <div className="absolute px-3 py-2 text-xs font-semibold text-amber-800 border border-amber-200 rounded-lg shadow right-4 top-24 bg-amber-50">
-          {directionsError}
         </div>
       )}
 

@@ -416,7 +416,6 @@ def bank_branch_detail(
     ) as error:
         return create_data_error_response(error)
 
-
 @require_GET
 def get_nearby_branches(request):
     """
@@ -436,15 +435,13 @@ def get_nearby_branches(request):
     limit_value = request.GET.get("limit", "10")
     radius_value = request.GET.get("radius", "10")
 
-    # 必須同時提供緯度與經度
     if (
         latitude_value is None
         or longitude_value is None
     ):
         return JsonResponse(
             {
-                "error":
-                    "請提供 lat 與 lng 參數"
+                "error": "請提供 lat 與 lng 參數"
             },
             status=400,
         )
@@ -458,48 +455,39 @@ def get_nearby_branches(request):
     except (TypeError, ValueError):
         return JsonResponse(
             {
-                "error":
-                    "lat lng limit 或 radius 格式錯誤"
+                "error": "lat lng limit 或 radius 格式錯誤"
             },
             status=400,
         )
 
-    # 驗證緯度範圍
     if not -90 <= user_latitude <= 90:
         return JsonResponse(
             {
-                "error":
-                    "緯度必須介於 -90 至 90"
+                "error": "緯度必須介於 -90 至 90"
             },
             status=400,
         )
 
-    # 驗證經度範圍
     if not -180 <= user_longitude <= 180:
         return JsonResponse(
             {
-                "error":
-                    "經度必須介於 -180 至 180"
+                "error": "經度必須介於 -180 至 180"
             },
             status=400,
         )
 
-    # 限制單次最多取得 50 間
     if not 1 <= limit <= 50:
         return JsonResponse(
             {
-                "error":
-                    "limit 必須介於 1 至 50"
+                "error": "limit 必須介於 1 至 50"
             },
             status=400,
         )
 
-    # 搜尋半徑限制為 1 至 100 公里
     if not 1 <= radius_kilometers <= 100:
         return JsonResponse(
             {
-                "error":
-                    "radius 必須介於 1 至 100 公里"
+                "error": "radius 必須介於 1 至 100 公里"
             },
             status=400,
         )
@@ -526,7 +514,6 @@ def get_nearby_branches(request):
                 status=503,
             )
 
-        # 只產生搜尋半徑內的分行候選資料
         def create_distance_candidates():
             for branch in geocoded_branches:
                 distance_meters = (
@@ -538,7 +525,6 @@ def get_nearby_branches(request):
                     )
                 )
 
-                # 超過搜尋半徑的分行直接排除
                 if (
                     distance_meters
                     > maximum_distance_meters
@@ -550,7 +536,6 @@ def get_nearby_branches(request):
                     branch,
                 )
 
-        # 從半徑內的分行取得距離最近的指定筆數
         nearest_branch_pairs = (
             heapq.nsmallest(
                 limit,
@@ -565,11 +550,13 @@ def get_nearby_branches(request):
             distance_meters,
             branch,
         ) in nearest_branch_pairs:
+
             nearby_branches.append(
                 {
                     **branch,
-                    "distance_meters":
-                        round(distance_meters),
+                    "distance_meters": round(
+                        distance_meters
+                    ),
                 }
             )
 
@@ -578,7 +565,6 @@ def get_nearby_branches(request):
             safe=False,
         )
 
-        # 定位結果與使用者位置有關所以不使用快取
         response["Cache-Control"] = "no-store"
 
         return response
@@ -590,7 +576,6 @@ def get_nearby_branches(request):
         OSError,
     ) as error:
         return create_data_error_response(error)
-
 
 @require_GET
 def api_root(request):

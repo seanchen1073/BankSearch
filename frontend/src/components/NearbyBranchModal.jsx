@@ -240,11 +240,11 @@ const NearbyBranchModal = () => {
           </div>
 
           <h2 id="nearby-branch-title" className="pr-10 mt-5 text-2xl font-bold tracking-tight text-slate-900">
-            快速找附近分行
+            快速尋找附近分行
           </h2>
 
           <p id="nearby-branch-description" className="mt-3 text-sm leading-7 text-slate-600 sm:text-base">
-            開啟定位後，幫你快速找到 10 公里內最近的銀行分行。
+            允許取得您目前的位置後，幫您快速找到 10 公里內最近的銀行分行。
           </p>
 
           {locationError && (
