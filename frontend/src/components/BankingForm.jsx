@@ -1,10 +1,10 @@
 import React, { useContext, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
 import BankNameSection from "./BankNameSection";
 import BranchNameSection from "./BranchNameSection";
 import { BankContext } from "../contexts/BankContext";
 import { fetchBankData } from "./BankGetApi.jsx";
+import { normalizeKeyword, expandKeyword } from "../utils/SearchUtils.jsx";
 
 const BankingForm = () => {
   const navigate = useNavigate();
@@ -35,8 +35,6 @@ const BankingForm = () => {
     setIsKeyboardNavigation,
     isNearbySearch,
     resetNearbyState,
-    formRef,
-    setInputWidth,
   } = useContext(BankContext);
 
   // 初始化銀行資料
@@ -67,6 +65,7 @@ const BankingForm = () => {
           const bank = bankData.find((item) => item.code === bankCode);
 
           if (!bank) {
+            navigate("/not-found", { replace: true });
             return;
           }
 
@@ -82,23 +81,25 @@ const BankingForm = () => {
             setFilteredBranches(branches);
 
             const branch = branches.find((item) => item.code === branchCode);
-
-            if (branch) {
-              // 保留附近分行 API 提供的經緯度與距離資料
-              // 避免網址更新後被一般分行資料覆蓋
-              setSelectedBranch((currentBranch) => {
-                if (currentBranch && currentBranch.code === branch.code) {
-                  return {
-                    ...branch,
-                    ...currentBranch,
-                  };
-                }
-
-                return branch;
-              });
-
-              setBranchSearchTerm(`${branch.code} ${branch.name}`);
+            if (!branch) {
+              navigate("/not-found", { replace: true });
+              return;
             }
+
+            // 保留附近分行 API 提供的經緯度與距離資料
+            // 避免網址更新後被一般分行資料覆蓋
+            setSelectedBranch((currentBranch) => {
+              if (currentBranch && currentBranch.code === branch.code) {
+                return {
+                  ...branch,
+                  ...currentBranch,
+                };
+              }
+
+              return branch;
+            });
+
+            setBranchSearchTerm(`${branch.code} ${branch.name}`);
           }
         } catch (error) {
           console.error("初始化資料失敗:", error);
@@ -132,23 +133,6 @@ const BankingForm = () => {
       navigate(encodeURI(`/${bankCode}/${branchCode}/${names}`));
     }
   }, [navigate, selectedBank, selectedBranch]);
-
-  // 保留輸入框寬度計算
-  useEffect(() => {
-    const updateWidth = () => {
-      if (formRef.current) {
-        setInputWidth(`${formRef.current.offsetWidth}px`);
-      }
-    };
-
-    updateWidth();
-
-    window.addEventListener("resize", updateWidth);
-
-    return () => {
-      window.removeEventListener("resize", updateWidth);
-    };
-  }, [formRef, setInputWidth]);
 
   // 選擇銀行後載入分行
   useEffect(() => {
@@ -407,17 +391,23 @@ const BankingForm = () => {
       resetNearbyState();
     }
 
-    const normalizedSearchTerm = searchTerm.trim().toLowerCase();
+    const normalizedSearchTerm = expandKeyword(searchTerm);
 
-    const filtered = bankData.filter(
-      (bank) => bank.code.toLowerCase().includes(normalizedSearchTerm) || bank.name.toLowerCase().includes(normalizedSearchTerm)
-    );
+    const filtered = bankData.filter((bank) => {
+      const bankName = normalizeKeyword(bank.name);
+
+      const bankCode = String(bank.code || "").toLowerCase();
+
+      return bankName.includes(normalizedSearchTerm) || bankCode.includes(searchTerm.trim().toLowerCase());
+    });
 
     setFilteredBanks(filtered);
+
     setBankSearchTerm(searchTerm);
 
     setSelectedIndex(-1);
     setMouseHoveredIndex(-1);
+
     setActiveDropdown("bank");
 
     if (searchTerm === "") {

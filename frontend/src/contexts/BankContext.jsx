@@ -1,4 +1,4 @@
-import React, { createContext, useRef, useState } from "react";
+import React, { createContext, useState } from "react";
 
 /**
  * 建立銀行查詢共用 Context
@@ -117,14 +117,6 @@ export const BankProvider = ({ children }) => {
   };
 
   /**
-   * 原本搜尋元件使用的欄位寬度與表單參照
-   *
-   * 目前先保留，避免影響既有搜尋下拉選單
-   */
-  const [inputWidth, setInputWidth] = useState("");
-  const formRef = useRef(null);
-
-  /**
    * 提供給所有子元件使用的共用資料
    */
   const contextValue = {
@@ -202,11 +194,6 @@ export const BankProvider = ({ children }) => {
 
     // 清除附近分行狀態
     resetNearbyState,
-
-    // 原本搜尋元件仍使用的資料
-    inputWidth,
-    setInputWidth,
-    formRef,
   };
 
   return <BankContext.Provider value={contextValue}>{children}</BankContext.Provider>;

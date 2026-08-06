@@ -148,13 +148,13 @@ const Header = () => {
 
         <div className="relative px-4 pt-8 pb-20 mx-auto text-center max-w-7xl sm:px-6 sm:pb-24 sm:pt-10 lg:px-8 lg:pb-24 lg:pt-12">
           <p className="inline-flex px-4 py-2 mx-auto text-sm font-semibold text-blue-100 border rounded-full border-blue-300/30 bg-white/10">
-            全台銀行與分行資訊整合查詢
+            本站目前僅提供銀行分行資料，暫不包含郵局及農漁會
           </p>
 
-          <h1 className="max-w-4xl mx-auto mt-5 text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">台灣所有銀行查詢系統</h1>
+          <h1 className="max-w-4xl mx-auto mt-5 text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">全台銀行與分行查詢系統</h1>
 
           <p className="max-w-3xl mx-auto mt-5 text-base leading-7 text-blue-100 sm:text-lg sm:leading-8">
-            快速查詢全台銀行與分行資訊 找到離你最近的服務據點 並一鍵開啟 Google 地圖導航
+            快速查詢全台銀行與分行、找到最近的服務據點、一鍵開啟 Google 地圖導航
           </p>
         </div>
       </section>
