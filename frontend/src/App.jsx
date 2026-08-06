@@ -1,7 +1,6 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import { LoadScript } from "@react-google-maps/api";
-
 import Header from "./components/Header";
 import BankingForm from "./components/BankingForm";
 import BranchDetails from "./components/BranchDetails";
@@ -10,6 +9,7 @@ import Footer from "./components/Footer";
 import NotFound from "./components/NotFoundPage";
 import NearbyBranchModal from "./components/NearbyBranchModal";
 import { BankProvider } from "./contexts/BankContext";
+import SEO from "./components/seo.jsx";
 
 function App() {
   const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
@@ -18,7 +18,11 @@ function App() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
+      <SEO />
       <BankProvider>
+        {/* SEO 設定 */}
+        <SEO />
+
         <Header />
 
         {/* 附近分行定位說明視窗 */}
