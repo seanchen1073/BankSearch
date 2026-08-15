@@ -112,3 +112,76 @@ export const fetchNearbyBranches = async (latitude, longitude, limit = 10, radiu
     return null;
   }
 };
+
+/**
+ * 取得目前分行對應的 Google Place
+ *
+ * 一般分行使用銀行代碼與分行代碼
+ * 沒有分行代碼時改用銀行代碼與分行名稱
+ *
+ * 這支 API 只會在前端主動呼叫時執行
+ * 不會影響首頁與搜尋下拉選單載入
+ */
+export const resolveGooglePlace = async (bankCode, branchCode = "", branchName = "") => {
+  const normalizedBankCode = String(bankCode || "").trim();
+  const normalizedBranchCode = String(branchCode || "").trim();
+  const normalizedBranchName = String(branchName || "").trim();
+
+  // 沒有銀行代碼就不送出請求
+  if (!normalizedBankCode) {
+    console.error("Google Place 查詢失敗 缺少銀行代碼");
+
+    return null;
+  }
+
+  // 分行代碼和分行名稱至少要有一個
+  if (!normalizedBranchCode && !normalizedBranchName) {
+    console.error("Google Place 查詢失敗 缺少分行資料");
+
+    return null;
+  }
+
+  const params = {
+    bank_code: normalizedBankCode,
+  };
+
+  // 一般分行使用分行代碼
+  if (normalizedBranchCode) {
+    params.branch_code = normalizedBranchCode;
+  }
+
+  // 沒有分行代碼時才使用分行名稱
+  if (!normalizedBranchCode && normalizedBranchName) {
+    params.branch_name = normalizedBranchName;
+  }
+
+  try {
+    const response = await bankApi.get("/places/resolve/", {
+      params,
+    });
+
+    if (response.status === 200 && response.data && typeof response.data === "object" && typeof response.data.resolved === "boolean") {
+      return response.data;
+    }
+
+    console.error("Google Place API 回傳格式錯誤", response.data);
+
+    return null;
+  } catch (error) {
+    if (error.response) {
+      console.error("取得 Google Place 失敗", error.response.status, error.response.data);
+
+      return null;
+    }
+
+    if (error.request) {
+      console.error("Google Place 後端沒有回應", error.request);
+
+      return null;
+    }
+
+    console.error("取得 Google Place 失敗", error.message);
+
+    return null;
+  }
+};

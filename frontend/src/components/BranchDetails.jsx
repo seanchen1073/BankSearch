@@ -209,30 +209,50 @@ const BranchDetails = () => {
 
   let googleMapsUrl = null;
 
-  const seoTitle = `${selectedBankName}${selectedBranchName}｜銀行代碼、地址與電話查詢`;
+  const hasBranchCode = Boolean(selectedBranchCode);
 
-  const seoDescription = `查詢${selectedBankName}${selectedBranchName}分行資訊，包含銀行代碼、地址、電話與 Google 地圖位置。`;
+  // 有分行代碼跟沒有分行代碼使用不同 SEO 文案
+  const seoTitle = hasBranchCode
+    ? `${selectedBankName}${selectedBranchName}｜銀行代碼、地址與電話查詢`
+    : `${selectedBankName}${selectedBranchName}｜地址與電話查詢`;
+
+  const seoDescription = hasBranchCode
+    ? `查詢${selectedBankName}${selectedBranchName}分行資訊，包含銀行代碼、分行代碼、地址、電話與 Google 地圖位置。`
+    : `查詢${selectedBankName}${selectedBranchName}資訊，包含銀行代碼、地址、電話與 Google 地圖位置。`;
 
   const seoUrl = window.location.href;
 
-  if (isNearbySearch && userLocation && hasCoordinates) {
+  // 有後端經緯度就優先使用座標
+  const coordinateQuery = hasCoordinates ? `${selectedLatitude},${selectedLongitude}` : "";
+
+  if (isNearbySearch && userLocation) {
     const originLatitude = Number(userLocation.lat);
     const originLongitude = Number(userLocation.lng);
 
     if (Number.isFinite(originLatitude) && Number.isFinite(originLongitude)) {
       const originValue = `${originLatitude},${originLongitude}`;
 
-      const destinationValue = destinationQuery || `${selectedLatitude},${selectedLongitude}`;
+      // 有後端座標時直接用座標導航
+      // 沒有座標時才改用名稱與地址
+      const destinationValue = coordinateQuery || destinationQuery;
 
-      googleMapsUrl =
-        "https://www.google.com/maps/dir/" +
-        "?api=1" +
-        `&origin=${encodeURIComponent(originValue)}` +
-        `&destination=${encodeURIComponent(destinationValue)}` +
-        "&travelmode=driving";
+      if (destinationValue) {
+        googleMapsUrl =
+          "https://www.google.com/maps/dir/" +
+          "?api=1" +
+          `&origin=${encodeURIComponent(originValue)}` +
+          `&destination=${encodeURIComponent(destinationValue)}` +
+          "&travelmode=driving";
+      }
     }
-  } else if (destinationQuery) {
-    googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(destinationQuery)}`;
+  } else {
+    // 一般查詢也優先使用後端座標
+    // 只有沒有座標時才用地址搜尋
+    const mapQuery = coordinateQuery || destinationQuery;
+
+    if (mapQuery) {
+      googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`;
+    }
   }
 
   return (
@@ -317,7 +337,7 @@ const BranchDetails = () => {
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold text-slate-500">分行代碼</p>
 
-                        <p className="mt-1 font-bold break-all text-slate-900">{selectedBranchCode}</p>
+                        <p className="mt-1 font-bold break-all text-slate-900">{selectedBranchCode || "無分行代碼"}</p>
                       </div>
 
                       {selectedBranchCode && (
@@ -436,6 +456,8 @@ const BranchDetails = () => {
                   address={selectedBranch.address}
                   latitude={selectedBranch.latitude}
                   longitude={selectedBranch.longitude}
+                  bankCode={selectedBankCode}
+                  bankName={selectedBankName}
                   selectedBranch={selectedBranch}
                   userLocation={userLocation}
                   nearbyBranches={nearbyBranches}

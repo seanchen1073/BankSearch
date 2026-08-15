@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useCallback, useContext, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import BankNameSection from "./BankNameSection";
 import BranchNameSection from "./BranchNameSection";
@@ -37,6 +37,65 @@ const BankingForm = () => {
     resetNearbyState,
   } = useContext(BankContext);
 
+  // 統一處理分行搜尋框顯示文字
+  // 沒有分行代碼時只顯示分行名稱避免前面多一個空白
+  const formatBranchSearchTerm = (branch) => {
+    return [branch?.code, branch?.name].filter(Boolean).join(" ");
+  };
+
+  // 安全解碼網址裡的中文名稱
+  const decodePathPart = (value) => {
+    try {
+      return decodeURIComponent(value);
+    } catch (error) {
+      console.error("網址解碼失敗:", error);
+      return value;
+    }
+  };
+
+  // 暫存已經載入過的分行資料
+  // 同一家銀行在目前頁面生命週期內只需要向後端取得一次
+  const branchDataCacheRef = useRef(new Map());
+
+  // 暫存目前正在進行中的分行 API 請求
+  // 避免網址初始化與選擇銀行同時觸發相同 API
+  const branchRequestCacheRef = useRef(new Map());
+
+  // 統一取得指定銀行的分行資料
+  // 已有快取時直接重用資料
+  // API 還在進行時直接共用同一個 Promise
+  const getBranchesForBank = useCallback(async (bankCode) => {
+    const normalizedBankCode = String(bankCode || "").trim();
+
+    if (!normalizedBankCode) {
+      return null;
+    }
+
+    if (branchDataCacheRef.current.has(normalizedBankCode)) {
+      return branchDataCacheRef.current.get(normalizedBankCode);
+    }
+
+    if (branchRequestCacheRef.current.has(normalizedBankCode)) {
+      return branchRequestCacheRef.current.get(normalizedBankCode);
+    }
+
+    const request = fetchBankData(normalizedBankCode)
+      .then((branches) => {
+        if (branches && Array.isArray(branches)) {
+          branchDataCacheRef.current.set(normalizedBankCode, branches);
+        }
+
+        return branches;
+      })
+      .finally(() => {
+        branchRequestCacheRef.current.delete(normalizedBankCode);
+      });
+
+    branchRequestCacheRef.current.set(normalizedBankCode, request);
+
+    return request;
+  }, []);
+
   // 初始化銀行資料
   useEffect(() => {
     const loadBankData = async () => {
@@ -56,10 +115,17 @@ const BankingForm = () => {
   // 從網址還原銀行與分行資料
   useEffect(() => {
     const initializeFromUrl = async () => {
-      const pathParts = location.pathname.split("/");
+      const pathParts = location.pathname.split("/").filter(Boolean);
 
-      if (pathParts.length === 4 && bankData.length > 0) {
-        const [, bankCode, branchCode] = pathParts;
+      // 一般分行會有三段網址
+      // 沒有分行代碼的代表人辦事處會有兩段網址
+      const isRegularBranchRoute = pathParts.length === 3;
+      const isNoCodeBranchRoute = pathParts.length === 2;
+
+      if ((isRegularBranchRoute || isNoCodeBranchRoute) && bankData.length > 0) {
+        const bankCode = pathParts[0];
+        const branchCode = isRegularBranchRoute ? pathParts[1] : "";
+        const names = isRegularBranchRoute ? pathParts[2] : pathParts[1];
 
         try {
           const bank = bankData.find((item) => item.code === bankCode);
@@ -74,13 +140,32 @@ const BankingForm = () => {
           setSelectedBank(bankWithCode);
           setBankSearchTerm(bankWithCode);
 
-          const branches = await fetchBankData(bankCode);
+          const branches = await getBranchesForBank(bankCode);
 
           if (branches && Array.isArray(branches)) {
             setBranchData(branches);
             setFilteredBranches(branches);
 
-            const branch = branches.find((item) => item.code === branchCode);
+            let branch = null;
+
+            if (isRegularBranchRoute) {
+              // 一般分行直接使用分行代碼找到資料
+              branch = branches.find((item) => item.code === branchCode);
+            } else {
+              // 沒有分行代碼時改用網址裡的銀行名稱與分行名稱找資料
+              const decodedNames = decodePathPart(names).replace(/\.html$/i, "");
+              const bankNamePrefix = `${bank.name}-`;
+
+              if (!decodedNames.startsWith(bankNamePrefix)) {
+                navigate("/not-found", { replace: true });
+                return;
+              }
+
+              const branchName = decodedNames.slice(bankNamePrefix.length);
+
+              branch = branches.find((item) => !String(item.code || "").trim() && item.name === branchName);
+            }
+
             if (!branch) {
               navigate("/not-found", { replace: true });
               return;
@@ -89,7 +174,7 @@ const BankingForm = () => {
             // 保留附近分行 API 提供的經緯度與距離資料
             // 避免網址更新後被一般分行資料覆蓋
             setSelectedBranch((currentBranch) => {
-              if (currentBranch && currentBranch.code === branch.code) {
+              if (currentBranch && currentBranch.code === branch.code && currentBranch.name === branch.name) {
                 return {
                   ...branch,
                   ...currentBranch,
@@ -99,7 +184,7 @@ const BankingForm = () => {
               return branch;
             });
 
-            setBranchSearchTerm(`${branch.code} ${branch.name}`);
+            setBranchSearchTerm(formatBranchSearchTerm(branch));
           }
         } catch (error) {
           console.error("初始化資料失敗:", error);
@@ -112,6 +197,7 @@ const BankingForm = () => {
   }, [
     location.pathname,
     bankData,
+    getBranchesForBank,
     navigate,
     setBranchData,
     setBranchSearchTerm,
@@ -125,12 +211,16 @@ const BankingForm = () => {
   useEffect(() => {
     if (selectedBank && selectedBranch) {
       const bankCode = selectedBank.split(" ")[0];
-      const branchCode = selectedBranch.code;
+      const branchCode = String(selectedBranch.code || "").trim();
       const bankName = selectedBank.split(" ").slice(1).join(" ");
       const branchName = selectedBranch.name;
       const names = `${bankName}-${branchName}.html`;
 
-      navigate(encodeURI(`/${bankCode}/${branchCode}/${names}`));
+      // 一般分行維持原本三段式網址
+      // 沒有分行代碼的代表人辦事處改用兩段式網址
+      const targetPath = branchCode ? `/${bankCode}/${branchCode}/${names}` : `/${bankCode}/${names}`;
+
+      navigate(encodeURI(targetPath));
     }
   }, [navigate, selectedBank, selectedBranch]);
 
@@ -144,9 +234,15 @@ const BankingForm = () => {
       return;
     }
 
+    let isCurrentSelection = true;
+
     const loadBranches = async () => {
       const bankCode = selectedBank.split(" ")[0];
-      const branches = await fetchBankData(bankCode);
+      const branches = await getBranchesForBank(bankCode);
+
+      if (!isCurrentSelection) {
+        return;
+      }
 
       if (branches && Array.isArray(branches)) {
         setBranchData(branches);
@@ -155,7 +251,11 @@ const BankingForm = () => {
     };
 
     loadBranches();
-  }, [selectedBank, setBranchData, setBranchSearchTerm, setFilteredBranches, setSelectedBranch]);
+
+    return () => {
+      isCurrentSelection = false;
+    };
+  }, [getBranchesForBank, selectedBank, setBranchData, setBranchSearchTerm, setFilteredBranches, setSelectedBranch]);
 
   // 開啟選單時定位目前選擇項目
   useEffect(() => {
@@ -184,7 +284,9 @@ const BankingForm = () => {
       }
 
       case "branch": {
-        const index = selectedBranch ? filteredBranches.findIndex((branch) => branch.code === selectedBranch.code) : -1;
+        const index = selectedBranch
+          ? filteredBranches.findIndex((branch) => branch.code === selectedBranch.code && branch.name === selectedBranch.name)
+          : -1;
 
         setSelectedIndex(index);
 
@@ -378,7 +480,7 @@ const BankingForm = () => {
 
     setSelectedBranch(branch);
 
-    setBranchSearchTerm(`${branch.code} ${branch.name}`);
+    setBranchSearchTerm(formatBranchSearchTerm(branch));
 
     setActiveDropdown(null);
     setSelectedIndex(-1);
@@ -428,9 +530,13 @@ const BankingForm = () => {
     setMouseHoveredIndex(-1);
 
     if (selectedBank) {
-      const filtered = branchData.filter(
-        (branch) => branch.name.toLowerCase().includes(normalizedSearchTerm) || branch.code.toLowerCase().includes(normalizedSearchTerm)
-      );
+      const filtered = branchData.filter((branch) => {
+        const branchName = String(branch.name || "").toLowerCase();
+
+        const branchCode = String(branch.code || "").toLowerCase();
+
+        return branchName.includes(normalizedSearchTerm) || branchCode.includes(normalizedSearchTerm);
+      });
 
       setFilteredBranches(filtered);
       setActiveDropdown("branch");

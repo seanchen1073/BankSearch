@@ -22,3 +22,6 @@ media/
 
 # Git 的行結尾轉換配置文件
 *.gitattributes
+
+# 忽略銀行資料備份
+bank/bank_data_backup_*.json

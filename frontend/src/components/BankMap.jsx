@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { CircleF, GoogleMap, MarkerF } from "@react-google-maps/api";
 
+import { resolveGooglePlace } from "./BankGetApi.jsx";
+
 const mapOptions = {
   streetViewControl: false,
   mapTypeControl: false,
@@ -11,6 +13,11 @@ const mapOptions = {
 
 // 將經緯度轉成 Google 地圖格式
 const createCoordinates = (latitude, longitude) => {
+  // 避免空字串或 null 被 Number 轉成 0
+  if (latitude === null || latitude === undefined || latitude === "" || longitude === null || longitude === undefined || longitude === "") {
+    return null;
+  }
+
   const parsedLatitude = Number(latitude);
 
   const parsedLongitude = Number(longitude);
@@ -29,7 +36,22 @@ const createCoordinates = (latitude, longitude) => {
   };
 };
 
-const BankMap = ({ address, latitude, longitude, bankName, selectedBranch, userLocation, nearbyBranches = [], isNearbySearch = false }) => {
+// 把完整地址整理成 Google 地圖比較容易找到的門牌
+const cleanNavigationAddress = (address) => {
+  const addressText = String(address || "").trim();
+
+  if (!addressText) {
+    return "";
+  }
+
+  const normalizedAddress = addressText.replace("臺", "台").replace(/\s+/g, "");
+
+  const addressMatch = normalizedAddress.match(/^(.+?號(?:之\d+)?)/);
+
+  return addressMatch ? addressMatch[1] : normalizedAddress;
+};
+
+const BankMap = ({ address, latitude, longitude, bankCode, bankName, selectedBranch, userLocation, nearbyBranches = [], isNearbySearch = false }) => {
   const [coordinates, setCoordinates] = useState(null);
 
   const [mapInstance, setMapInstance] = useState(null);
@@ -37,6 +59,9 @@ const BankMap = ({ address, latitude, longitude, bankName, selectedBranch, userL
   const [isLoading, setIsLoading] = useState(true);
 
   const [errorMessage, setErrorMessage] = useState("");
+
+  // 記錄 Google 地圖是不是正在準備
+  const [isOpeningGoogleMaps, setIsOpeningGoogleMaps] = useState(false);
 
   // 讀取目前分行的後端座標
   const backendCoordinates = useMemo(() => createCoordinates(latitude, longitude), [latitude, longitude]);
@@ -74,11 +99,13 @@ const BankMap = ({ address, latitude, longitude, bankName, selectedBranch, userL
           return true;
         }
 
-        const sameBranchCode = String(branch.code) === String(selectedBranch.code);
+        const sameBranchCode = String(branch.code || "") === String(selectedBranch.code || "");
+
+        const sameBranchName = String(branch.name || "") === String(selectedBranch.name || "");
 
         const sameBankCode = !branch.bank_code || !selectedBranch.bank_code || String(branch.bank_code) === String(selectedBranch.bank_code);
 
-        return !(sameBranchCode && sameBankCode);
+        return !(sameBranchCode && sameBranchName && sameBankCode);
       }),
     [validNearbyBranches, selectedBranch]
   );
@@ -229,13 +256,53 @@ const BankMap = ({ address, latitude, longitude, bankName, selectedBranch, userL
     return [resolvedBankName, branch.name].filter(Boolean).join(" ");
   };
 
-  // 產生 Google 地圖位置網址
-  const createGoogleMapsUrl = (branchName, branchAddress, fallbackCoordinates) => {
-    // 優先使用完整分行名稱與地址
-    const placeQuery = [branchName, branchAddress].filter(Boolean).join(" ");
+  // 查目前分行對應的 Google Place
+  // 只有真的要開地圖時才會呼叫後端
+  const resolveBranchPlace = async (branch, fallbackBankCode = "") => {
+    if (!branch) {
+      return null;
+    }
 
-    // 沒有名稱與地址時才使用座標
-    const query = placeQuery || (fallbackCoordinates ? `${fallbackCoordinates.lat},${fallbackCoordinates.lng}` : "");
+    const resolvedBankCode = String(branch.bank_code || fallbackBankCode || "").trim();
+    const resolvedBranchCode = String(branch.code || "").trim();
+    const resolvedBranchName = String(branch.name || "").trim();
+
+    if (!resolvedBankCode || (!resolvedBranchCode && !resolvedBranchName)) {
+      return null;
+    }
+
+    return resolveGooglePlace(resolvedBankCode, resolvedBranchCode, resolvedBranchName);
+  };
+
+  // 產生 Google 地圖位置網址
+  const createGoogleMapsUrl = (branchName, branchAddress, targetCoordinates, placeResult = null) => {
+    const placeId = String(placeResult?.place_id || "").trim();
+    const googleName = String(placeResult?.google_name || "").trim();
+    const resolvedNavigationAddress = String(placeResult?.navigation_address || "").trim();
+
+    const navigationAddress = resolvedNavigationAddress || cleanNavigationAddress(branchAddress);
+
+    const coordinateQuery = targetCoordinates ? `${targetCoordinates.lat},${targetCoordinates.lng}` : "";
+
+    // 有正式 Place ID 時直接開 Google 的地點
+    if (placeId) {
+      const placeQuery = googleName || navigationAddress || branchName || coordinateQuery;
+
+      if (!placeQuery) {
+        return null;
+      }
+
+      return (
+        "https://www.google.com/maps/search/" +
+        "?api=1" +
+        `&query=${encodeURIComponent(placeQuery)}` +
+        `&query_place_id=${encodeURIComponent(placeId)}`
+      );
+    }
+
+    // 沒有 Place ID 時先用門牌地址
+    // 地址也沒有時才使用座標
+    const query = navigationAddress || coordinateQuery || branchName;
 
     if (!query) {
       return null;
@@ -245,18 +312,42 @@ const BankMap = ({ address, latitude, longitude, bankName, selectedBranch, userL
   };
 
   // 產生 Google 地圖導航網址
-  const createGoogleDirectionsUrl = (origin, destinationName, destinationAddress, fallbackCoordinates) => {
+  const createGoogleDirectionsUrl = (origin, destinationName, destinationAddress, targetCoordinates, placeResult = null) => {
     if (!origin) {
       return null;
     }
 
     const originValue = `${origin.lat},${origin.lng}`;
 
-    // 優先使用完整分行名稱與地址
-    const destinationQuery = [destinationName, destinationAddress].filter(Boolean).join(" ");
+    const placeId = String(placeResult?.place_id || "").trim();
+    const googleName = String(placeResult?.google_name || "").trim();
+    const resolvedNavigationAddress = String(placeResult?.navigation_address || "").trim();
 
-    // 沒有名稱與地址時才使用座標
-    const destinationValue = destinationQuery || (fallbackCoordinates ? `${fallbackCoordinates.lat},${fallbackCoordinates.lng}` : "");
+    const navigationAddress = resolvedNavigationAddress || cleanNavigationAddress(destinationAddress);
+
+    const coordinateDestination = targetCoordinates ? `${targetCoordinates.lat},${targetCoordinates.lng}` : "";
+
+    // 有正式 Place ID 時直接指定 Google 的目的地
+    if (placeId) {
+      const placeDestination = googleName || navigationAddress || destinationName || coordinateDestination;
+
+      if (!placeDestination) {
+        return null;
+      }
+
+      return (
+        "https://www.google.com/maps/dir/" +
+        "?api=1" +
+        `&origin=${encodeURIComponent(originValue)}` +
+        `&destination=${encodeURIComponent(placeDestination)}` +
+        `&destination_place_id=${encodeURIComponent(placeId)}` +
+        "&travelmode=driving"
+      );
+    }
+
+    // 沒有 Place ID 時先用門牌地址
+    // 地址也沒有時才使用座標
+    const destinationValue = navigationAddress || coordinateDestination || destinationName;
 
     if (!destinationValue) {
       return null;
@@ -272,26 +363,79 @@ const BankMap = ({ address, latitude, longitude, bankName, selectedBranch, userL
   };
 
   // 開啟目前分行或開始導航
-  const handleOpenGoogleMaps = () => {
-    const branchDisplayName = createBranchDisplayName(selectedBranch, bankName);
-
-    let googleMapsUrl = null;
-
-    // 附近模式直接開啟導航
-    if (isNearbySearch && validUserLocation && coordinates) {
-      googleMapsUrl = createGoogleDirectionsUrl(validUserLocation, branchDisplayName, address, coordinates);
-    } else {
-      googleMapsUrl = createGoogleMapsUrl(branchDisplayName, address, coordinates);
-    }
-
-    if (!googleMapsUrl) {
+  // 按下按鈕後才會查 Google Place
+  const handleOpenGoogleMaps = async () => {
+    if (isOpeningGoogleMaps) {
       return;
     }
 
-    window.open(googleMapsUrl, "_blank", "noopener,noreferrer");
+    setIsOpeningGoogleMaps(true);
+
+    const mapWindow = window.open("about:blank", "_blank");
+
+    if (mapWindow) {
+      mapWindow.opener = null;
+    }
+
+    try {
+      const branchDisplayName = createBranchDisplayName(selectedBranch, bankName);
+
+      const placeResult = await resolveBranchPlace(selectedBranch, bankCode);
+
+      let googleMapsUrl = null;
+
+      // 附近模式直接開啟導航
+      if (isNearbySearch && validUserLocation) {
+        googleMapsUrl = createGoogleDirectionsUrl(validUserLocation, branchDisplayName, address, coordinates, placeResult);
+      } else {
+        googleMapsUrl = createGoogleMapsUrl(branchDisplayName, address, coordinates, placeResult);
+      }
+
+      if (!googleMapsUrl) {
+        if (mapWindow && !mapWindow.closed) {
+          mapWindow.close();
+        }
+
+        return;
+      }
+
+      if (mapWindow && !mapWindow.closed) {
+        mapWindow.location.href = googleMapsUrl;
+        return;
+      }
+
+      window.location.href = googleMapsUrl;
+    } catch (error) {
+      console.error("開啟 Google 地圖失敗", error);
+
+      const branchDisplayName = createBranchDisplayName(selectedBranch, bankName);
+
+      const fallbackGoogleMapsUrl =
+        isNearbySearch && validUserLocation
+          ? createGoogleDirectionsUrl(validUserLocation, branchDisplayName, address, coordinates)
+          : createGoogleMapsUrl(branchDisplayName, address, coordinates);
+
+      if (!fallbackGoogleMapsUrl) {
+        if (mapWindow && !mapWindow.closed) {
+          mapWindow.close();
+        }
+
+        return;
+      }
+
+      if (mapWindow && !mapWindow.closed) {
+        mapWindow.location.href = fallbackGoogleMapsUrl;
+        return;
+      }
+
+      window.location.href = fallbackGoogleMapsUrl;
+    } finally {
+      setIsOpeningGoogleMaps(false);
+    }
   };
 
   // 開啟其他附近分行
+  // 這裡維持原本直接開地圖的方式
   const handleOpenNearbyBranch = (branch) => {
     const branchDisplayName = createBranchDisplayName(branch);
 
@@ -338,12 +482,13 @@ const BankMap = ({ address, latitude, longitude, bankName, selectedBranch, userL
             <button
               type="button"
               onClick={handleOpenGoogleMaps}
-              className="mt-5 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-blue-700 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-200"
+              disabled={isOpeningGoogleMaps}
+              className="mt-5 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-blue-700 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-200 disabled:cursor-wait disabled:bg-blue-600"
             >
               <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                 <path d="m4 4 16 7-7 3-3 6-6-16Z" />
               </svg>
-              改用 Google 地圖開啟
+              {isOpeningGoogleMaps ? "正在開啟 Google 地圖" : "改用 Google 地圖開啟"}
             </button>
           )}
         </div>
@@ -402,7 +547,9 @@ const BankMap = ({ address, latitude, longitude, bankName, selectedBranch, userL
         {isNearbySearch &&
           otherNearbyBranches.map((branch) => (
             <CircleF
-              key={`${branch.bank_code || "bank"}-${branch.code}`}
+              key={`${branch.bank_code || "bank"}-${branch.code || "no-code"}-${
+                branch.name || `${branch.coordinates.lat}-${branch.coordinates.lng}`
+              }`}
               center={branch.coordinates}
               radius={45}
               options={{
@@ -468,13 +615,14 @@ const BankMap = ({ address, latitude, longitude, bankName, selectedBranch, userL
       <button
         type="button"
         onClick={handleOpenGoogleMaps}
-        className="absolute bottom-4 right-4 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-blue-700 px-4 py-2.5 text-sm font-bold text-white shadow-lg transition hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-200"
+        disabled={isOpeningGoogleMaps}
+        className="absolute bottom-4 right-4 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-blue-700 px-4 py-2.5 text-sm font-bold text-white shadow-lg transition hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-200 disabled:cursor-wait disabled:bg-blue-600"
       >
         <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
           <path d="m4 4 16 7-7 3-3 6-6-16Z" />
         </svg>
 
-        {isNearbySearch ? "開始導航" : "開啟地圖"}
+        {isOpeningGoogleMaps ? (isNearbySearch ? "正在準備導航" : "正在開啟地圖") : isNearbySearch ? "開始導航" : "開啟地圖"}
       </button>
     </div>
   );

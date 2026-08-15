@@ -18,7 +18,6 @@ function App() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
-      <SEO />
       <BankProvider>
         {/* SEO 設定 */}
         <SEO />
@@ -41,6 +40,7 @@ function App() {
               <Route path="/" element={null} />
 
               <Route path="/:bankCode/:branchCode/:names" element={<BranchDetails />} />
+              <Route path="/:bankCode/:names" element={<BranchDetails />} />
 
               <Route path="*" element={<NotFound />} />
             </Routes>

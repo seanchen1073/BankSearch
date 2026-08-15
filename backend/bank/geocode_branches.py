@@ -1,9 +1,7 @@
 import argparse
 import json
 import os
-import shutil
 import time
-from datetime import datetime
 from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
@@ -57,24 +55,6 @@ def write_json_atomically(file_path, data):
         )
 
     temporary_path.replace(file_path)
-
-
-def create_backup(file_path):
-    """
-    執行前先備份原始 bank_data.json。
-    """
-    timestamp = datetime.now().strftime(
-        "%Y%m%d_%H%M%S"
-    )
-
-    backup_path = file_path.with_name(
-        f"{file_path.stem}_backup_{timestamp}"
-        f"{file_path.suffix}"
-    )
-
-    shutil.copy2(file_path, backup_path)
-
-    return backup_path
 
 
 def has_valid_coordinates(branch):
@@ -374,14 +354,6 @@ def main():
         )
 
         return 1
-
-    backup_path = create_backup(
-        data_file_path
-    )
-
-    print(
-        f"已建立備份：{backup_path}"
-    )
 
     processed_count = 0
     success_count = 0

@@ -1,10 +1,17 @@
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 from corsheaders.defaults import default_headers
 
 os.environ['ZBPACK_IGNORE_DOCKERFILE'] = 'true'
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# 載入後端環境變數
+load_dotenv(BASE_DIR / ".env")
+
+# Google Places API 金鑰
+GOOGLE_PLACES_API_KEY = os.getenv("GOOGLE_PLACES_API_KEY", "")
 
 SECRET_KEY = 'your_secret_key'
 

@@ -97,13 +97,14 @@ const BranchNameSection = ({
         >
           {filteredBranches.length > 0 ? (
             filteredBranches.map((branch, index) => {
-              const isSelected = selectedBranch?.code === branch.code;
+              // 分行代碼可能是空的 所以要一起比對分行名稱
+              const isSelected = selectedBranch?.code === branch.code && selectedBranch?.name === branch.name;
 
               const isHighlighted = Boolean(getItemClassName(index));
 
               return (
                 <li
-                  key={`${branch.code}-${branch.name}`}
+                  key={`${branch.code || "no-code"}-${branch.name}`}
                   role="option"
                   aria-selected={isSelected}
                   className={`flex cursor-pointer items-center gap-3 rounded-lg px-3 py-3 text-sm transition sm:text-base ${
@@ -119,7 +120,7 @@ const BranchNameSection = ({
                       isSelected ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600"
                     }`}
                   >
-                    {branch.code}
+                    {branch.code || "無代碼"}
                   </span>
 
                   <span className="min-w-0 break-words">{branch.name}</span>
