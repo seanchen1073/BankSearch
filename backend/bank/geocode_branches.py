@@ -19,7 +19,6 @@ BACKEND_DIR = BASE_DIR.parent
 load_dotenv(BACKEND_DIR / ".env")
 
 DEFAULT_DATA_FILE_PATH = BASE_DIR / "bank_data.json"
-DEFAULT_FAILURE_FILE_PATH = BASE_DIR / "geocode_failures.json"
 
 # Google Geocoding API 網址
 GOOGLE_GEOCODING_API_URL = "https://maps.googleapis.com/maps/api/geocode/json"
@@ -2696,22 +2695,14 @@ def inspect_complex_branch(
 def save_progress(
     data_file_path,
     bank_data,
-    failure_file_path,
-    failures,
 ):
     """
-    儲存目前處理進度和失敗紀錄
+    儲存目前處理進度
     """
     write_json_atomically(
         data_file_path,
         bank_data,
     )
-
-    write_json_atomically(
-        failure_file_path,
-        failures,
-    )
-
 
 def parse_arguments():
     """
@@ -2731,16 +2722,6 @@ def parse_arguments():
         ),
         help=(
             "bank_data.json 的完整路徑"
-        ),
-    )
-
-    parser.add_argument(
-        "--failure-file",
-        default=str(
-            DEFAULT_FAILURE_FILE_PATH
-        ),
-        help=(
-            "失敗地址紀錄檔路徑"
         ),
     )
 
@@ -2848,10 +2829,6 @@ def main():
 
     data_file_path = Path(
         arguments.data_file
-    ).resolve()
-
-    failure_file_path = Path(
-        arguments.failure_file
     ).resolve()
 
     geocoding_api_key = None
@@ -2970,7 +2947,6 @@ def main():
     places_success_count = 0
     failure_count = 0
     skipped_count = 0
-    failures = []
 
     try:
         for bank in banks:
@@ -3082,32 +3058,6 @@ def main():
 
                 if not address:
                     failure_count += 1
-
-                    failures.append(
-                        {
-                            "bank_code": (
-                                bank_code
-                            ),
-                            "bank_name": (
-                                bank_name
-                            ),
-                            "branch_code": (
-                                branch_code
-                            ),
-                            "branch_name": (
-                                branch_name
-                            ),
-                            "address": (
-                                address
-                            ),
-                            "geocoding_address": (
-                                ""
-                            ),
-                            "error": (
-                                "地址為空白"
-                            ),
-                        }
-                    )
 
                     continue
 
@@ -3412,38 +3362,6 @@ def main():
                         or "定位失敗"
                     )
 
-                    failures.append(
-                        {
-                            "bank_code": (
-                                bank_code
-                            ),
-                            "bank_name": (
-                                bank_name
-                            ),
-                            "branch_code": (
-                                branch_code
-                            ),
-                            "branch_name": (
-                                branch_name
-                            ),
-                            "address": (
-                                address
-                            ),
-                            "geocoding_address": (
-                                geocoding_address
-                            ),
-                            "old_latitude": (
-                                old_latitude
-                            ),
-                            "old_longitude": (
-                                old_longitude
-                            ),
-                            "error": (
-                                combined_error
-                            ),
-                        }
-                    )
-
                     print(
                         "  最後失敗："
                         f"{combined_error}"
@@ -3464,8 +3382,6 @@ def main():
                     save_progress(
                         data_file_path,
                         bank_data,
-                        failure_file_path,
-                        failures,
                     )
 
                     print(
@@ -3503,8 +3419,6 @@ def main():
             save_progress(
                 data_file_path,
                 bank_data,
-                failure_file_path,
-                failures,
             )
 
     print("")
@@ -3561,11 +3475,6 @@ def main():
 
     print(
         f"略過已有座標：{skipped_count}"
-    )
-
-    print(
-        "失敗紀錄："
-        f"{failure_file_path}"
     )
 
     return 0
