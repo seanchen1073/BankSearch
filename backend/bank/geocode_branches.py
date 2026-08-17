@@ -478,6 +478,21 @@ def extract_navigation_locations(address):
                 working_part
             )
         )
+               # 遇到樓層資訊時清掉前面暫存的裸數字
+        # 避免把 1、2、4樓裡的 2 誤判成 2號
+        if re.search(
+            r"樓|層|室|地下|F",
+            working_part,
+            re.IGNORECASE,
+        ):
+            pending_locations = []
+            continue
+
+        pending_location_match = (
+            pending_location_pattern.match(
+                working_part
+            )
+        )
 
         if (
             pending_location_match
@@ -753,9 +768,9 @@ def validate_geocoding_result(
     result,
 ):
     """
-    檢查 Geocoding 找到的位置是不是同一條路和同一個門牌
+    檢查 Geocoding 找到的位置是不是同一個行政區道路和門牌
 
-    道路或門牌對不上就不接受這筆座標
+    行政區道路或門牌對不上就不接受這筆座標
     """
     expected_route, expected_house_number = (
         extract_expected_address_parts(
@@ -771,6 +786,26 @@ def validate_geocoding_result(
             )
         )
     )
+
+    # 行政區也必須和定位地址一致
+    # 避免同路名同門牌被定位到其他區
+    expected_city_district = (
+        normalize_address_text(
+            extract_city_district_hint(
+                requested_address
+            )
+        )
+    )
+
+    if (
+        expected_city_district
+        and expected_city_district
+        not in formatted_address
+    ):
+        return (
+            False,
+            "Google 回傳行政區與定位地址不一致",
+        )
 
     google_country = (
         get_address_component(
@@ -1016,7 +1051,7 @@ def validate_place_address(
     exact_house_pattern = (
         rf"(?<!\d)"
         rf"{re.escape(expected_house_number)}"
-        rf"號"
+        rf"(?:號|[、,，])"
     )
 
     if re.search(
@@ -2200,7 +2235,8 @@ def evaluate_branch_place_candidate(
                 location_index
             )
 
-    # 完整門牌對上時可信度最高
+        # 完整門牌對上時可信度最高
+    # 同一個 Places 同時涵蓋多個官方門牌時沿用官方地址順序
     if exact_matches:
         matched_index = (
             exact_matches[0]
@@ -2222,6 +2258,10 @@ def evaluate_branch_place_candidate(
             "score": score,
             "distance_meters": None,
         }
+
+    # 同一個 Places 地址包含多個官方門牌時不猜單一入口
+    if len(exact_matches) > 1:
+        return None
 
     # 只有一個主門牌候選時才允許使用主門牌判斷
     # 多個附號共用相同主門牌時不能直接猜第一個
@@ -3127,14 +3167,10 @@ def main():
                     arguments.repair_complex
                     and arguments.dry_run
                 ):
-                    if (
-                        len(
-                            navigation_locations
-                        )
-                        <= 1
-                    ):
+                    # 完全沒有可用門牌時才略過第二階段
+                    if not navigation_locations:
                         print(
-                            "  複雜地址沒有解析出多個可信候選"
+                            "  複雜地址沒有解析出可信候選"
                         )
 
                         print(
@@ -3146,6 +3182,16 @@ def main():
                         )
 
                         continue
+
+                    # 只有一個唯一門牌也要驗證目前座標
+                    if len(navigation_locations) == 1:
+                        print(
+                            "  複雜地址解析後只有一個唯一門牌"
+                        )
+
+                        print(
+                            "  仍進行第二階段定位驗證"
+                        )
 
                     inspect_complex_branch(
                         bank_name,
