@@ -23203,8 +23203,24 @@
           "name": "台中分行",
           "address": "台中市西屯區臺灣大道2段711號、715號2樓之1及715號3樓之1",
           "tel": "04-3285666",
-          "latitude": 24.1590901,
-          "longitude": 120.6553868
+          "latitude": 24.1590724,
+          "longitude": 120.65534389999999,
+          "navigation_locations": [
+            {
+              "address": "台中市西屯區臺灣大道2段711號",
+              "latitude": 24.1590724,
+              "longitude": 120.65534389999999,
+              "place_id": "ChIJ4Sx6RIU9aTQR49NDb1aNO9Y",
+              "is_recommended": true
+            },
+            {
+              "address": "台中市西屯區臺灣大道2段715號",
+              "latitude": 24.1590995,
+              "longitude": 120.6553929,
+              "place_id": "",
+              "is_recommended": false
+            }
+          ]
         },
         {
           "code": "8030054",
@@ -23243,16 +23259,69 @@
           "name": "東台北分行",
           "address": "台北市松山區南京東路五段215、217、219號1、2樓",
           "tel": "02-27530900",
-          "latitude": 25.0516165,
-          "longitude": 121.5641713
+          "latitude": 25.0516319,
+          "longitude": 121.564204,
+          "navigation_locations": [
+            {
+              "address": "台北市松山區南京東路五段215號",
+              "latitude": 25.0516165,
+              "longitude": 121.5641713,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "台北市松山區南京東路五段217號",
+              "latitude": 25.0516319,
+              "longitude": 121.564204,
+              "place_id": "ChIJMe9cFZSrQjQR_VJMhoiI3Cg",
+              "is_recommended": true
+            },
+            {
+              "address": "台北市松山區南京東路五段219號",
+              "latitude": 25.0516167,
+              "longitude": 121.5641718,
+              "place_id": "",
+              "is_recommended": false
+            }
+          ]
         },
         {
           "code": "8030102",
           "name": "高雄分行",
           "address": "高雄市苓雅區光華一路204號、206號4樓之2、206號5樓之1、206號7樓之2、206號7樓之4、206號7樓之6、206號7樓之9、208號1至2樓、208號之1",
           "tel": "07-2265353",
-          "latitude": 22.6290327,
-          "longitude": 120.3139775
+          "latitude": 22.628885,
+          "longitude": 120.31388489999999,
+          "navigation_locations": [
+            {
+              "address": "高雄市苓雅區光華一路204號",
+              "latitude": 22.628885,
+              "longitude": 120.31388489999999,
+              "place_id": "ChIJpa3uWpEEbjQRc8cnV_T08cE",
+              "is_recommended": true
+            },
+            {
+              "address": "高雄市苓雅區光華一路206號",
+              "latitude": 22.6290455,
+              "longitude": 120.313879,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "高雄市苓雅區光華一路208號",
+              "latitude": 22.629103,
+              "longitude": 120.313816,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "高雄市苓雅區光華一路208號之1",
+              "latitude": 22.629103,
+              "longitude": 120.313816,
+              "place_id": "",
+              "is_recommended": false
+            }
+          ]
         },
         {
           "code": "8030113",
@@ -23275,8 +23344,31 @@
           "name": "員林分行",
           "address": "彰化縣員林市三民街35-5、35-6、37號1、2樓",
           "tel": "04-8347666",
-          "latitude": 23.9584728,
-          "longitude": 120.5730286
+          "latitude": 23.9584349,
+          "longitude": 120.57288,
+          "navigation_locations": [
+            {
+              "address": "彰化縣員林市三民街35-5號",
+              "latitude": null,
+              "longitude": null,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "彰化縣員林市三民街35-6號",
+              "latitude": null,
+              "longitude": null,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "彰化縣員林市三民街37號",
+              "latitude": 23.9584349,
+              "longitude": 120.57288,
+              "place_id": "ChIJZfr-JFk2aTQRZw6COhb5RIs",
+              "is_recommended": true
+            }
+          ]
         },
         {
           "code": "8030146",
@@ -23291,16 +23383,69 @@
           "name": "仁愛分行",
           "address": "台北市大安區仁愛路4段401號2樓及延吉街175號地下一樓、177號1，2樓、179號地下一樓，1，2樓",
           "tel": "02-27813366",
-          "latitude": 25.0380252,
-          "longitude": 121.5555474
+          "latitude": 25.038201299999997,
+          "longitude": 121.55549649999999,
+          "navigation_locations": [
+            {
+              "address": "台北市大安區仁愛路4段401號",
+              "latitude": 25.0380144,
+              "longitude": 121.5554849,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "台北市大安區延吉街175號",
+              "latitude": 25.0383481,
+              "longitude": 121.5554476,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "台北市大安區延吉街177號",
+              "latitude": 25.0382295,
+              "longitude": 121.5555838,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "台北市大安區延吉街179號",
+              "latitude": 25.038201299999997,
+              "longitude": 121.55549649999999,
+              "place_id": "ChIJwZsIlsirQjQRQT80qSjLmvE",
+              "is_recommended": true
+            }
+          ]
         },
         {
           "code": "8030168",
           "name": "南崁分行",
           "address": "桃園市蘆竹區中正路133、135、137號",
           "tel": "03-3229699",
-          "latitude": 25.0445142,
-          "longitude": 121.293547
+          "latitude": 25.044509299999998,
+          "longitude": 121.29354719999999,
+          "navigation_locations": [
+            {
+              "address": "桃園市蘆竹區中正路133號",
+              "latitude": 25.0445142,
+              "longitude": 121.293547,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "桃園市蘆竹區中正路135號",
+              "latitude": 25.0446793,
+              "longitude": 121.2934232,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "桃園市蘆竹區中正路137號",
+              "latitude": 25.044509299999998,
+              "longitude": 121.29354719999999,
+              "place_id": "ChIJ7Qi04tgfaDQRD3eFT5ry3tw",
+              "is_recommended": true
+            }
+          ]
         },
         {
           "code": "8030179",
@@ -23355,8 +23500,24 @@
           "name": "嘉義分行",
           "address": "嘉義市中山路285號1樓、285之1號2樓、5樓1、5樓2、9樓1、9樓2、9樓3",
           "tel": "05-2285908",
-          "latitude": 23.4827113,
-          "longitude": 120.4621369
+          "latitude": 23.4801611,
+          "longitude": 120.4504958,
+          "navigation_locations": [
+            {
+              "address": "嘉義市中山路285號",
+              "latitude": 23.4801611,
+              "longitude": 120.4504958,
+              "place_id": "ChIJBfYBfjGUbjQRQaskWA_-rXU",
+              "is_recommended": true
+            },
+            {
+              "address": "嘉義市中山路285之1號",
+              "latitude": null,
+              "longitude": null,
+              "place_id": "",
+              "is_recommended": false
+            }
+          ]
         },
         {
           "code": "8030249",
@@ -23371,16 +23532,55 @@
           "name": "內壢分行",
           "address": "桃園市中壢區中原里中華路一段256、258、260號1、2樓及256、258號3",
           "tel": "03-4351288",
-          "latitude": 24.9731592,
-          "longitude": 121.2582144
+          "latitude": 24.9731611,
+          "longitude": 121.25817440000002,
+          "navigation_locations": [
+            {
+              "address": "桃園市中壢區中原里中華路一段256號",
+              "latitude": 24.9731592,
+              "longitude": 121.2582144,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "桃園市中壢區中原里中華路一段258號",
+              "latitude": 24.9731611,
+              "longitude": 121.25817440000002,
+              "place_id": "ChIJ4U_P2P4haDQRiW-FQrb8_-o",
+              "is_recommended": true
+            },
+            {
+              "address": "桃園市中壢區中原里中華路一段260號",
+              "latitude": 24.9731443,
+              "longitude": 121.2581937,
+              "place_id": "",
+              "is_recommended": false
+            }
+          ]
         },
         {
           "code": "8030261",
           "name": "忠孝分行",
           "address": "台北市大安區忠孝東路四段205巷7弄8號及223巷5號1樓、2樓",
           "tel": "02-27733456",
-          "latitude": 25.0419784,
-          "longitude": 121.5524459
+          "latitude": 25.0418903,
+          "longitude": 121.5529816,
+          "navigation_locations": [
+            {
+              "address": "台北市大安區忠孝東路四段205巷7弄8號",
+              "latitude": 25.0419784,
+              "longitude": 121.5524459,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "台北市大安區忠孝東路四段223巷5號",
+              "latitude": 25.0418903,
+              "longitude": 121.5529816,
+              "place_id": "ChIJEeP1yMWrQjQRzKS1WTkOJHw",
+              "is_recommended": true
+            }
+          ]
         },
         {
           "code": "8030272",
@@ -23403,16 +23603,48 @@
           "name": "桃鶯分行",
           "address": "桃園市桃園區桃鶯路343號1、2、6樓及345號1、2樓",
           "tel": "03-3779797",
-          "latitude": 24.9814357,
-          "longitude": 121.3195704
+          "latitude": 24.981498799999997,
+          "longitude": 121.31954149999999,
+          "navigation_locations": [
+            {
+              "address": "桃園市桃園區桃鶯路343號",
+              "latitude": 24.981498799999997,
+              "longitude": 121.31954149999999,
+              "place_id": "ChIJM5JNGeYeaDQRyNK0V8upCpY",
+              "is_recommended": true
+            },
+            {
+              "address": "桃園市桃園區桃鶯路345號",
+              "latitude": 24.9813231,
+              "longitude": 121.3195881,
+              "place_id": "",
+              "is_recommended": false
+            }
+          ]
         },
         {
           "code": "8030308",
           "name": "龍潭分行",
           "address": "桃園市龍潭區中正路243、245號",
           "tel": "03-4709188",
-          "latitude": 24.8636287,
-          "longitude": 121.2172615
+          "latitude": 24.8636238,
+          "longitude": 121.2172669,
+          "navigation_locations": [
+            {
+              "address": "桃園市龍潭區中正路243號",
+              "latitude": 24.8636287,
+              "longitude": 121.2172615,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "桃園市龍潭區中正路245號",
+              "latitude": 24.8636238,
+              "longitude": 121.2172669,
+              "place_id": "ChIJLXWKUR09aDQRqSsAruZb89U",
+              "is_recommended": true
+            }
+          ]
         },
         {
           "code": "8030319",
@@ -23427,8 +23659,24 @@
           "name": "大直分行",
           "address": "台北市中山區明水路649號1、2樓及649-1號",
           "tel": "02-25323836",
-          "latitude": 25.0829875,
-          "longitude": 121.5508323
+          "latitude": 25.0830085,
+          "longitude": 121.5508475,
+          "navigation_locations": [
+            {
+              "address": "台北市中山區明水路649號",
+              "latitude": 25.0830085,
+              "longitude": 121.5508475,
+              "place_id": "ChIJkVOULhCsQjQR_NDtowDbU3o",
+              "is_recommended": true
+            },
+            {
+              "address": "台北市中山區明水路649-1號",
+              "latitude": 25.0828598,
+              "longitude": 121.5507671,
+              "place_id": "",
+              "is_recommended": false
+            }
+          ]
         },
         {
           "code": "8030331",
@@ -23459,8 +23707,17 @@
           "name": "中和分行",
           "address": "新北市中和區建一路150號、150號2樓",
           "tel": "02-82265168",
-          "latitude": 24.9983481,
-          "longitude": 121.4877007
+          "latitude": 24.9983032,
+          "longitude": 121.4875895,
+          "navigation_locations": [
+            {
+              "address": "新北市中和區建一路150號",
+              "latitude": 24.9983032,
+              "longitude": 121.4875895,
+              "place_id": "ChIJPybfG4ECaDQRHlvrmZcahDU",
+              "is_recommended": true
+            }
+          ]
         },
         {
           "code": "8030375",
@@ -23476,7 +23733,23 @@
           "address": "桃園市大園區中正東路54號、56號",
           "tel": "03-3850505",
           "latitude": 25.0632322,
-          "longitude": 121.1988659
+          "longitude": 121.1988659,
+          "navigation_locations": [
+            {
+              "address": "桃園市大園區中正東路54號",
+              "latitude": 25.0632322,
+              "longitude": 121.1988659,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "桃園市大園區中正東路56號",
+              "latitude": 25.0634417,
+              "longitude": 121.1990684,
+              "place_id": "",
+              "is_recommended": false
+            }
+          ]
         },
         {
           "code": "8030397",
@@ -23507,8 +23780,24 @@
           "name": "士東分行",
           "address": "台北市士林區士東路91巷7號、9號",
           "tel": "02-2875-6161",
-          "latitude": 25.1126948,
-          "longitude": 121.5290385
+          "latitude": 25.112734999999997,
+          "longitude": 121.52914799999999,
+          "navigation_locations": [
+            {
+              "address": "台北市士林區士東路91巷7號",
+              "latitude": 25.1126948,
+              "longitude": 121.5290385,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "台北市士林區士東路91巷9號",
+              "latitude": 25.112734999999997,
+              "longitude": 121.52914799999999,
+              "place_id": "ChIJjVGpcIWuQjQRR9D873jsB8U",
+              "is_recommended": true
+            }
+          ]
         },
         {
           "code": "8030434",
@@ -23523,16 +23812,55 @@
           "name": "長春分行",
           "address": "台北市中山區長春路328號、330號、332號、328號2樓、2樓之1、2樓之2及3樓",
           "tel": "02-25455588",
-          "latitude": 25.0545066,
-          "longitude": 121.5408173
+          "latitude": 25.0544789,
+          "longitude": 121.54082690000001,
+          "navigation_locations": [
+            {
+              "address": "台北市中山區長春路328號",
+              "latitude": 25.0544789,
+              "longitude": 121.54082690000001,
+              "place_id": "ChIJV2P5-t2rQjQRjIKS2PpiM1g",
+              "is_recommended": true
+            },
+            {
+              "address": "台北市中山區長春路330號",
+              "latitude": 25.0545272,
+              "longitude": 121.5409318,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "台北市中山區長春路332號",
+              "latitude": 25.0545244,
+              "longitude": 121.5410333,
+              "place_id": "",
+              "is_recommended": false
+            }
+          ]
         },
         {
           "code": "8030456",
           "name": "松江分行",
           "address": "台北市中山區松江路228號1、2、4樓及230號1、2樓",
           "tel": "02-25616601",
-          "latitude": 25.0586604,
-          "longitude": 121.5328535
+          "latitude": 25.058749499999998,
+          "longitude": 121.53293810000001,
+          "navigation_locations": [
+            {
+              "address": "台北市中山區松江路228號",
+              "latitude": 25.0586604,
+              "longitude": 121.5328535,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "台北市中山區松江路230號",
+              "latitude": 25.058749499999998,
+              "longitude": 121.53293810000001,
+              "place_id": "ChIJ6xZ27F6pQjQRCCcc_rKOTH8",
+              "is_recommended": true
+            }
+          ]
         },
         {
           "code": "8030467",
@@ -23547,16 +23875,55 @@
           "name": "永吉分行",
           "address": "台北市信義區永吉路304、306號1樓及302號2樓之4",
           "tel": "02-27480329",
-          "latitude": 25.045328,
-          "longitude": 121.574918
+          "latitude": 25.0453747,
+          "longitude": 121.57509990000001,
+          "navigation_locations": [
+            {
+              "address": "台北市信義區永吉路304號",
+              "latitude": 25.045328,
+              "longitude": 121.574918,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "台北市信義區永吉路306號",
+              "latitude": 25.0453747,
+              "longitude": 121.57509990000001,
+              "place_id": "ChIJaaHynJirQjQR_0fKC858GLg",
+              "is_recommended": true
+            },
+            {
+              "address": "台北市信義區永吉路302號",
+              "latitude": 25.0453635,
+              "longitude": 121.5748614,
+              "place_id": "",
+              "is_recommended": false
+            }
+          ]
         },
         {
           "code": "8030489",
           "name": "文林分行",
           "address": "台北市士林區文林路758號1、2樓及758-1號1、2樓",
           "tel": "02-28351818",
-          "latitude": 25.1032919,
-          "longitude": 121.5199392
+          "latitude": 25.1032947,
+          "longitude": 121.51992329999999,
+          "navigation_locations": [
+            {
+              "address": "台北市士林區文林路758號",
+              "latitude": 25.1032947,
+              "longitude": 121.51992329999999,
+              "place_id": "ChIJi-4zgJauQjQRzchEJdMCvjI",
+              "is_recommended": true
+            },
+            {
+              "address": "台北市士林區文林路758-1號",
+              "latitude": 25.10331,
+              "longitude": 121.5199324,
+              "place_id": "",
+              "is_recommended": false
+            }
+          ]
         },
         {
           "code": "8030490",
@@ -23571,8 +23938,24 @@
           "name": "西湖分行",
           "address": "台北市內湖區內湖路1段88號1樓及90號1樓",
           "tel": "02-87971537",
-          "latitude": 25.0823089,
-          "longitude": 121.5683655
+          "latitude": 25.0833282,
+          "longitude": 121.5627907,
+          "navigation_locations": [
+            {
+              "address": "台北市內湖區內湖路1段88號",
+              "latitude": 25.0833282,
+              "longitude": 121.5627907,
+              "place_id": "ChIJN82jWGysQjQREjR9KRKIc6A",
+              "is_recommended": true
+            },
+            {
+              "address": "台北市內湖區內湖路1段90號",
+              "latitude": null,
+              "longitude": null,
+              "place_id": "",
+              "is_recommended": false
+            }
+          ]
         },
         {
           "code": "8030526",
@@ -23588,7 +23971,23 @@
           "address": "新北市三重區正義北路245號、245號2樓、245號2樓之1及247號、247號",
           "tel": "02-29826226",
           "latitude": 25.0695085,
-          "longitude": 121.4958532
+          "longitude": 121.4958532,
+          "navigation_locations": [
+            {
+              "address": "新北市三重區正義北路245號",
+              "latitude": 25.0694625,
+              "longitude": 121.4958641,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "新北市三重區正義北路247號",
+              "latitude": 25.069527,
+              "longitude": 121.4958489,
+              "place_id": "",
+              "is_recommended": false
+            }
+          ]
         },
         {
           "code": "8030548",
@@ -23611,16 +24010,55 @@
           "name": "富國分行",
           "address": "新北市新莊區富國路106、108號",
           "tel": "02-22052299",
-          "latitude": 25.0252326,
-          "longitude": 121.4217899
+          "latitude": 25.0252105,
+          "longitude": 121.42186269999999,
+          "navigation_locations": [
+            {
+              "address": "新北市新莊區富國路106號",
+              "latitude": 25.0252326,
+              "longitude": 121.4217899,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "新北市新莊區富國路108號",
+              "latitude": 25.0252105,
+              "longitude": 121.42186269999999,
+              "place_id": "ChIJZ7tX2IynQjQRgga3FXuGZdU",
+              "is_recommended": true
+            }
+          ]
         },
         {
           "code": "8030571",
           "name": "樹林分行",
           "address": "新北市樹林區中華路275號1、2樓、277號1樓及2樓之2、279號2樓",
           "tel": "02-86858939",
-          "latitude": 24.9802624,
-          "longitude": 121.4174885
+          "latitude": 24.980262399999997,
+          "longitude": 121.41748849999999,
+          "navigation_locations": [
+            {
+              "address": "新北市樹林區中華路275號",
+              "latitude": 24.980262399999997,
+              "longitude": 121.41748849999999,
+              "place_id": "ChIJvRCPUwAdaDQRdmyiRtzyZjA",
+              "is_recommended": true
+            },
+            {
+              "address": "新北市樹林區中華路277號",
+              "latitude": 24.9800246,
+              "longitude": 121.4167048,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "新北市樹林區中華路279號",
+              "latitude": 24.9802091,
+              "longitude": 121.4174153,
+              "place_id": "",
+              "is_recommended": false
+            }
+          ]
         },
         {
           "code": "8030582",
@@ -23643,8 +24081,24 @@
           "name": "北中壢分行",
           "address": "桃園市中壢區元化路222、224號1、2樓",
           "tel": "03-4261133",
-          "latitude": 24.9610264,
-          "longitude": 121.2267063
+          "latitude": 24.961050099999998,
+          "longitude": 121.22682040000001,
+          "navigation_locations": [
+            {
+              "address": "桃園市中壢區元化路222號",
+              "latitude": 24.961050099999998,
+              "longitude": 121.22682040000001,
+              "place_id": "ChIJ0RVvODciaDQR6VeeMsFlX_w",
+              "is_recommended": true
+            },
+            {
+              "address": "桃園市中壢區元化路224號",
+              "latitude": 24.9610238,
+              "longitude": 121.226598,
+              "place_id": "",
+              "is_recommended": false
+            }
+          ]
         },
         {
           "code": "8030618",
@@ -23691,8 +24145,38 @@
           "name": "府城分行",
           "address": "台南市中西區中正路92、94、96號及中正路108巷6之2號1-4樓",
           "tel": "06-2290866",
-          "latitude": 22.9928298,
-          "longitude": 120.200216
+          "latitude": 22.9924838,
+          "longitude": 120.20053609999998,
+          "navigation_locations": [
+            {
+              "address": "台南市中西區中正路92號",
+              "latitude": 22.9924838,
+              "longitude": 120.20053609999998,
+              "place_id": "ChIJc7uiXWN2bjQRPHqyj-iRhE8",
+              "is_recommended": true
+            },
+            {
+              "address": "台南市中西區中正路94號",
+              "latitude": 22.9924684,
+              "longitude": 120.2004633,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "台南市中西區中正路96號",
+              "latitude": 22.9924828,
+              "longitude": 120.2003975,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "台南市中西區中正路108巷6之2號",
+              "latitude": null,
+              "longitude": null,
+              "place_id": "",
+              "is_recommended": false
+            }
+          ]
         },
         {
           "code": "8030696",
@@ -23723,8 +24207,24 @@
           "name": "南台南分行",
           "address": "台南市南區金華路1段379號1、2樓及381號1樓",
           "tel": "06-2655663",
-          "latitude": 22.9616601,
-          "longitude": 120.1891254
+          "latitude": 22.9697797,
+          "longitude": 120.19017869999998,
+          "navigation_locations": [
+            {
+              "address": "台南市南區金華路1段379號",
+              "latitude": 22.9697797,
+              "longitude": 120.19017869999998,
+              "place_id": "ChIJlbWp-8R1bjQRz6pA94lfQb8",
+              "is_recommended": true
+            },
+            {
+              "address": "台南市南區金華路1段381號",
+              "latitude": null,
+              "longitude": null,
+              "place_id": "",
+              "is_recommended": false
+            }
+          ]
         },
         {
           "code": "8030733",
@@ -23747,8 +24247,24 @@
           "name": "三民分行",
           "address": "高雄市三民區九如一路73號1樓、95巷1號1樓",
           "tel": "07-3890258",
-          "latitude": 22.6364742,
-          "longitude": 120.3417746
+          "latitude": 22.636512999999997,
+          "longitude": 120.34175289999999,
+          "navigation_locations": [
+            {
+              "address": "高雄市三民區九如一路73號",
+              "latitude": 22.636512999999997,
+              "longitude": 120.34175289999999,
+              "place_id": "ChIJl6kM5swEbjQRxUobnRxGyEo",
+              "is_recommended": true
+            },
+            {
+              "address": "高雄市三民區九如一路95巷1號",
+              "latitude": 22.6362465,
+              "longitude": 120.3416508,
+              "place_id": "",
+              "is_recommended": false
+            }
+          ]
         },
         {
           "code": "8030766",
@@ -23764,7 +24280,16 @@
           "address": "屏東縣屏東市成功路130號、成功路130號2樓",
           "tel": "08-7660688",
           "latitude": 22.6740665,
-          "longitude": 120.4839318
+          "longitude": 120.4839318,
+          "navigation_locations": [
+            {
+              "address": "屏東縣屏東市成功路130號",
+              "latitude": 22.6740665,
+              "longitude": 120.4839318,
+              "place_id": "ChIJv9svaoIXbjQRS_5ntEJW_FI",
+              "is_recommended": true
+            }
+          ]
         },
         {
           "code": "8030788",
@@ -23772,7 +24297,37 @@
           "address": "台北市大安區和平東路3段68-2、68-3、68-4、68-5號1、2樓",
           "tel": "02-27352828",
           "latitude": 25.0243444,
-          "longitude": 121.550117
+          "longitude": 121.550117,
+          "navigation_locations": [
+            {
+              "address": "台北市大安區和平東路3段68-2號",
+              "latitude": 25.0243444,
+              "longitude": 121.550117,
+              "place_id": "ChIJUU0-ijGqQjQRgVxHyMLXP2c",
+              "is_recommended": true
+            },
+            {
+              "address": "台北市大安區和平東路3段68-3號",
+              "latitude": null,
+              "longitude": null,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "台北市大安區和平東路3段68-4號",
+              "latitude": null,
+              "longitude": null,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "台北市大安區和平東路3段68-5號",
+              "latitude": null,
+              "longitude": null,
+              "place_id": "",
+              "is_recommended": false
+            }
+          ]
         },
         {
           "code": "8030799",
@@ -23787,16 +24342,69 @@
           "name": "田心分行",
           "address": "新北市三重區忠孝路3段16號、16號2樓、18號、20號、22號、40巷6之7號及40",
           "tel": "02-89821155",
-          "latitude": 25.0670963,
-          "longitude": 121.4816401
+          "latitude": 25.067087899999997,
+          "longitude": 121.48163369999997,
+          "navigation_locations": [
+            {
+              "address": "新北市三重區忠孝路3段16號",
+              "latitude": 25.067087899999997,
+              "longitude": 121.48163369999997,
+              "place_id": "ChIJq0OaY92oQjQR7HlUoI2lzJc",
+              "is_recommended": true
+            },
+            {
+              "address": "新北市三重區忠孝路3段18號",
+              "latitude": 25.0670565,
+              "longitude": 121.4816574,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "新北市三重區忠孝路3段20號",
+              "latitude": 25.0668847,
+              "longitude": 121.4814978,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "新北市三重區忠孝路3段22號",
+              "latitude": 25.0669831,
+              "longitude": 121.4815744,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "新北市三重區忠孝路3段40巷6之7號",
+              "latitude": null,
+              "longitude": null,
+              "place_id": "",
+              "is_recommended": false
+            }
+          ]
         },
         {
           "code": "8030814",
           "name": "安康分行",
           "address": "新北市新店區安康路二段161號、159巷6號2樓之4、6號2樓之5、6號2樓之6",
           "tel": "02-22119088",
-          "latitude": 24.9593709,
-          "longitude": 121.5101614
+          "latitude": 24.959359,
+          "longitude": 121.51023459999999,
+          "navigation_locations": [
+            {
+              "address": "新北市新店區安康路二段161號",
+              "latitude": 24.959359,
+              "longitude": 121.51023459999999,
+              "place_id": "ChIJ9_Mf30sCaDQRShO99hN38So",
+              "is_recommended": true
+            },
+            {
+              "address": "新北市新店區安康路二段159巷6號",
+              "latitude": 24.9593451,
+              "longitude": 121.5105177,
+              "place_id": "",
+              "is_recommended": false
+            }
+          ]
         },
         {
           "code": "8030825",
@@ -23811,24 +24419,86 @@
           "name": "龜山分行",
           "address": "桃園市龜山區萬壽路2段682、686、688號1樓",
           "tel": "03-3192323",
-          "latitude": 24.9984954,
-          "longitude": 121.3446588
+          "latitude": 24.998472699999997,
+          "longitude": 121.34462800000001,
+          "navigation_locations": [
+            {
+              "address": "桃園市龜山區萬壽路2段682號",
+              "latitude": null,
+              "longitude": null,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "桃園市龜山區萬壽路2段686號",
+              "latitude": null,
+              "longitude": null,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "桃園市龜山區萬壽路2段688號",
+              "latitude": 24.998472699999997,
+              "longitude": 121.34462800000001,
+              "place_id": "ChIJ-cc0YnseaDQRY-BFO9t2oYI",
+              "is_recommended": true
+            }
+          ]
         },
         {
           "code": "8030847",
           "name": "林口分行",
           "address": "新北市林口區忠孝路468號及470號1樓、公園路98號2樓",
           "tel": "02-26006969",
-          "latitude": 25.0706538,
-          "longitude": 121.3699299
+          "latitude": 25.0707397,
+          "longitude": 121.3699117,
+          "navigation_locations": [
+            {
+              "address": "新北市林口區忠孝路468號",
+              "latitude": 25.0707397,
+              "longitude": 121.3699117,
+              "place_id": "ChIJXyyRayenQjQRo3nISSQ0f_A",
+              "is_recommended": true
+            },
+            {
+              "address": "新北市林口區忠孝路470號",
+              "latitude": 25.0706286,
+              "longitude": 121.3699731,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "新北市林口區公園路98號",
+              "latitude": 25.0705446,
+              "longitude": 121.3696989,
+              "place_id": "",
+              "is_recommended": false
+            }
+          ]
         },
         {
           "code": "8030858",
           "name": "五股分行",
           "address": "新北市五股區成泰路3段6號、6-1號",
           "tel": "02-22915888",
-          "latitude": 25.0875963,
-          "longitude": 121.4413754
+          "latitude": 25.0875168,
+          "longitude": 121.4413362,
+          "navigation_locations": [
+            {
+              "address": "新北市五股區成泰路3段6號",
+              "latitude": 25.0875963,
+              "longitude": 121.4413754,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "新北市五股區成泰路3段6-1號",
+              "latitude": 25.0875168,
+              "longitude": 121.4413362,
+              "place_id": "ChIJnZyeNgOmQjQRbQ3Nj22r1Vg",
+              "is_recommended": true
+            }
+          ]
         },
         {
           "code": "8030869",
@@ -23836,31 +24506,81 @@
           "address": "桃園市中壢區民族路5段226號、226號2樓",
           "tel": "03-4909777",
           "latitude": 24.9589043,
-          "longitude": 121.172223
+          "longitude": 121.172223,
+          "navigation_locations": [
+            {
+              "address": "桃園市中壢區民族路5段226號",
+              "latitude": 24.9589043,
+              "longitude": 121.172223,
+              "place_id": "",
+              "is_recommended": false
+            }
+          ]
         },
         {
           "code": "8030870",
           "name": "大業分行",
           "address": "桃園市桃園區大業路1段388號、388號2樓、388號3樓",
           "tel": "03-3577388",
-          "latitude": 25.0105327,
-          "longitude": 121.3136417
+          "latitude": 25.013755699999997,
+          "longitude": 121.31209349999997,
+          "navigation_locations": [
+            {
+              "address": "桃園市桃園區大業路1段388號",
+              "latitude": 25.013755699999997,
+              "longitude": 121.31209349999997,
+              "place_id": "ChIJgWvisk0eaDQRv1O1jy57Hd0",
+              "is_recommended": true
+            }
+          ]
         },
         {
           "code": "8030881",
           "name": "蘆竹分行",
           "address": "桃園市蘆竹區仁愛路1段3號1、2樓及5號1、2樓",
           "tel": "03-2221389",
-          "latitude": 25.0513156,
-          "longitude": 121.2932949
+          "latitude": 25.0517638,
+          "longitude": 121.29264729999998,
+          "navigation_locations": [
+            {
+              "address": "桃園市蘆竹區仁愛路1段3號",
+              "latitude": 25.0517638,
+              "longitude": 121.29264729999998,
+              "place_id": "ChIJ43K8vnagQjQRywxxiXVhn2g",
+              "is_recommended": true
+            },
+            {
+              "address": "桃園市蘆竹區仁愛路1段5號",
+              "latitude": null,
+              "longitude": null,
+              "place_id": "",
+              "is_recommended": false
+            }
+          ]
         },
         {
           "code": "8030892",
           "name": "土城分行",
           "address": "新北市土城區承天路3號、3號2樓、3之1號及3之1號2樓",
           "tel": "02-22681799",
-          "latitude": 24.9645114,
-          "longitude": 121.4372088
+          "latitude": 24.966130999999997,
+          "longitude": 121.4361627,
+          "navigation_locations": [
+            {
+              "address": "新北市土城區承天路3號",
+              "latitude": 24.966130999999997,
+              "longitude": 121.4361627,
+              "place_id": "ChIJpS_7zNAcaDQRNcNOT5rPkRQ",
+              "is_recommended": true
+            },
+            {
+              "address": "新北市土城區承天路3之1號",
+              "latitude": null,
+              "longitude": null,
+              "place_id": "",
+              "is_recommended": false
+            }
+          ]
         },
         {
           "code": "8030906",
@@ -23875,24 +24595,93 @@
           "name": "集賢分行",
           "address": "新北市三重區五華街323號、325號、327號、329號及331號",
           "tel": "02-28559996",
-          "latitude": 25.0881785,
-          "longitude": 121.4871626
+          "latitude": 25.088326100000003,
+          "longitude": 121.48701939999998,
+          "navigation_locations": [
+            {
+              "address": "新北市三重區五華街323號",
+              "latitude": 25.0881785,
+              "longitude": 121.4871626,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "新北市三重區五華街325號",
+              "latitude": 25.0882188,
+              "longitude": 121.487087,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "新北市三重區五華街327號",
+              "latitude": 25.0882544,
+              "longitude": 121.4870468,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "新北市三重區五華街329號",
+              "latitude": 25.088326100000003,
+              "longitude": 121.48701939999998,
+              "place_id": "ChIJ95ExgSyvQjQRINGzmjACZIg",
+              "is_recommended": true
+            },
+            {
+              "address": "新北市三重區五華街331號",
+              "latitude": null,
+              "longitude": null,
+              "place_id": "",
+              "is_recommended": false
+            }
+          ]
         },
         {
           "code": "8030928",
           "name": "三峽分行",
           "address": "新北市三峽區學成路261號及263號",
           "tel": "02-26730808",
-          "latitude": 24.9430926,
-          "longitude": 121.3755171
+          "latitude": 24.943028299999998,
+          "longitude": 121.37554159999999,
+          "navigation_locations": [
+            {
+              "address": "新北市三峽區學成路261號",
+              "latitude": 24.943028299999998,
+              "longitude": 121.37554159999999,
+              "place_id": "ChIJp0cUZ_UbaDQRTgomtifpEH4",
+              "is_recommended": true
+            },
+            {
+              "address": "新北市三峽區學成路263號",
+              "latitude": 24.9431229,
+              "longitude": 121.375643,
+              "place_id": "",
+              "is_recommended": false
+            }
+          ]
         },
         {
           "code": "8030939",
           "name": "東湖分行",
           "address": "台北市內湖區民權東路六段150號之3及150號之5",
           "tel": "02-27967779",
-          "latitude": 25.0686469,
-          "longitude": 121.5901045
+          "latitude": 25.068363299999998,
+          "longitude": 121.59068959999998,
+          "navigation_locations": [
+            {
+              "address": "台北市內湖區民權東路六段150號之3",
+              "latitude": 25.068363299999998,
+              "longitude": 121.59068959999998,
+              "place_id": "ChIJ--plcISsQjQRLMYaEJEJegY",
+              "is_recommended": true
+            },
+            {
+              "address": "台北市內湖區民權東路六段150號之5",
+              "latitude": 25.0686469,
+              "longitude": 121.5901045,
+              "place_id": "",
+              "is_recommended": false
+            }
+          ]
         },
         {
           "code": "8030940",
@@ -23908,15 +24697,47 @@
           "address": "新北市土城區金城路2段219號、219號2樓、221號",
           "tel": "02-8262-7799",
           "latitude": 24.9821218,
-          "longitude": 121.4548792
+          "longitude": 121.4548792,
+          "navigation_locations": [
+            {
+              "address": "新北市土城區金城路2段219號",
+              "latitude": 24.9821218,
+              "longitude": 121.4548792,
+              "place_id": "",
+              "is_recommended": false
+            },
+            {
+              "address": "新北市土城區金城路2段221號",
+              "latitude": 24.982182,
+              "longitude": 121.4549575,
+              "place_id": "",
+              "is_recommended": false
+            }
+          ]
         },
         {
           "code": "8030962",
           "name": "南港分行",
           "address": "台北市南港區重陽路271號、273號",
           "tel": "02-27885200",
-          "latitude": 25.0579474,
-          "longitude": 121.604016
+          "latitude": 25.057903699999997,
+          "longitude": 121.60392540000001,
+          "navigation_locations": [
+            {
+              "address": "台北市南港區重陽路271號",
+              "latitude": 25.057903699999997,
+              "longitude": 121.60392540000001,
+              "place_id": "ChIJAxNY__OrQjQRUVn9QVZ1WOo",
+              "is_recommended": true
+            },
+            {
+              "address": "台北市南港區重陽路273號",
+              "latitude": 25.0579037,
+              "longitude": 121.6039254,
+              "place_id": "",
+              "is_recommended": false
+            }
+          ]
         },
         {
           "code": "8037019",

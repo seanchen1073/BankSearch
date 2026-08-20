@@ -2428,6 +2428,202 @@ def select_recommended_navigation_location(
 
     return best_match
 
+def build_navigation_location_records(
+    navigation_locations,
+    geocoded_locations,
+    recommended_match=None,
+):
+    """
+    建立可以寫入 bank_data.json 的導航位置資料
+
+    官方解析地址永遠保留
+    一般候選使用已驗證 Geocoding 座標
+    建議導航位置優先使用可信 Places 座標
+    """
+    recommended_index = None
+    recommended_place_id = ""
+    recommended_place_location = None
+
+    if recommended_match:
+        recommended_index = (
+            recommended_match.get(
+                "matched_index"
+            )
+        )
+
+        recommended_place = (
+            recommended_match.get(
+                "place"
+            )
+            or {}
+        )
+
+        recommended_place_id = str(
+            recommended_place.get(
+                "id",
+                "",
+            )
+        ).strip()
+
+        recommended_place_location = (
+            get_place_location(
+                recommended_place
+            )
+        )
+
+    records = []
+
+    for (
+        location_index,
+        navigation_address,
+    ) in enumerate(
+        navigation_locations
+    ):
+        geocoded_location = (
+            geocoded_locations[
+                location_index
+            ]
+            if location_index
+            < len(
+                geocoded_locations
+            )
+            else None
+        )
+
+        latitude = None
+        longitude = None
+
+        if geocoded_location:
+            latitude = (
+                geocoded_location.get(
+                    "latitude"
+                )
+            )
+
+            longitude = (
+                geocoded_location.get(
+                    "longitude"
+                )
+            )
+
+        is_recommended = (
+            recommended_index
+            == location_index
+        )
+
+        # 建議導航位置優先使用正式 Place 座標
+        if (
+            is_recommended
+            and recommended_place_location
+        ):
+            latitude = (
+                recommended_place_location[
+                    "latitude"
+                ]
+            )
+
+            longitude = (
+                recommended_place_location[
+                    "longitude"
+                ]
+            )
+
+        records.append(
+            {
+                "address": (
+                    navigation_address
+                ),
+                "latitude": (
+                    latitude
+                ),
+                "longitude": (
+                    longitude
+                ),
+                "place_id": (
+                    recommended_place_id
+                    if is_recommended
+                    else ""
+                ),
+                "is_recommended": (
+                    is_recommended
+                ),
+            }
+        )
+
+    return records
+
+def print_navigation_location_records(
+    navigation_location_records,
+):
+    """
+    印出預計寫入的導航位置資料
+    """
+    print(
+        "  navigation_locations 預覽："
+    )
+
+    for (
+        location_index,
+        location_record,
+    ) in enumerate(
+        navigation_location_records,
+        start=1,
+    ):
+        print(
+            "    "
+            f"[{location_index}] "
+            f"{location_record['address']}"
+        )
+
+        latitude = (
+            location_record.get(
+                "latitude"
+            )
+        )
+
+        longitude = (
+            location_record.get(
+                "longitude"
+            )
+        )
+
+        if (
+            latitude is not None
+            and longitude is not None
+        ):
+            print(
+                "        座標："
+                f"{latitude}, {longitude}"
+            )
+
+        else:
+            print(
+                "        座標：無可信座標"
+            )
+
+        place_id = str(
+            location_record.get(
+                "place_id",
+                "",
+            )
+        ).strip()
+
+        if place_id:
+            print(
+                "        Place ID："
+                f"{place_id}"
+            )
+
+        print(
+            "        建議導航位置："
+            + (
+                "是"
+                if location_record.get(
+                    "is_recommended"
+                )
+                else "否"
+            )
+        )
 
 def inspect_complex_branch(
     bank_name,
@@ -2532,15 +2728,30 @@ def inspect_complex_branch(
             f"{places_error}"
         )
 
+        navigation_location_records = (
+            build_navigation_location_records(
+                navigation_locations,
+                geocoded_locations,
+            )
+        )
+
+        print_navigation_location_records(
+            navigation_location_records
+        )
+
         return {
             "geocoded_locations": (
                 geocoded_locations
             ),
             "places": [],
             "recommended_match": None,
+            "navigation_location_records": (
+                navigation_location_records
+            ),
             "places_error": (
                 places_error
             ),
+            "places_search_failed": True,
         }
 
     if not places:
@@ -2554,15 +2765,30 @@ def inspect_complex_branch(
                 f"{places_error}"
             )
 
+        navigation_location_records = (
+            build_navigation_location_records(
+                navigation_locations,
+                geocoded_locations,
+            )
+        )
+
+        print_navigation_location_records(
+            navigation_location_records
+        )
+
         return {
             "geocoded_locations": (
                 geocoded_locations
             ),
             "places": [],
             "recommended_match": None,
+            "navigation_location_records": (
+                navigation_location_records
+            ),
             "places_error": (
                 places_error
             ),
+            "places_search_failed": False,
         }
 
     print(
@@ -2619,13 +2845,28 @@ def inspect_complex_branch(
             "  目前不設定建議導航位置"
         )
 
+        navigation_location_records = (
+            build_navigation_location_records(
+                navigation_locations,
+                geocoded_locations,
+            )
+        )
+
+        print_navigation_location_records(
+            navigation_location_records
+        )
+
         return {
             "geocoded_locations": (
                 geocoded_locations
             ),
             "places": places,
             "recommended_match": None,
+            "navigation_location_records": (
+                navigation_location_records
+            ),
             "places_error": None,
+            "places_search_failed": False,
         }
 
     place = (
@@ -2716,6 +2957,18 @@ def inspect_complex_branch(
         f"{navigation_locations[matched_index]}"
     )
 
+    navigation_location_records = (
+        build_navigation_location_records(
+            navigation_locations,
+            geocoded_locations,
+            recommended_match,
+        )
+    )
+
+    print_navigation_location_records(
+        navigation_location_records
+    )
+
     return {
         "geocoded_locations": (
             geocoded_locations
@@ -2724,7 +2977,11 @@ def inspect_complex_branch(
         "recommended_match": (
             recommended_match
         ),
+        "navigation_location_records": (
+            navigation_location_records
+        ),
         "places_error": None,
+        "places_search_failed": False,
     }
 
 
@@ -2805,7 +3062,7 @@ def parse_arguments():
         "--repair-complex",
         action="store_true",
         help=(
-            "只檢查多門牌與複雜地址"
+            "驗證並修復多門牌與複雜地址"
         ),
     )
 
@@ -2844,27 +3101,8 @@ def main():
     arguments = (
         parse_arguments()
     )
-
-    # 多門牌功能目前只開放檢查模式
-    # repair-complex 仍然不能直接寫入資料
-    if (
-        arguments.repair_complex
-        and not arguments.dry_run
-    ):
-        print(
-            "錯誤：目前 repair-complex "
-            "先只開放 Dry Run 檢查"
-        )
-
-        print(
-            "請加上 --dry-run "
-            "確認所有候選位置後再進下一步"
-        )
-
-        return 1
-
     data_file_path = Path(
-        arguments.data_file
+    arguments.data_file
     ).resolve()
 
     geocoding_api_key = None
@@ -2983,6 +3221,9 @@ def main():
     places_success_count = 0
     failure_count = 0
     skipped_count = 0
+    navigation_locations_written_count = 0
+    recommended_navigation_count = 0
+    top_level_coordinates_updated_count = 0
 
     try:
         for bank in banks:
@@ -3158,11 +3399,8 @@ def main():
                     )
 
                 # 第二階段多門牌檢查
-                # 會呼叫 Google API 但不會修改 JSON
-                if (
-                    arguments.repair_complex
-                    and arguments.dry_run
-                ):
+                # Dry Run 只預覽正式模式才寫入 JSON
+                if arguments.repair_complex:
                     # 完全沒有可用門牌時才略過第二階段
                     if not navigation_locations:
                         print(
@@ -3173,12 +3411,171 @@ def main():
                             "  暫時不進行第二階段定位"
                         )
 
+                        if arguments.dry_run:
+                            print(
+                                "  Dry run 不會修改資料"
+                            )
+
+                        continue
+
+                    # 只有一個唯一門牌也要驗證目前座標
+                    if len(navigation_locations) == 1:
+                        print(
+                            "  複雜地址解析後只有一個唯一門牌"
+                        )
+
+                        print(
+                            "  仍進行第二階段定位驗證"
+                        )
+
+                    inspection_result = (
+                        inspect_complex_branch(
+                            bank_name,
+                            branch_name,
+                            navigation_locations,
+                            geocoding_api_key,
+                            places_api_key,
+                            arguments.sleep,
+                        )
+                    )
+
+                    navigation_location_records = (
+                        inspection_result.get(
+                            "navigation_location_records",
+                            [],
+                        )
+                    )
+
+                    if arguments.dry_run:
                         print(
                             "  Dry run 不會修改資料"
                         )
 
                         continue
 
+                    if inspection_result.get(
+                        "places_search_failed"
+                    ):
+                        failure_count += 1
+
+                        print(
+                            "  Places 搜尋失敗"
+                        )
+
+                        print(
+                            "  本筆不寫入 navigation_locations"
+                        )
+
+                        print(
+                            "  原本分行資料保留不變"
+                        )
+
+                        continue
+
+                    branch[
+                        "navigation_locations"
+                    ] = navigation_location_records
+
+                    navigation_locations_written_count += 1
+
+                    recommended_location = next(
+                        (
+                            location_record
+                            for location_record
+                            in navigation_location_records
+                            if location_record.get(
+                                "is_recommended"
+                            )
+                        ),
+                        None,
+                    )
+
+                    if recommended_location:
+                        recommended_navigation_count += 1
+
+                        recommended_latitude = (
+                            recommended_location.get(
+                                "latitude"
+                            )
+                        )
+
+                        recommended_longitude = (
+                            recommended_location.get(
+                                "longitude"
+                            )
+                        )
+
+                        if (
+                            recommended_latitude is not None
+                            and recommended_longitude is not None
+                        ):
+                            old_latitude = (
+                                branch.get(
+                                    "latitude"
+                                )
+                            )
+
+                            old_longitude = (
+                                branch.get(
+                                    "longitude"
+                                )
+                            )
+
+                            branch[
+                                "latitude"
+                            ] = recommended_latitude
+
+                            branch[
+                                "longitude"
+                            ] = recommended_longitude
+
+                            if (
+                                old_latitude
+                                != recommended_latitude
+                                or old_longitude
+                                != recommended_longitude
+                            ):
+                                top_level_coordinates_updated_count += 1
+
+                            print(
+                                "  已更新分行導航座標："
+                                f"{recommended_latitude}, "
+                                f"{recommended_longitude}"
+                            )
+
+                        else:
+                            print(
+                                "  建議導航位置沒有可信座標"
+                            )
+
+                            print(
+                                "  原本分行座標保留不變"
+                            )
+
+                    else:
+                        print(
+                            "  沒有可信建議導航位置"
+                        )
+
+                        print(
+                            "  原本分行座標保留不變"
+                        )
+
+                    if (
+                        processed_count
+                        % arguments.save_every
+                        == 0
+                    ):
+                        save_progress(
+                            data_file_path,
+                            bank_data,
+                        )
+
+                        print(
+                            "  已儲存目前進度"
+                        )
+
+                    continue
                     # 只有一個唯一門牌也要驗證目前座標
                     if len(navigation_locations) == 1:
                         print(
@@ -3485,6 +3882,38 @@ def main():
 
         print(
             "沒有修改 bank_data.json"
+        )
+
+    if arguments.repair_complex:
+        print(
+            "複雜地址修復完成"
+        )
+
+        print(
+            f"本次處理：{processed_count}"
+        )
+
+        print(
+            "寫入 navigation_locations："
+            f"{navigation_locations_written_count}"
+        )
+
+        print(
+            "可信建議導航位置："
+            f"{recommended_navigation_count}"
+        )
+
+        print(
+            "更新分行頂層座標："
+            f"{top_level_coordinates_updated_count}"
+        )
+
+        print(
+            f"失敗：{failure_count}"
+        )
+
+        print(
+            f"略過：{skipped_count}"
         )
 
         return 0
