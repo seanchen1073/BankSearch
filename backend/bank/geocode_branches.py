@@ -2259,10 +2259,6 @@ def evaluate_branch_place_candidate(
             "distance_meters": None,
         }
 
-    # 同一個 Places 地址包含多個官方門牌時不猜單一入口
-    if len(exact_matches) > 1:
-        return None
-
     # 只有一個主門牌候選時才允許使用主門牌判斷
     # 多個附號共用相同主門牌時不能直接猜第一個
     if (
