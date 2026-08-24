@@ -1,140 +1,217 @@
-# 台灣銀行代碼查詢系統
+# 台灣銀行代碼查詢系統 BankSearch
 
-網址:https://banksearchbysean.zeabur.app/<br>
+🔗 網站：https://banksearchbysean.zeabur.app/
 
-提供一個能查詢全台所有銀行及其分行資料的系統，並整合 Google 地圖功能，讓使用者能快速查詢銀行位置、尋找附近分行，並前往指定銀行分行。
+提供台灣銀行與分行查詢功能，目前收錄 **98 家銀行、4,554 筆分行資料**，整合銀行代碼搜尋、附近分行定位與 Google Maps 導航。
 
----
+> 目前資料不包含中華郵政及農漁會。
 
-## 一、實現前後端分離
+## 功能
 
-前端使用 JavaScript 和 React，後端採用 Python 和 Django，並透過 RESTful API 進行資料串接。
+### 銀行與分行搜尋
 
----
+支援銀行名稱、銀行代碼與常見簡稱搜尋，例如：
 
-## 二、串接 Google Map API
+- `004`
+- `台灣銀行`
+- `台銀`
+- `一銀`
+- `中信`
 
-在前端串接 Google Map API，將使用者所選擇的銀行位置顯示於地圖上，並渲染至畫面中。
+搜尋支援 `台 / 臺` 正規化、銀行簡稱、以及滑鼠/鍵盤無縫切換選擇與 Enter 操作。
 
-同時整合瀏覽器定位功能，取得使用者目前位置後，搜尋 10 公里內距離最近的銀行分行，並於地圖上標示附近分行位置。
+### 分行資訊
 
----
+選擇分行後可查看：
 
-## 三、前端處理 (frontend 資料夾)
+- 銀行與分行代碼
+- 地址
+- 電話
+- Google Maps 地圖位置
+- 地址與分行代碼快速複製
 
-### 1. 使用 React 和 Tailwind CSS
+### 附近分行
 
-開發銀行與分行搜尋功能，下拉選單支援鍵盤導航與滑鼠操作，且可無縫切換，提升使用體驗。
+透過 Browser Geolocation API 取得使用者位置，搜尋 **10 公里內最近的 10 間分行**。
 
-### 2. 顯示地圖功能
+後端使用 Haversine Formula 計算直線距離，並提供 Google Maps 導航功能。
 
-當使用者選擇銀行及分行後，系統會在地圖上顯示該分行的所在地點，並加上地點標記，使用者可複製該地址。
+### Google Maps
 
-附近分行模式下，系統會顯示使用者目前位置、最近銀行分行，以及附近其他分行位置，方便使用者快速查詢。
+整合 Google Maps JavaScript API 顯示分行位置與附近分行。
 
-### 3. 附近分行定位搜尋
+導航優先使用可信 Google Place ID，若無可信 Place ID，則使用官方銀行地址作為 fallback，降低錯誤導航風險。
 
-透過瀏覽器 Geolocation API 取得使用者目前位置，並串接後端 API 查詢 10 公里內最近的銀行分行。
+## 效能優化
 
-使用者完成定位後，系統會自動：
+### Lazy Loading
 
-- 顯示附近分行列表
-- 選取距離最近的銀行分行
-- 更新搜尋欄位資訊
-- 切換附近分行搜尋模式
+首頁僅載入銀行清單：
 
-### 4. Google Maps 導航功能
-
-提供 Google Maps 導航連結：
-
-- 一般搜尋模式：開啟指定銀行分行位置
-- 附近分行模式：從使用者目前位置導航至最近分行
-
-提升使用者前往銀行分行的便利性。
-
-### 5. URL 動態更新
-
-使用者選擇銀行與分行後，會根據選擇的資料動態更新 URL，將銀行和分行代碼組合成符合規範的網址，並正確渲染對應頁面。
-
-### 6. URL 路由解析與資料初始化
-
-支援直接複製及貼上網址進行訪問，當 URL 符合格式時，能正確渲染頁面狀態，免去重新選擇銀行與分行的流程。
-
-### 7. 前端打包效能優化
-
-前端改用 Vite 打包取代 CRA，以提升開發速度並減少專案容量。
-
----
-
-## 四、搜尋引擎最佳化 (SEO)
-
-為提升網站於搜尋引擎與社群分享平台上的曝光效果，加入完整 SEO 設定。
-
-### 1. 動態 SEO Metadata
-
-使用 `react-helmet-async` 管理頁面 Metadata，依照使用者查詢的銀行與分行資訊動態更新：
-
-- `<title>`
-- `meta description`
-- `keywords`
-- canonical URL
-
-當使用者進入指定分行網址時，會自動產生對應頁面標題，例如：
-
-```
-第一銀行信義分行｜銀行代碼、地址與電話查詢
+```http
+GET /banks/
 ```
 
-提升長尾關鍵字搜尋匹配能力。
+選擇銀行後才取得該銀行分行：
 
----
+```http
+GET /banks/{bank_code}/branches/
+```
 
-### 2. 社群分享優化
+避免首頁一次載入全部 4,554 筆分行資料。
 
-加入 Open Graph Metadata，支援 Facebook、LINE 等社群平台分享時顯示完整預覽資訊：
+### Frontend Cache
 
-- 分享標題
-- 分享描述
-- 分享圖片
-- 分享網址
+已取得的分行資料會暫存在前端記憶體，同一頁面生命週期內再次選擇相同銀行時，不會重複呼叫 API。
 
-並加入 Twitter Card 設定，使不同平台皆能正確讀取網站資訊。
+### Backend Cache
 
----
+Django 將銀行 JSON 資料暫存在伺服器記憶體，資料未異動時不重複解析檔案。
 
-### 3. 搜尋引擎索引設定
+銀行資料 API 同時加入：
 
-建立：
+```http
+Cache-Control: public, max-age=86400
+```
 
-- `robots.txt`
-- `sitemap.xml`
+### Google API 成本控制
 
-提供搜尋引擎爬蟲正確讀取網站架構，協助搜尋引擎建立網站索引。
+Google Place 驗證主要於資料預處理階段完成，正式網站不會因每次開啟地圖而重新進行 Places Text Search。
 
----
+## SEO
 
-### 4. 路由錯誤處理
+使用 `react-helmet-async` 管理：
 
-新增 404 頁面處理，避免不存在網址仍回傳正常頁面，降低 Soft 404 問題，改善搜尋引擎判斷網站內容品質。
+- Title
+- Meta Description
+- Keywords
+- Canonical URL
+- Open Graph
+- Twitter Card
 
----
+Production Build 會額外產生每間分行的靜態 HTML：
 
-## 五、後端處理 (backend 資料夾)
+```text
+分行靜態頁面：4,554
+網站總頁面數：4,555
+```
 
-### 1. CSV 資料解析與結構化處理
+並建立：
 
-從指定路徑載入 CSV 文件，解析銀行與分行資料，處理空值、重複記錄及格式化電話等資訊，根據銀行與分行代碼生成結構化資料，供後續使用。
+```text
+robots.txt
+sitemap.xml
+```
 
-### 2. 使用 RESTful API 風格
+一般分行網址：
 
-採用清晰的 URL 路徑與標準 HTTP 方法處理銀行和分行資料，確保前後端資料順暢交換。
+```text
+/{bank_code}/{branch_code}/{bank_name}-{branch_name}.html
+```
 
-### 3. 資料導出為 JSON
+沒有分行代碼的代表人辦事處使用：
 
-支援將處理後的銀行與分行資料輸出為 JSON 格式，便於前端使用。
+```text
+/{bank_code}/{bank_name}-{branch_name}.html
+```
 
----
+前端另外提供自訂 Not Found 頁面；未知網址的 HTTP Status 目前仍受 Zeabur Static Hosting 的 SPA fallback 行為影響。
 
-## 六、網站部署
+## API
 
-使用 Zeabur 分別部署前端與後端，確保專案順利運行。
+### 銀行列表
+
+```http
+GET /banks/
+```
+
+### 指定銀行分行
+
+```http
+GET /banks/{bank_code}/branches/
+```
+
+### 分行詳細資料
+
+```http
+GET /{bank_code}/{branch_code}/
+```
+
+### 附近分行
+
+```http
+GET /branches/nearby/?lat={latitude}&lng={longitude}&limit=10&radius=10
+```
+
+## 技術
+
+### Frontend
+
+- React
+- JavaScript
+- Vite
+- React Router
+- Tailwind CSS
+- Axios
+- React Helmet Async
+- Google Maps JavaScript API
+- Browser Geolocation API
+
+### Backend
+
+- Python
+- Django
+- JSON
+- Haversine Formula
+- In-memory Cache
+
+### Deployment
+
+- Zeabur
+- GitHub
+
+## 專案架構
+
+```text
+BankSearch
+├── frontend
+│   ├── React
+│   ├── Google Maps
+│   ├── Geolocation
+│   ├── SEO
+│   └── Static Page Generator
+│
+└── backend
+    ├── Django
+    ├── Bank API
+    ├── Nearby Branch API
+    ├── Haversine Calculation
+    └── Data Cache
+```
+
+## 資料處理
+
+目前資料：
+
+```text
+銀行：98 家
+分行：4,554 筆
+可信 Google Place ID：2,959 筆
+官方地址 fallback：1,595 筆
+```
+
+Google Place 僅在能安全確認銀行身分時採用；無法確認時保留官方地址，避免錯誤綁定其他銀行、ATM 或錯誤位置。
+
+## Deployment
+
+Frontend：
+
+```text
+https://banksearchbysean.zeabur.app/
+```
+
+Backend：
+
+```text
+https://banksearch-backend.zeabur.app/
+```
