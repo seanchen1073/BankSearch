@@ -57,15 +57,17 @@ for (const pageUrl of branchUrls) {
     .filter(Boolean)
     .map((part) => decodeURIComponent(part));
 
-  // 正常分行網址至少會有三個部分
-  if (pathParts.length < 3) {
+  // 一般分行是三段網址
+  // 沒有分行代碼的代表人辦事處是兩段網址
+  if (pathParts.length !== 2 && pathParts.length !== 3) {
     console.warn(`略過無法解析的網址：${pageUrl}`);
     continue;
   }
 
   const bankCode = pathParts[0];
-  const branchCode = pathParts[1];
-  const filename = pathParts[2];
+  const hasBranchCode = pathParts.length === 3;
+  const branchCode = hasBranchCode ? pathParts[1] : "";
+  const filename = hasBranchCode ? pathParts[2] : pathParts[1];
 
   // 把 .html 拿掉方便取得銀行跟分行名稱
   const pageName = filename.replace(/\.html$/i, "");
@@ -83,13 +85,19 @@ for (const pageUrl of branchUrls) {
   const branchName = pageName.slice(separatorIndex + 1);
 
   // 每一個分行都建立自己的 SEO 標題
-  const title = `${bankName}${branchName}｜分行代碼 ${branchCode}｜銀行代碼查詢`;
+  const title = branchCode
+    ? `${bankName}${branchName}｜分行代碼 ${branchCode}｜銀行代碼查詢`
+    : `${bankName}${branchName}｜銀行代碼 ${bankCode}｜銀行代碼查詢`;
 
   // 每一個分行都建立自己的 SEO 描述
-  const description = `查詢${bankName}${branchName}資訊，` + `銀行代碼 ${bankCode}、分行代碼 ${branchCode}，` + `並提供地址、電話與 Google 地圖位置`;
+  const description = branchCode
+    ? `查詢${bankName}${branchName}資訊，銀行代碼 ${bankCode}、分行代碼 ${branchCode}，並提供地址、電話與 Google 地圖位置`
+    : `查詢${bankName}${branchName}資訊，銀行代碼 ${bankCode}，並提供地址、電話與 Google 地圖位置`;
 
   // 建立分行專屬搜尋關鍵字
-  const keywords = `${bankName},${branchName},${bankName}${branchName},` + `${bankCode},${branchCode},銀行代碼,分行代碼,銀行地址`;
+  const keywords = branchCode
+    ? `${bankName},${branchName},${bankName}${branchName},${bankCode},${branchCode},銀行代碼,分行代碼,銀行地址`
+    : `${bankName},${branchName},${bankName}${branchName},${bankCode},銀行代碼,銀行地址`;
 
   // 每一頁都先複製首頁 HTML
   let html = template;
@@ -154,9 +162,7 @@ for (const pageUrl of branchUrls) {
         銀行代碼：${escapeHtml(bankCode)}
       </p>
 
-      <p>
-        分行代碼：${escapeHtml(branchCode)}
-      </p>
+      ${branchCode ? `<p>分行代碼：${escapeHtml(branchCode)}</p>` : ""}
 
       <p>
         查詢${escapeHtml(bankName)}${escapeHtml(branchName)}的銀行代碼、分行資訊、地址、電話與 Google 地圖位置
@@ -168,7 +174,7 @@ for (const pageUrl of branchUrls) {
   html = html.replace('<div id="root"></div>', `<div id="root">${staticContent}</div>`);
 
   // 每個銀行跟分行都建立自己的資料夾
-  const outputDirectory = path.join(DIST_DIR, bankCode, branchCode);
+  const outputDirectory = branchCode ? path.join(DIST_DIR, bankCode, branchCode) : path.join(DIST_DIR, bankCode);
 
   fs.mkdirSync(outputDirectory, {
     recursive: true,
