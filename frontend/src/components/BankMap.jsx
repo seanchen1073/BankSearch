@@ -36,21 +36,6 @@ const createCoordinates = (latitude, longitude) => {
   };
 };
 
-// 把完整地址整理成 Google 地圖比較容易找到的門牌
-const cleanNavigationAddress = (address) => {
-  const addressText = String(address || "").trim();
-
-  if (!addressText) {
-    return "";
-  }
-
-  const normalizedAddress = addressText.replace("臺", "台").replace(/\s+/g, "");
-
-  const addressMatch = normalizedAddress.match(/^(.+?號(?:之\d+)?)/);
-
-  return addressMatch ? addressMatch[1] : normalizedAddress;
-};
-
 const BankMap = ({ address, latitude, longitude, bankCode, bankName, selectedBranch, userLocation, nearbyBranches = [], isNearbySearch = false }) => {
   const [coordinates, setCoordinates] = useState(null);
 
@@ -275,18 +260,18 @@ const BankMap = ({ address, latitude, longitude, bankCode, bankName, selectedBra
   };
 
   // 產生 Google 地圖位置網址
-  const createGoogleMapsUrl = (branchName, branchAddress, targetCoordinates, placeResult = null) => {
+  // 有可信 Place ID 就直接指定正式 Google Place
+  // 沒有 Place ID 才使用官方原始地址
+  const createGoogleMapsUrl = (branchName, branchAddress, placeResult = null) => {
     const placeId = String(placeResult?.place_id || "").trim();
-    const googleName = String(placeResult?.google_name || "").trim();
-    const resolvedNavigationAddress = String(placeResult?.navigation_address || "").trim();
 
-    const navigationAddress = resolvedNavigationAddress || cleanNavigationAddress(branchAddress);
+    const googleName = String(placeResult?.google_name || branchName || "").trim();
 
-    const coordinateQuery = targetCoordinates ? `${targetCoordinates.lat},${targetCoordinates.lng}` : "";
+    const navigationAddress = String(branchAddress || "").trim();
 
-    // 有正式 Place ID 時直接開 Google 的地點
+    // 有 Place ID 就直接指定正式 Google Place
     if (placeId) {
-      const placeQuery = googleName || navigationAddress || branchName || coordinateQuery;
+      const placeQuery = googleName || branchName || navigationAddress;
 
       if (!placeQuery) {
         return null;
@@ -300,19 +285,18 @@ const BankMap = ({ address, latitude, longitude, bankCode, bankName, selectedBra
       );
     }
 
-    // 沒有 Place ID 時先用門牌地址
-    // 地址也沒有時才使用座標
-    const query = navigationAddress || coordinateQuery || branchName;
-
-    if (!query) {
+    // 沒有可信 Place ID 就直接使用官方地址
+    if (!navigationAddress) {
       return null;
     }
 
-    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+    return "https://www.google.com/maps/search/" + "?api=1" + `&query=${encodeURIComponent(navigationAddress)}`;
   };
 
   // 產生 Google 地圖導航網址
-  const createGoogleDirectionsUrl = (origin, destinationName, destinationAddress, targetCoordinates, placeResult = null) => {
+  // 有可信 Place ID 就直接指定正式 Google Place
+  // 沒有 Place ID 才使用官方原始地址
+  const createGoogleDirectionsUrl = (origin, destinationName, destinationAddress, placeResult = null) => {
     if (!origin) {
       return null;
     }
@@ -320,16 +304,14 @@ const BankMap = ({ address, latitude, longitude, bankCode, bankName, selectedBra
     const originValue = `${origin.lat},${origin.lng}`;
 
     const placeId = String(placeResult?.place_id || "").trim();
-    const googleName = String(placeResult?.google_name || "").trim();
-    const resolvedNavigationAddress = String(placeResult?.navigation_address || "").trim();
 
-    const navigationAddress = resolvedNavigationAddress || cleanNavigationAddress(destinationAddress);
+    const googleName = String(placeResult?.google_name || destinationName || "").trim();
 
-    const coordinateDestination = targetCoordinates ? `${targetCoordinates.lat},${targetCoordinates.lng}` : "";
+    const navigationAddress = String(destinationAddress || "").trim();
 
-    // 有正式 Place ID 時直接指定 Google 的目的地
+    // 有 Place ID 就讓 Google Maps 使用正式分行
     if (placeId) {
-      const placeDestination = googleName || navigationAddress || destinationName || coordinateDestination;
+      const placeDestination = googleName || destinationName || navigationAddress;
 
       if (!placeDestination) {
         return null;
@@ -345,11 +327,8 @@ const BankMap = ({ address, latitude, longitude, bankCode, bankName, selectedBra
       );
     }
 
-    // 沒有 Place ID 時先用門牌地址
-    // 地址也沒有時才使用座標
-    const destinationValue = navigationAddress || coordinateDestination || destinationName;
-
-    if (!destinationValue) {
+    // 沒有可信 Place ID 就直接使用官方地址
+    if (!navigationAddress) {
       return null;
     }
 
@@ -357,13 +336,14 @@ const BankMap = ({ address, latitude, longitude, bankCode, bankName, selectedBra
       "https://www.google.com/maps/dir/" +
       "?api=1" +
       `&origin=${encodeURIComponent(originValue)}` +
-      `&destination=${encodeURIComponent(destinationValue)}` +
+      `&destination=${encodeURIComponent(navigationAddress)}` +
       "&travelmode=driving"
     );
   };
 
   // 開啟目前分行或開始導航
-  // 按下按鈕後才會查 Google Place
+  // 已經有 Place ID 就直接使用
+  // 沒有 Place ID 才暫時呼叫 resolver
   const handleOpenGoogleMaps = async () => {
     if (isOpeningGoogleMaps) {
       return;
@@ -380,15 +360,29 @@ const BankMap = ({ address, latitude, longitude, bankCode, bankName, selectedBra
     try {
       const branchDisplayName = createBranchDisplayName(selectedBranch, bankName);
 
-      const placeResult = await resolveBranchPlace(selectedBranch, bankCode);
+      let placeResult = null;
+
+      // 已經有可信 Place ID 就直接使用
+      if (selectedBranch?.place_id) {
+        placeResult = {
+          place_id: selectedBranch.place_id,
+
+          google_name: selectedBranch.google_name || branchDisplayName,
+
+          navigation_address: selectedBranch.navigation_address || selectedBranch.address || address || "",
+        };
+      } else {
+        // 還沒有 Place ID 的資料才暫時呼叫 resolver
+        placeResult = await resolveBranchPlace(selectedBranch, bankCode);
+      }
 
       let googleMapsUrl = null;
 
-      // 附近模式直接開啟導航
+      // 附近模式直接從目前位置開始導航
       if (isNearbySearch && validUserLocation) {
-        googleMapsUrl = createGoogleDirectionsUrl(validUserLocation, branchDisplayName, address, coordinates, placeResult);
+        googleMapsUrl = createGoogleDirectionsUrl(validUserLocation, branchDisplayName, address, placeResult);
       } else {
-        googleMapsUrl = createGoogleMapsUrl(branchDisplayName, address, coordinates, placeResult);
+        googleMapsUrl = createGoogleMapsUrl(branchDisplayName, address, placeResult);
       }
 
       if (!googleMapsUrl) {
@@ -401,6 +395,7 @@ const BankMap = ({ address, latitude, longitude, bankCode, bankName, selectedBra
 
       if (mapWindow && !mapWindow.closed) {
         mapWindow.location.href = googleMapsUrl;
+
         return;
       }
 
@@ -410,10 +405,11 @@ const BankMap = ({ address, latitude, longitude, bankCode, bankName, selectedBra
 
       const branchDisplayName = createBranchDisplayName(selectedBranch, bankName);
 
+      // Place 查詢失敗時直接回到官方地址
       const fallbackGoogleMapsUrl =
         isNearbySearch && validUserLocation
-          ? createGoogleDirectionsUrl(validUserLocation, branchDisplayName, address, coordinates)
-          : createGoogleMapsUrl(branchDisplayName, address, coordinates);
+          ? createGoogleDirectionsUrl(validUserLocation, branchDisplayName, address)
+          : createGoogleMapsUrl(branchDisplayName, address);
 
       if (!fallbackGoogleMapsUrl) {
         if (mapWindow && !mapWindow.closed) {
@@ -425,6 +421,7 @@ const BankMap = ({ address, latitude, longitude, bankCode, bankName, selectedBra
 
       if (mapWindow && !mapWindow.closed) {
         mapWindow.location.href = fallbackGoogleMapsUrl;
+
         return;
       }
 
@@ -434,12 +431,38 @@ const BankMap = ({ address, latitude, longitude, bankCode, bankName, selectedBra
     }
   };
 
-  // 開啟其他附近分行
-  // 這裡維持原本直接開地圖的方式
-  const handleOpenNearbyBranch = (branch) => {
+  // 點其他附近分行時也直接開始導航
+  // 有 Place ID 就使用正式 Google Place
+  const handleOpenNearbyBranch = async (branch) => {
+    if (!branch) {
+      return;
+    }
+
     const branchDisplayName = createBranchDisplayName(branch);
 
-    const googleMapsUrl = createGoogleMapsUrl(branchDisplayName, branch.address, branch.coordinates);
+    let placeResult = null;
+
+    try {
+      // 已經有可信 Place ID 就直接使用
+      if (branch.place_id) {
+        placeResult = {
+          place_id: branch.place_id,
+
+          google_name: branch.google_name || branchDisplayName,
+
+          navigation_address: branch.navigation_address || branch.address || "",
+        };
+      } else {
+        // 還沒有 Place ID 的資料才暫時呼叫 resolver
+        placeResult = await resolveBranchPlace(branch, branch.bank_code || "");
+      }
+    } catch (error) {
+      console.error("取得附近分行 Google Place 失敗", error);
+    }
+
+    const googleMapsUrl = validUserLocation
+      ? createGoogleDirectionsUrl(validUserLocation, branchDisplayName, branch.address, placeResult)
+      : createGoogleMapsUrl(branchDisplayName, branch.address, placeResult);
 
     if (!googleMapsUrl) {
       return;

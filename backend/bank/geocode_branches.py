@@ -158,12 +158,51 @@ def normalize_address_text(value):
     if not text:
         return ""
 
-    text = text.translate(FULLWIDTH_NUMBER_TRANSLATION)
+    text = text.translate(
+        FULLWIDTH_NUMBER_TRANSLATION
+    )
 
-    text = text.replace("臺", "台")
-    text = text.replace("－", "-")
-    text = text.replace("–", "-")
-    text = text.replace("—", "-")
+    # Google 偶爾會混用不同字形
+    # 這裡只統一比對格式，不會修改 raw data
+    text = text.replace(
+        "臺",
+        "台",
+    )
+
+    text = text.replace(
+        "区",
+        "區",
+    )
+
+    text = text.replace(
+        "县",
+        "縣",
+    )
+
+    text = text.replace(
+        "号",
+        "號",
+    )
+
+    text = text.replace(
+        "楼",
+        "樓",
+    )
+
+    text = text.replace(
+        "－",
+        "-",
+    )
+
+    text = text.replace(
+        "–",
+        "-",
+    )
+
+    text = text.replace(
+        "—",
+        "-",
+    )
 
     text = re.sub(
         r"\s+",
@@ -184,7 +223,9 @@ def normalize_address_text(value):
         text,
     )
 
-    return normalize_section_numbers(text)
+    return normalize_section_numbers(
+        text
+    )
 
 
 def compact_address_for_parsing(value):
@@ -473,12 +514,7 @@ def extract_navigation_locations(address):
 
             continue
 
-        pending_location_match = (
-            pending_location_pattern.match(
-                working_part
-            )
-        )
-               # 遇到樓層資訊時清掉前面暫存的裸數字
+        # 遇到樓層資訊時清掉前面暫存的裸數字
         # 避免把 1、2、4樓裡的 2 誤判成 2號
         if re.search(
             r"樓|層|室|地下|F",
@@ -923,8 +959,8 @@ def normalize_place_name(value):
     """
     把銀行和分行名稱整理成適合比對的格式
 
-    這個結果只拿來驗證 Place
-    不會改到原始銀行資料
+    銀行、分行、營業部這些身分資訊會保留
+    避免整理過頭後失去原本名稱訊號
     """
     text = str(
         value or ""
@@ -938,20 +974,20 @@ def normalize_place_name(value):
         "台",
     )
 
+    # 商業銀行和銀行在 Google 名稱裡常會混用
+    text = text.replace(
+        "商業銀行",
+        "銀行",
+    )
+
     removable_words = [
         "金融控股股份有限公司",
-        "商業銀行股份有限公司",
         "銀行股份有限公司",
         "股份有限公司",
-        "商業銀行",
+        "有限公司",
         "代表人辦事處",
         "代表處",
         "辦事處",
-        "營業部",
-        "自動櫃員機",
-        "分行",
-        "銀行",
-        "atm",
     ]
 
     for word in removable_words:
@@ -965,6 +1001,7 @@ def normalize_place_name(value):
         "",
         text,
     )
+
 
 def get_place_display_name(place):
     """
@@ -1014,9 +1051,9 @@ def validate_place_address(
     """
     驗證 Places 回傳地址
 
-    第一優先是道路
-    第二優先是完整門牌
-    附號找不到時允許同一個主門牌
+    行政區與道路必須一致
+    完整門牌優先，附號找不到時
+    才允許同一個主門牌交由分行名稱再確認
     """
     expected_route, expected_house_number = (
         extract_expected_address_parts(
@@ -1029,6 +1066,25 @@ def validate_place_address(
             google_address
         )
     )
+
+    expected_city_district = (
+        normalize_address_text(
+            extract_city_district_hint(
+                requested_address
+            )
+        )
+    )
+
+    if (
+        expected_city_district
+        and expected_city_district
+        not in normalized_google_address
+    ):
+        return (
+            False,
+            "",
+            "Places 回傳行政區與定位地址不一致",
+        )
 
     if expected_route:
         if (
@@ -1065,7 +1121,7 @@ def validate_place_address(
         )
 
     # 68-2 找不到時允許 Google 記成 68 號
-    # 這種情況還需要搭配銀行名稱才能通過
+    # 這種情況仍需要搭配後面的分行身分訊號再確認
     if "-" in expected_house_number:
         main_house_number = (
             expected_house_number.split(
@@ -1096,131 +1152,6 @@ def validate_place_address(
         "Places 回傳門牌與定位地址不一致",
     )
 
-
-def validate_place_candidate(
-    bank_name,
-    branch_name,
-    requested_address,
-    place,
-):
-    """
-    檢查 Places 找到的地點是不是我們要的銀行
-
-    修復資料時不會使用舊座標來判斷
-    """
-    google_name = (
-        get_place_display_name(
-            place
-        )
-    )
-
-    # ATM 不能當成正式分行
-    if is_atm_place_name(
-        google_name
-    ):
-        return (
-            False,
-            None,
-            "Places 回傳的是 ATM 不是正式分行",
-        )
-
-    google_address = str(
-        place.get(
-            "formattedAddress",
-            "",
-        )
-    ).strip()
-
-    normalized_bank_name = (
-        normalize_place_name(
-            bank_name
-        )
-    )
-
-    normalized_branch_name = (
-        normalize_place_name(
-            branch_name
-        )
-    )
-
-    normalized_google_name = (
-        normalize_place_name(
-            google_name
-        )
-    )
-
-    # 銀行名稱一定要能對上
-    if normalized_bank_name:
-        bank_name_matches = (
-            normalized_bank_name
-            in normalized_google_name
-            or normalized_google_name
-            in normalized_bank_name
-        )
-
-        if not bank_name_matches:
-            return (
-                False,
-                None,
-                "Places 回傳銀行名稱不一致",
-            )
-
-    (
-        address_matches,
-        address_quality,
-        address_error,
-    ) = validate_place_address(
-        requested_address,
-        google_address,
-    )
-
-    if not address_matches:
-        return (
-            False,
-            None,
-            address_error,
-        )
-
-    branch_name_matches = (
-        bool(normalized_branch_name)
-        and normalized_branch_name
-        in normalized_google_name
-    )
-
-    # 地址只對到主門牌時要再確認分行名稱
-    if (
-        address_quality == "main"
-        and normalized_branch_name
-        and not branch_name_matches
-    ):
-        return (
-            False,
-            None,
-            "Places 只有主門牌吻合但分行名稱不同",
-        )
-
-    score = 1000
-
-    # 完整門牌最可信
-    if address_quality == "exact":
-        score -= 500
-
-    # 主門牌吻合也可以但權重比較低
-    elif address_quality == "main":
-        score -= 300
-
-    elif address_quality == "route":
-        score -= 100
-
-    # 分行名稱也對上時再提高可信度
-    if branch_name_matches:
-        score -= 250
-
-    return (
-        True,
-        score,
-        "",
-    )
 
 def build_geocoding_address_variants(address):
     """
@@ -1255,6 +1186,7 @@ def build_geocoding_address_variants(address):
         )
 
     return address_variants
+
 
 def request_geocoding(
     address,
@@ -1534,305 +1466,6 @@ def request_geocoding(
         "超過最大重試次數",
     )
 
-def request_places_search(
-    bank_name,
-    branch_name,
-    address,
-    api_key,
-    max_retries=3,
-):
-    """
-    Geocoding 找不到可信地址時改用 Places
-
-    Places 會用銀行名稱和分行名稱一起找
-    舊座標不會拿來當搜尋條件
-    """
-    if not api_key:
-        return (
-            None,
-            "尚未設定 GOOGLE_PLACES_API_KEY",
-        )
-
-    search_query = " ".join(
-        part
-        for part in [
-            str(
-                bank_name or ""
-            ).strip(),
-            str(
-                branch_name or ""
-            ).strip(),
-            str(
-                address or ""
-            ).strip(),
-        ]
-        if part
-    )
-
-    if not search_query:
-        return (
-            None,
-            "沒有可用的 Places 搜尋內容",
-        )
-
-    request_body = json.dumps(
-        {
-            "textQuery": (
-                search_query
-            ),
-            "languageCode": (
-                "zh-TW"
-            ),
-            "regionCode": (
-                "TW"
-            ),
-            "pageSize": 5,
-        }
-    ).encode(
-        "utf-8"
-    )
-
-    field_mask = (
-        "places.id,"
-        "places.displayName,"
-        "places.formattedAddress,"
-        "places.location"
-    )
-
-    for attempt in range(
-        max_retries
-    ):
-        try:
-            request = Request(
-                GOOGLE_PLACES_TEXT_SEARCH_URL,
-                data=request_body,
-                method="POST",
-                headers={
-                    "Content-Type": (
-                        "application/json"
-                    ),
-                    "X-Goog-Api-Key": (
-                        api_key
-                    ),
-                    "X-Goog-FieldMask": (
-                        field_mask
-                    ),
-                    "User-Agent": (
-                        "BankSearch-Geocoder/1.0"
-                    ),
-                },
-            )
-
-            with urlopen(
-                request,
-                timeout=20,
-            ) as response:
-                response_text = (
-                    response
-                    .read()
-                    .decode("utf-8")
-                )
-
-            response_data = json.loads(
-                response_text
-            )
-
-            places = response_data.get(
-                "places",
-                [],
-            )
-
-            if not places:
-                return (
-                    None,
-                    "Places API 沒有找到候選地點",
-                )
-
-            best_candidate = None
-            best_score = None
-            rejected_places = []
-
-            # 每個候選都重新驗證名稱和地址
-            for place in places:
-                (
-                    is_valid_place,
-                    score,
-                    validation_error,
-                ) = validate_place_candidate(
-                    bank_name,
-                    branch_name,
-                    address,
-                    place,
-                )
-
-                google_name = (
-                    get_place_display_name(
-                        place
-                    )
-                )
-
-                google_address = str(
-                    place.get(
-                        "formattedAddress",
-                        "",
-                    )
-                ).strip()
-
-                if not is_valid_place:
-                    rejected_places.append(
-                        (
-                            f"{google_name} "
-                            f"{google_address} "
-                            f"{validation_error}"
-                        ).strip()
-                    )
-
-                    continue
-
-                location = place.get(
-                    "location",
-                    {},
-                )
-
-                latitude = location.get(
-                    "latitude"
-                )
-
-                longitude = location.get(
-                    "longitude"
-                )
-
-                if (
-                    latitude is None
-                    or longitude is None
-                ):
-                    continue
-
-                candidate = {
-                    "latitude": float(
-                        latitude
-                    ),
-                    "longitude": float(
-                        longitude
-                    ),
-                    "formatted_address": (
-                        google_address
-                    ),
-                    "place_id": str(
-                        place.get(
-                            "id",
-                            "",
-                        )
-                    ).strip(),
-                    "place_name": (
-                        google_name
-                    ),
-                    "source": (
-                        "places"
-                    ),
-                }
-
-                if (
-                    best_score is None
-                    or score < best_score
-                ):
-                    best_score = score
-                    best_candidate = (
-                        candidate
-                    )
-
-            if best_candidate:
-                return (
-                    best_candidate,
-                    None,
-                )
-
-            if rejected_places:
-                rejected_preview = (
-                    " | ".join(
-                        rejected_places[
-                            :3
-                        ]
-                    )
-                )
-
-                return (
-                    None,
-                    (
-                        "Places 找到候選但驗證沒有通過 "
-                        f"{rejected_preview}"
-                    ),
-                )
-
-            return (
-                None,
-                "Places API 沒有可用的座標",
-            )
-
-        except HTTPError as error:
-            # Google 暫時出錯時再試一次
-            if (
-                error.code
-                in {
-                    429,
-                    500,
-                    502,
-                    503,
-                    504,
-                }
-                and attempt
-                < max_retries - 1
-            ):
-                wait_seconds = min(
-                    2 ** attempt,
-                    8,
-                )
-
-                time.sleep(
-                    wait_seconds
-                )
-
-                continue
-
-            return (
-                None,
-                (
-                    "Places API HTTP 錯誤 "
-                    f"{error.code}"
-                ),
-            )
-
-        except (
-            URLError,
-            TimeoutError,
-            json.JSONDecodeError,
-        ) as error:
-            # 網路暫時失敗時再試一次
-            if (
-                attempt
-                < max_retries - 1
-            ):
-                wait_seconds = min(
-                    2 ** attempt,
-                    8,
-                )
-
-                time.sleep(
-                    wait_seconds
-                )
-
-                continue
-
-            return (
-                None,
-                str(error),
-            )
-
-    return (
-        None,
-        "Places API 超過最大重試次數",
-    )
-
 
 def request_branch_places_search(
     bank_name,
@@ -1842,10 +1475,11 @@ def request_branch_places_search(
     max_retries=3,
 ):
     """
-    第二階段只搜尋一次分行 Place
+    每間分行只搜尋一次 Google Place
 
+    搜尋會使用銀行名稱、分行名稱和行政區
     不使用舊 Marker 當搜尋偏好
-    避免錯誤舊座標把正確分行排除
+    避免錯誤舊座標影響正確 Place 排名
     """
     if not api_key:
         return (
@@ -1903,7 +1537,9 @@ def request_branch_places_search(
         "places.id,"
         "places.displayName,"
         "places.formattedAddress,"
-        "places.location"
+        "places.location,"
+        "places.primaryType,"
+        "places.types"
     )
 
     for attempt in range(
@@ -2136,10 +1772,12 @@ def evaluate_branch_place_candidate(
     place,
 ):
     """
-    把分行 Place 跟所有候選門牌一起比對
+    驗證 Places 找到的候選是不是我們要的銀行分行
 
-    地址完全吻合優先
-    地址無法直接吻合時才看已驗證座標距離
+    地址負責確認位置
+    銀行和分行名稱負責確認身分
+    Place type 只拿來加強判斷
+    經緯度只在地址無法直接確認時使用
     """
     google_name = (
         get_place_display_name(
@@ -2147,11 +1785,36 @@ def evaluate_branch_place_candidate(
         )
     )
 
-    # ATM 不參與建議導航位置判斷
+    # 名稱明確是 ATM 就直接排除
     if is_atm_place_name(
         google_name
     ):
         return None
+
+    primary_type = str(
+        place.get(
+            "primaryType",
+            "",
+        )
+    ).strip().lower()
+
+    # 主要 Place 本身就是 ATM 才排除
+    # types 裡同時含 atm 不代表正式銀行就是 ATM
+    if primary_type == "atm":
+        return None
+
+    place_types = {
+        str(
+            place_type
+        ).strip().lower()
+        for place_type in place.get(
+            "types",
+            [],
+        )
+        if str(
+            place_type
+        ).strip()
+    }
 
     google_address = str(
         place.get(
@@ -2193,16 +1856,94 @@ def evaluate_branch_place_candidate(
         )
     )
 
-    if not bank_name_matches:
-        return None
+    branch_name_variants = []
 
-    branch_name_matches = (
-        bool(
+    if normalized_branch_name:
+        branch_name_variants.append(
             normalized_branch_name
         )
-        and normalized_branch_name
+
+        # 簡易型分行在 Google Maps 上常只顯示一般分行名稱
+        simplified_branch_name = (
+            normalized_branch_name.replace(
+                "簡易型分行",
+                "分行",
+            )
+        )
+
+        if (
+            simplified_branch_name
+            and simplified_branch_name
+            not in branch_name_variants
+        ):
+            branch_name_variants.append(
+                simplified_branch_name
+            )
+
+    branch_name_matches = any(
+        branch_name_variant
         in normalized_google_name
+        for branch_name_variant
+        in branch_name_variants
     )
+
+    # 官方營業部和 Google 總行可能是同一個實際 Place
+    head_office_matches = False
+
+    if (
+        normalized_branch_name
+        in {
+            "營業部",
+            "總行",
+        }
+    ):
+        if (
+            "營業部"
+            in normalized_google_name
+            or "總行"
+            in normalized_google_name
+        ):
+            head_office_matches = True
+
+    branch_identity_matches = (
+        branch_name_matches
+        or head_office_matches
+    )
+
+    bank_type_matches = (
+        primary_type == "bank"
+        or "bank"
+        in place_types
+    )
+
+    # 至少要有銀行名稱或分行名稱其中一項身分訊號
+    # Place type 只能加強可信度，不能單獨證明是這一家銀行
+    identity_matches = (
+        bank_name_matches
+        or branch_identity_matches
+    )
+
+    if not identity_matches:
+        return None
+
+    place_id = str(
+        place.get(
+            "id",
+            "",
+        )
+    ).strip()
+
+    place_location = (
+        get_place_location(
+            place
+        )
+    )
+
+    if (
+        not place_id
+        or not place_location
+    ):
+        return None
 
     exact_matches = []
     main_matches = []
@@ -2235,17 +1976,32 @@ def evaluate_branch_place_candidate(
                 location_index
             )
 
-        # 完整門牌對上時可信度最高
-    # 同一個 Places 同時涵蓋多個官方門牌時沿用官方地址順序
+    identity_score = 0
+
+    # 分行名稱比銀行名稱更能區分同一家銀行不同分行
+    if branch_identity_matches:
+        identity_score -= 100
+
+    if bank_name_matches:
+        identity_score -= 80
+
+    # bank type 只是額外加強
+    if bank_type_matches:
+        identity_score -= 20
+
+    # 銀行名稱和分行名稱都有吻合時可信度最高
+    if (
+        bank_name_matches
+        and branch_identity_matches
+    ):
+        identity_score -= 50
+
+    # 完整門牌吻合時直接採用
+    # 同一個 Place 同時符合多個官方門牌時維持官方原始順序
     if exact_matches:
         matched_index = (
             exact_matches[0]
         )
-
-        score = 0
-
-        if branch_name_matches:
-            score -= 100
 
         return {
             "place": place,
@@ -2255,15 +2011,28 @@ def evaluate_branch_place_candidate(
             "match_method": (
                 "exact_address"
             ),
-            "score": score,
+            "score": (
+                identity_score
+            ),
             "distance_meters": None,
+            "bank_name_matches": (
+                bank_name_matches
+            ),
+            "branch_name_matches": (
+                branch_identity_matches
+            ),
+            "bank_type_matches": (
+                bank_type_matches
+            ),
         }
 
-    # 只有一個主門牌候選時才允許使用主門牌判斷
-    # 多個附號共用相同主門牌時不能直接猜第一個
+    # Google 只有主門牌時風險比較高
+    # 這種情況一定要有明確分行名稱訊號才接受
     if (
-        len(main_matches) == 1
-        and branch_name_matches
+        len(
+            main_matches
+        ) == 1
+        and branch_identity_matches
     ):
         matched_index = (
             main_matches[0]
@@ -2277,24 +2046,24 @@ def evaluate_branch_place_candidate(
             "match_method": (
                 "main_house"
             ),
-            "score": 200,
+            "score": (
+                200
+                + identity_score
+            ),
             "distance_meters": None,
+            "bank_name_matches": (
+                bank_name_matches
+            ),
+            "branch_name_matches": (
+                branch_identity_matches
+            ),
+            "bank_type_matches": (
+                bank_type_matches
+            ),
         }
 
-    # 地址格式真的無法直接比對時
-    # 才使用已經通過 Geocoding 驗證的候選座標
-    place_location = (
-        get_place_location(
-            place
-        )
-    )
-
-    if (
-        not place_location
-        or not branch_name_matches
-    ):
-        return None
-
+    # 地址文字無法直接確認時
+    # 才使用已通過 Geocoding 驗證的官方地址座標
     distance_candidates = []
 
     for (
@@ -2350,8 +2119,8 @@ def evaluate_branch_place_candidate(
         else None
     )
 
-    # 80 公尺內才允許用距離作為第二層判斷
-    # 如果多個候選距離太接近就不猜哪一個才是正確入口
+    # 80 公尺內才允許座標補證
+    # 多門牌候選距離太接近時不要自行猜入口
     distance_is_distinct = (
         second_nearest_distance is None
         or (
@@ -2376,14 +2145,23 @@ def evaluate_branch_place_candidate(
             "score": (
                 400
                 + nearest_distance
+                + identity_score
             ),
             "distance_meters": (
                 nearest_distance
             ),
+            "bank_name_matches": (
+                bank_name_matches
+            ),
+            "branch_name_matches": (
+                branch_identity_matches
+            ),
+            "bank_type_matches": (
+                bank_type_matches
+            ),
         }
 
     return None
-
 
 def select_recommended_navigation_location(
     bank_name,
@@ -2395,9 +2173,12 @@ def select_recommended_navigation_location(
     """
     從 Places 候選中找出可信的分行位置
 
-    回傳的 matched_index 就是建議導航候選
+    官方地址候選順序優先於分數
+    第一個門牌只要有可信匹配就優先採用
+    第一個找不到時才會看第二個、第三個
     """
     best_match = None
+    best_priority = None
 
     for place in places or []:
         place_match = (
@@ -2413,300 +2194,65 @@ def select_recommended_navigation_location(
         if not place_match:
             continue
 
-        if (
-            best_match is None
-            or place_match[
-                "score"
-            ]
-            < best_match[
-                "score"
-            ]
-        ):
-            best_match = (
-                place_match
-            )
-
-    return best_match
-
-def build_navigation_location_records(
-    navigation_locations,
-    geocoded_locations,
-    recommended_match=None,
-):
-    """
-    建立可以寫入 bank_data.json 的導航位置資料
-
-    官方解析地址永遠保留
-    一般候選使用已驗證 Geocoding 座標
-    建議導航位置優先使用可信 Places 座標
-    """
-    recommended_index = None
-    recommended_place_id = ""
-    recommended_place_location = None
-
-    if recommended_match:
-        recommended_index = (
-            recommended_match.get(
+        matched_index = (
+            place_match.get(
                 "matched_index"
             )
         )
 
-        recommended_place = (
-            recommended_match.get(
-                "place"
-            )
-            or {}
-        )
-
-        recommended_place_id = str(
-            recommended_place.get(
-                "id",
-                "",
-            )
-        ).strip()
-
-        recommended_place_location = (
-            get_place_location(
-                recommended_place
-            )
-        )
-
-    records = []
-
-    for (
-        location_index,
-        navigation_address,
-    ) in enumerate(
-        navigation_locations
-    ):
-        geocoded_location = (
-            geocoded_locations[
-                location_index
-            ]
-            if location_index
-            < len(
-                geocoded_locations
-            )
-            else None
-        )
-
-        latitude = None
-        longitude = None
-
-        if geocoded_location:
-            latitude = (
-                geocoded_location.get(
-                    "latitude"
-                )
-            )
-
-            longitude = (
-                geocoded_location.get(
-                    "longitude"
-                )
-            )
-
-        is_recommended = (
-            recommended_index
-            == location_index
-        )
-
-        # 建議導航位置優先使用正式 Place 座標
-        if (
-            is_recommended
-            and recommended_place_location
+        if not isinstance(
+            matched_index,
+            int,
         ):
-            latitude = (
-                recommended_place_location[
-                    "latitude"
-                ]
-            )
+            continue
 
-            longitude = (
-                recommended_place_location[
-                    "longitude"
-                ]
-            )
-
-        records.append(
-            {
-                "address": (
-                    navigation_address
-                ),
-                "latitude": (
-                    latitude
-                ),
-                "longitude": (
-                    longitude
-                ),
-                "place_id": (
-                    recommended_place_id
-                    if is_recommended
-                    else ""
-                ),
-                "is_recommended": (
-                    is_recommended
-                ),
-            }
-        )
-
-    return records
-
-def print_navigation_location_records(
-    navigation_location_records,
-):
-    """
-    印出預計寫入的導航位置資料
-    """
-    print(
-        "  navigation_locations 預覽："
-    )
-
-    for (
-        location_index,
-        location_record,
-    ) in enumerate(
-        navigation_location_records,
-        start=1,
-    ):
-        print(
-            "    "
-            f"[{location_index}] "
-            f"{location_record['address']}"
-        )
-
-        latitude = (
-            location_record.get(
-                "latitude"
-            )
-        )
-
-        longitude = (
-            location_record.get(
-                "longitude"
-            )
+        priority = (
+            matched_index,
+            place_match.get(
+                "score",
+                999999,
+            ),
         )
 
         if (
-            latitude is not None
-            and longitude is not None
+            best_priority is None
+            or priority < best_priority
         ):
-            print(
-                "        座標："
-                f"{latitude}, {longitude}"
-            )
+            best_priority = priority
+            best_match = place_match
 
-        else:
-            print(
-                "        座標：無可信座標"
-            )
+    return best_match
 
-        place_id = str(
-            location_record.get(
-                "place_id",
-                "",
-            )
-        ).strip()
 
-        if place_id:
-            print(
-                "        Place ID："
-                f"{place_id}"
-            )
-
-        print(
-            "        建議導航位置："
-            + (
-                "是"
-                if location_record.get(
-                    "is_recommended"
-                )
-                else "否"
-            )
-        )
-
-def inspect_complex_branch(
+def resolve_branch_place(
     bank_name,
     branch_name,
     navigation_locations,
     geocoding_api_key,
     places_api_key,
     sleep_seconds=0.2,
+    allow_geocoding_fallback=True,
 ):
     """
-    第二階段檢查多門牌分行
+    使用同一套流程解析分行 Google Place
 
-    每個候選地址各自驗證 Geocoding
-    分行 Places Text Search 只執行一次
-    全程只回傳檢查結果不修改資料
+    一般情況只呼叫一次 Places API
+    直接用 Google Place 名稱與地址驗證
+
+    只有 Places 地址無法直接確認時
+    才使用 Geocoding 作為第二層座標驗證
+
+    多門牌依官方地址原始順序處理
+    第一個門牌優先，找不到可信匹配才看下一個
     """
-    geocoded_locations = []
-
-    print(
-        "  候選地址定位檢查："
-    )
-
-    for (
-        location_index,
-        navigation_address,
-    ) in enumerate(
-        navigation_locations,
-        start=1,
-    ):
-        print(
-            "    "
-            f"[{location_index}] "
-            f"{navigation_address}"
-        )
-
-        (
-            geocoding_result,
-            geocoding_error,
-        ) = request_geocoding(
-            navigation_address,
-            geocoding_api_key,
-        )
-
-        geocoded_locations.append(
-            geocoding_result
-        )
-
-        if geocoding_result:
-            print(
-                "        Geocoding：成功"
-            )
-
-            print(
-                "        Google 地址："
-                f"{geocoding_result.get('formatted_address', '')}"
-            )
-
-            print(
-                "        座標："
-                f"{geocoding_result['latitude']}, "
-                f"{geocoding_result['longitude']}"
-            )
-
-        else:
-            print(
-                "        Geocoding：失敗"
-            )
-
-            print(
-                "        原因："
-                f"{geocoding_error}"
-            )
-
-        if (
-            sleep_seconds > 0
-            and location_index
-            < len(
-                navigation_locations
-            )
-        ):
-            time.sleep(
-                sleep_seconds
-            )
+    if not navigation_locations:
+        return {
+            "places": [],
+            "recommended_match": None,
+            "places_error": "沒有可用的導航地址候選",
+            "places_search_failed": False,
+            "used_geocoding_fallback": False,
+        }
 
     print(
         "  分行 Places 搜尋：1 次"
@@ -2728,30 +2274,12 @@ def inspect_complex_branch(
             f"{places_error}"
         )
 
-        navigation_location_records = (
-            build_navigation_location_records(
-                navigation_locations,
-                geocoded_locations,
-            )
-        )
-
-        print_navigation_location_records(
-            navigation_location_records
-        )
-
         return {
-            "geocoded_locations": (
-                geocoded_locations
-            ),
             "places": [],
             "recommended_match": None,
-            "navigation_location_records": (
-                navigation_location_records
-            ),
-            "places_error": (
-                places_error
-            ),
+            "places_error": places_error,
             "places_search_failed": True,
+            "used_geocoding_fallback": False,
         }
 
     if not places:
@@ -2765,30 +2293,12 @@ def inspect_complex_branch(
                 f"{places_error}"
             )
 
-        navigation_location_records = (
-            build_navigation_location_records(
-                navigation_locations,
-                geocoded_locations,
-            )
-        )
-
-        print_navigation_location_records(
-            navigation_location_records
-        )
-
         return {
-            "geocoded_locations": (
-                geocoded_locations
-            ),
             "places": [],
             "recommended_match": None,
-            "navigation_location_records": (
-                navigation_location_records
-            ),
-            "places_error": (
-                places_error
-            ),
+            "places_error": places_error,
             "places_search_failed": False,
+            "used_geocoding_fallback": False,
         }
 
     print(
@@ -2826,73 +2336,197 @@ def inspect_complex_branch(
             f"{google_address}"
         )
 
+    # 第一層只使用 Places 本身的名稱與地址判斷
+    # 這裡完全不呼叫 Geocoding
+    empty_geocoded_locations = [
+        None
+        for _ in navigation_locations
+    ]
+
     recommended_match = (
         select_recommended_navigation_location(
             bank_name,
             branch_name,
             navigation_locations,
-            geocoded_locations,
+            empty_geocoded_locations,
             places,
         )
     )
 
-    if not recommended_match:
+    if recommended_match:
+        return {
+            "places": places,
+            "recommended_match": recommended_match,
+            "places_error": None,
+            "places_search_failed": False,
+            "used_geocoding_fallback": False,
+        }
+
+    if (
+        not allow_geocoding_fallback
+        or not geocoding_api_key
+    ):
         print(
-            "  Places 有候選但沒有足夠可信的門牌匹配"
+            "  Places 有候選但地址無法直接確認"
         )
 
         print(
-            "  目前不設定建議導航位置"
-        )
-
-        navigation_location_records = (
-            build_navigation_location_records(
-                navigation_locations,
-                geocoded_locations,
-            )
-        )
-
-        print_navigation_location_records(
-            navigation_location_records
+            "  不進行重複 Geocoding"
         )
 
         return {
-            "geocoded_locations": (
-                geocoded_locations
-            ),
             "places": places,
             "recommended_match": None,
-            "navigation_location_records": (
-                navigation_location_records
-            ),
             "places_error": None,
             "places_search_failed": False,
+            "used_geocoding_fallback": False,
         }
 
+    # 第二層只在直接地址匹配失敗時才執行
+    # 候選會照官方地址順序一筆一筆驗證
+    # 第一筆找到可信 Place 後就停止，不再多打後面的 Geocoding
+    print(
+        "  Places 地址無法直接確認"
+    )
+
+    print(
+        "  啟用 Geocoding 第二層驗證"
+    )
+
+    geocoded_locations = [
+        None
+        for _ in navigation_locations
+    ]
+
+    for (
+        location_index,
+        navigation_address,
+    ) in enumerate(
+        navigation_locations
+    ):
+        print(
+            "    "
+            f"[{location_index + 1}] "
+            f"{navigation_address}"
+        )
+
+        (
+            geocoding_result,
+            geocoding_error,
+        ) = request_geocoding(
+            navigation_address,
+            geocoding_api_key,
+        )
+
+        geocoded_locations[
+            location_index
+        ] = geocoding_result
+
+        if geocoding_result:
+            print(
+                "        Geocoding：成功"
+            )
+
+            print(
+                "        座標："
+                f"{geocoding_result['latitude']}, "
+                f"{geocoding_result['longitude']}"
+            )
+
+            recommended_match = (
+                select_recommended_navigation_location(
+                    bank_name,
+                    branch_name,
+                    navigation_locations,
+                    geocoded_locations,
+                    places,
+                )
+            )
+
+            if (
+                recommended_match
+                and recommended_match.get(
+                    "matched_index"
+                )
+                == location_index
+            ):
+                return {
+                    "places": places,
+                    "recommended_match": recommended_match,
+                    "places_error": None,
+                    "places_search_failed": False,
+                    "used_geocoding_fallback": True,
+                }
+
+        else:
+            print(
+                "        Geocoding：失敗"
+            )
+
+            print(
+                "        原因："
+                f"{geocoding_error}"
+            )
+
+        if (
+            sleep_seconds > 0
+            and location_index
+            < len(
+                navigation_locations
+            ) - 1
+        ):
+            time.sleep(
+                sleep_seconds
+            )
+
+    return {
+        "places": places,
+        "recommended_match": None,
+        "places_error": None,
+        "places_search_failed": False,
+        "used_geocoding_fallback": True,
+    }
+
+
+def apply_recommended_place(
+    branch,
+    navigation_locations,
+    recommended_match,
+):
+    """
+    將已驗證成功的 Google Place 寫回分行
+
+    只保存網站真正需要的 Place ID 與 Place 座標
+    成功後會直接用同一個 Place 的座標覆蓋舊 Marker 座標
+    """
+    if not recommended_match:
+        return None
+
     place = (
-        recommended_match[
+        recommended_match.get(
             "place"
-        ]
+        )
+        or {}
     )
 
     matched_index = (
-        recommended_match[
+        recommended_match.get(
             "matched_index"
-        ]
-    )
-
-    google_name = (
-        get_place_display_name(
-            place
         )
     )
 
-    google_address = str(
-        place.get(
-            "formattedAddress",
-            "",
+    if (
+        not isinstance(
+            matched_index,
+            int,
         )
-    ).strip()
+        or matched_index < 0
+        or matched_index
+        >= len(
+            navigation_locations
+        )
+    ):
+        return None
 
     place_id = str(
         place.get(
@@ -2907,81 +2541,70 @@ def inspect_complex_branch(
         )
     )
 
-    print(
-        "  Google 分行地點："
-        f"{google_name}"
-    )
-
-    print(
-        "  Google 分行地址："
-        f"{google_address}"
-    )
-
-    if place_id:
-        print(
-            "  Place ID："
-            f"{place_id}"
-        )
-
-    if place_location:
-        print(
-            "  Places 座標："
-            f"{place_location['latitude']}, "
-            f"{place_location['longitude']}"
-        )
-
-    print(
-        "  匹配方式："
-        f"{recommended_match['match_method']}"
-    )
-
     if (
-        recommended_match.get(
-            "distance_meters"
-        )
-        is not None
+        not place_id
+        or not place_location
     ):
-        print(
-            "  匹配距離："
-            f"{recommended_match['distance_meters']:.1f} 公尺"
-        )
+        return None
 
-    print(
-        "  匹配候選："
-        f"[{matched_index + 1}] "
-        f"{navigation_locations[matched_index]}"
+    old_latitude = branch.get(
+        "latitude"
     )
 
-    print(
-        "  建議導航位置："
-        f"{navigation_locations[matched_index]}"
+    old_longitude = branch.get(
+        "longitude"
     )
 
-    navigation_location_records = (
-        build_navigation_location_records(
-            navigation_locations,
-            geocoded_locations,
-            recommended_match,
-        )
+    latitude = (
+        place_location[
+            "latitude"
+        ]
     )
 
-    print_navigation_location_records(
-        navigation_location_records
+    longitude = (
+        place_location[
+            "longitude"
+        ]
     )
+
+    # 可信 Place 一旦確定就讓 Place ID 和 Marker 共用同一組座標
+    # 這裡會直接覆蓋舊座標避免網站和 Google Maps 指到不同位置
+    branch["place_id"] = place_id
+    branch["latitude"] = latitude
+    branch["longitude"] = longitude
 
     return {
-        "geocoded_locations": (
-            geocoded_locations
+        "place_id": place_id,
+        "google_name": (
+            get_place_display_name(
+                place
+            )
         ),
-        "places": places,
-        "recommended_match": (
-            recommended_match
+        "google_address": str(
+            place.get(
+                "formattedAddress",
+                "",
+            )
+        ).strip(),
+        "navigation_address": (
+            navigation_locations[
+                matched_index
+            ]
         ),
-        "navigation_location_records": (
-            navigation_location_records
+        "match_method": (
+            recommended_match.get(
+                "match_method",
+                "",
+            )
         ),
-        "places_error": None,
-        "places_search_failed": False,
+        "latitude": latitude,
+        "longitude": longitude,
+        "coordinates_updated": (
+            old_latitude
+            != latitude
+            or old_longitude
+            != longitude
+        ),
     }
 
 
@@ -2997,14 +2620,14 @@ def save_progress(
         bank_data,
     )
 
+
 def parse_arguments():
     """
     讀取終端機參數
     """
     parser = argparse.ArgumentParser(
         description=(
-            "將 bank_data.json 中的分行地址"
-            "轉換為經緯度"
+            "整理 bank_data.json 的分行座標與 Google Place ID"
         )
     )
 
@@ -3033,7 +2656,7 @@ def parse_arguments():
         type=float,
         default=0.2,
         help=(
-            "每次 API 請求之間等待幾秒"
+            "每筆分行處理完成後等待幾秒"
         ),
     )
 
@@ -3054,7 +2677,7 @@ def parse_arguments():
         "--overwrite",
         action="store_true",
         help=(
-            "重新處理已經具有經緯度的分行"
+            "重新處理已有經緯度但尚未綁定 Place ID 的分行"
         ),
     )
 
@@ -3062,7 +2685,16 @@ def parse_arguments():
         "--repair-complex",
         action="store_true",
         help=(
-            "驗證並修復多門牌與複雜地址"
+            "只重新驗證多門牌與複雜地址的 Google Place"
+        ),
+    )
+
+    process_mode.add_argument(
+        "--resolve-places",
+        action="store_true",
+        help=(
+            "為尚未完成的分行驗證 "
+            "Google Place 並寫入 Place ID"
         ),
     )
 
@@ -3070,8 +2702,8 @@ def parse_arguments():
         "--dry-run",
         action="store_true",
         help=(
-            "不寫入 bank_data.json "
-            "repair-complex 模式仍會呼叫 Google API 做驗證"
+            "不寫入 bank_data.json；"
+            "Place 驗證模式仍會呼叫 Google API"
         ),
     )
 
@@ -3096,23 +2728,29 @@ def parse_arguments():
 
 def main():
     """
-    批次轉換分行地址的主程式
+    批次整理分行地址、座標與 Google Place ID
     """
     arguments = (
         parse_arguments()
     )
+
     data_file_path = Path(
-    arguments.data_file
+        arguments.data_file
     ).resolve()
 
     geocoding_api_key = None
     places_api_key = None
 
-    # 一般 Dry Run 不呼叫 Google
-    # repair-complex Dry Run 會進行第二階段驗證
+    place_mode = (
+        arguments.repair_complex
+        or arguments.resolve_places
+    )
+
+    # 一般 Dry Run 只列出候選，不呼叫 Google
+    # Place 模式的 Dry Run 仍要真的驗證 Place
     should_call_google = (
         not arguments.dry_run
-        or arguments.repair_complex
+        or place_mode
     )
 
     if should_call_google:
@@ -3128,7 +2766,10 @@ def main():
             )
         )
 
-        if not geocoding_api_key:
+        if (
+            not place_mode
+            and not geocoding_api_key
+        ):
             print(
                 "錯誤：尚未設定 "
                 "GOOGLE_GEOCODING_API_KEY"
@@ -3141,11 +2782,11 @@ def main():
             return 1
 
         if (
-            arguments.repair_complex
+            place_mode
             and not places_api_key
         ):
             print(
-                "錯誤：第二階段多門牌檢查需要 "
+                "錯誤：Place 驗證模式需要 "
                 "GOOGLE_PLACES_API_KEY"
             )
 
@@ -3156,7 +2797,21 @@ def main():
             return 1
 
         if (
-            not arguments.repair_complex
+            place_mode
+            and not geocoding_api_key
+        ):
+            print(
+                "提醒：目前沒有設定 "
+                "GOOGLE_GEOCODING_API_KEY"
+            )
+
+            print(
+                "Places 地址無法直接確認時，"
+                "將無法進行第二層座標驗證"
+            )
+
+        if (
+            not place_mode
             and not places_api_key
         ):
             print(
@@ -3165,7 +2820,8 @@ def main():
             )
 
             print(
-                "Geocoding 失敗時將無法使用 Places 備用搜尋"
+                "Geocoding 失敗時將無法使用 "
+                "Google Place 作為備用定位"
             )
 
     if not data_file_path.exists():
@@ -3219,10 +2875,9 @@ def main():
     success_count = 0
     geocoding_success_count = 0
     places_success_count = 0
+    place_unresolved_count = 0
     failure_count = 0
     skipped_count = 0
-    navigation_locations_written_count = 0
-    recommended_navigation_count = 0
     top_level_coordinates_updated_count = 0
 
     try:
@@ -3241,7 +2896,6 @@ def main():
                 )
             ).strip()
 
-            # 指定銀行代碼時其他銀行完全不碰
             if (
                 arguments.bank_code
                 and bank_code
@@ -3278,7 +2932,6 @@ def main():
                     )
                 ).strip()
 
-                # 指定分行代碼時其他分行完全不碰
                 if (
                     arguments.branch_code
                     and branch_code
@@ -3294,29 +2947,55 @@ def main():
                     )
                 )
 
-                # repair-complex 只處理複雜地址
+                # repair-complex 只是篩選模式
+                # 實際 Place 驗證仍使用同一套 resolver
                 if (
                     arguments.repair_complex
                     and not complex_address
                 ):
                     skipped_count += 1
-
                     continue
 
-                # 一般模式預設不碰已經有座標的分行
-                # repair-complex 可以重新確認複雜地址
+                existing_place_id = str(
+                    branch.get(
+                        "place_id",
+                        "",
+                    )
+                ).strip()
+
+                # 已經完成 Place 綁定的分行就不要再走舊 Geocoding
+                # 避免 Place ID 和 Marker 座標最後指向不同位置
                 if (
-                    not arguments.overwrite
-                    and not arguments.repair_complex
+                    arguments.overwrite
+                    and existing_place_id
+                ):
+                    skipped_count += 1
+                    continue
+
+                # resolve-places 可中斷後繼續
+                # 已有 Place ID 且座標有效就不重打 API
+                if (
+                    arguments.resolve_places
+                    and existing_place_id
                     and has_valid_coordinates(
                         branch
                     )
                 ):
                     skipped_count += 1
-
                     continue
 
-                # 已經達到這次設定的處理上限
+                # 一般舊模式維持原本行為
+                # 已有座標就不重新 Geocoding
+                if (
+                    not arguments.overwrite
+                    and not place_mode
+                    and has_valid_coordinates(
+                        branch
+                    )
+                ):
+                    skipped_count += 1
+                    continue
+
                 if (
                     arguments.limit
                     is not None
@@ -3336,6 +3015,10 @@ def main():
                 if not address:
                     failure_count += 1
 
+                    print(
+                        "  錯誤：分行沒有地址"
+                    )
+
                     continue
 
                 navigation_locations = (
@@ -3350,43 +3033,35 @@ def main():
                     )
                 )
 
+                if (
+                    not navigation_locations
+                    and geocoding_address
+                ):
+                    navigation_locations = [
+                        geocoding_address
+                    ]
+
                 print(
                     "  原始地址："
                     f"{address}"
                 )
 
-                if navigation_locations:
-                    print(
-                        "  解析位置："
-                        f"{len(navigation_locations)}"
-                    )
+                print(
+                    "  解析位置："
+                    f"{len(navigation_locations)}"
+                )
 
-                    for (
-                        location_index,
-                        navigation_location,
-                    ) in enumerate(
-                        navigation_locations,
-                        start=1,
-                    ):
-                        print(
-                            "    "
-                            f"[{location_index}] "
-                            f"{navigation_location}"
-                        )
-
+                for (
+                    location_index,
+                    navigation_location,
+                ) in enumerate(
+                    navigation_locations,
+                    start=1,
+                ):
                     print(
-                        "  第一候選地址："
-                        f"{navigation_locations[0]}"
-                    )
-
-                else:
-                    print(
-                        "  解析位置：0"
-                    )
-
-                    print(
-                        "  第一候選地址："
-                        f"{geocoding_address}"
+                        "    "
+                        f"[{location_index}] "
+                        f"{navigation_location}"
                     )
 
                 if has_valid_coordinates(
@@ -3398,38 +3073,22 @@ def main():
                         f"{branch.get('longitude')}"
                     )
 
-                # 第二階段多門牌檢查
-                # Dry Run 只預覽正式模式才寫入 JSON
-                if arguments.repair_complex:
-                    # 完全沒有可用門牌時才略過第二階段
+                # Place 驗證模式
+                # 普通地址與複雜地址都使用同一套 resolver
+                if place_mode:
                     if not navigation_locations:
-                        print(
-                            "  複雜地址沒有解析出可信候選"
-                        )
+                        # 地址本身無法解析屬於資料處理失敗
+                        # 這種情況不要和有地址但找不到可信 Place 混在一起
+                        failure_count += 1
 
                         print(
-                            "  暫時不進行第二階段定位"
+                            "  沒有可用的地址候選"
                         )
-
-                        if arguments.dry_run:
-                            print(
-                                "  Dry run 不會修改資料"
-                            )
 
                         continue
 
-                    # 只有一個唯一門牌也要驗證目前座標
-                    if len(navigation_locations) == 1:
-                        print(
-                            "  複雜地址解析後只有一個唯一門牌"
-                        )
-
-                        print(
-                            "  仍進行第二階段定位驗證"
-                        )
-
-                    inspection_result = (
-                        inspect_complex_branch(
+                    resolution_result = (
+                        resolve_branch_place(
                             bank_name,
                             branch_name,
                             navigation_locations,
@@ -3439,127 +3098,240 @@ def main():
                         )
                     )
 
-                    navigation_location_records = (
-                        inspection_result.get(
-                            "navigation_location_records",
-                            [],
+                    recommended_match = (
+                        resolution_result.get(
+                            "recommended_match"
                         )
                     )
 
-                    if arguments.dry_run:
-                        print(
-                            "  Dry run 不會修改資料"
-                        )
-
-                        continue
-
-                    if inspection_result.get(
+                    # API 本身失敗和找不到可信 Place 是兩件不同的事情
+                    # 這裡先把 API 失敗分開統計避免被算成 unresolved
+                    if resolution_result.get(
                         "places_search_failed"
                     ):
                         failure_count += 1
 
                         print(
-                            "  Places 搜尋失敗"
-                        )
-
-                        print(
-                            "  本筆不寫入 navigation_locations"
+                            "  Places API 搜尋失敗"
                         )
 
                         print(
                             "  原本分行資料保留不變"
                         )
 
+                        if arguments.dry_run:
+                            print(
+                                "  Dry run 不會修改資料"
+                            )
+
+                        if arguments.sleep > 0:
+                            time.sleep(
+                                arguments.sleep
+                            )
+
                         continue
 
-                    branch[
-                        "navigation_locations"
-                    ] = navigation_location_records
-
-                    navigation_locations_written_count += 1
-
-                    recommended_location = next(
-                        (
-                            location_record
-                            for location_record
-                            in navigation_location_records
-                            if location_record.get(
-                                "is_recommended"
+                    if recommended_match:
+                        place = (
+                            recommended_match.get(
+                                "place"
                             )
-                        ),
-                        None,
-                    )
+                            or {}
+                        )
 
-                    if recommended_location:
-                        recommended_navigation_count += 1
-
-                        recommended_latitude = (
-                            recommended_location.get(
-                                "latitude"
+                        matched_index = (
+                            recommended_match.get(
+                                "matched_index"
                             )
                         )
 
-                        recommended_longitude = (
-                            recommended_location.get(
-                                "longitude"
+                        google_name = (
+                            get_place_display_name(
+                                place
                             )
+                        )
+
+                        google_address = str(
+                            place.get(
+                                "formattedAddress",
+                                "",
+                            )
+                        ).strip()
+
+                        place_id = str(
+                            place.get(
+                                "id",
+                                "",
+                            )
+                        ).strip()
+
+                        print(
+                            "  Google 分行地點："
+                            f"{google_name}"
+                        )
+
+                        print(
+                            "  Google 分行地址："
+                            f"{google_address}"
+                        )
+
+                        print(
+                            "  Place ID："
+                            f"{place_id}"
+                        )
+
+                        # Places 搜尋本來就已經回傳座標
+                        # 這裡只印出來方便確認新舊 Marker 有沒有差很多
+                        place_location = (
+                            get_place_location(
+                                place
+                            )
+                        )
+
+                        if place_location:
+                            print(
+                                "  Google Place 座標："
+                                f"{place_location['latitude']}, "
+                                f"{place_location['longitude']}"
+                            )
+
+                            if has_valid_coordinates(
+                                branch
+                            ):
+                                current_distance = (
+                                    haversine_distance_meters(
+                                        float(
+                                            branch.get(
+                                                "latitude"
+                                            )
+                                        ),
+                                        float(
+                                            branch.get(
+                                                "longitude"
+                                            )
+                                        ),
+                                        place_location[
+                                            "latitude"
+                                        ],
+                                        place_location[
+                                            "longitude"
+                                        ],
+                                    )
+                                )
+
+                                print(
+                                    "  舊座標與 Place 差距：約 "
+                                    f"{round(current_distance)} 公尺"
+                                )
+
+                        print(
+                            "  匹配方式："
+                            f"{recommended_match.get('match_method', '')}"
                         )
 
                         if (
-                            recommended_latitude is not None
-                            and recommended_longitude is not None
+                            isinstance(
+                                matched_index,
+                                int,
+                            )
+                            and 0
+                            <= matched_index
+                            < len(
+                                navigation_locations
+                            )
                         ):
-                            old_latitude = (
-                                branch.get(
-                                    "latitude"
-                                )
-                            )
-
-                            old_longitude = (
-                                branch.get(
-                                    "longitude"
-                                )
-                            )
-
-                            branch[
-                                "latitude"
-                            ] = recommended_latitude
-
-                            branch[
-                                "longitude"
-                            ] = recommended_longitude
-
-                            if (
-                                old_latitude
-                                != recommended_latitude
-                                or old_longitude
-                                != recommended_longitude
-                            ):
-                                top_level_coordinates_updated_count += 1
-
                             print(
-                                "  已更新分行導航座標："
-                                f"{recommended_latitude}, "
-                                f"{recommended_longitude}"
+                                "  採用官方地址候選："
+                                f"[{matched_index + 1}] "
+                                f"{navigation_locations[matched_index]}"
                             )
+
+                    if arguments.dry_run:
+                        if recommended_match:
+                            success_count += 1
+                            places_success_count += 1
 
                         else:
-                            print(
-                                "  建議導航位置沒有可信座標"
+                            place_unresolved_count += 1
+
+                            # 沒有可信 Place 時不硬寫 Place ID
+                            # 後續導航要回到 raw data 拆出的第一個官方地址
+                            if navigation_locations:
+                                print(
+                                    "  導航 fallback：官方地址"
+                                )
+
+                                print(
+                                    "  "
+                                    f"{navigation_locations[0]}"
+                                )
+
+                        print(
+                            "  Dry run 不會修改資料"
+                        )
+
+                        if arguments.sleep > 0:
+                            time.sleep(
+                                arguments.sleep
                             )
 
-                            print(
-                                "  原本分行座標保留不變"
-                            )
+                        continue
+
+                    write_result = (
+                        apply_recommended_place(
+                            branch,
+                            navigation_locations,
+                            recommended_match,
+                        )
+                    )
+
+                    if write_result:
+                        success_count += 1
+                        places_success_count += 1
+
+                        if write_result.get(
+                            "coordinates_updated"
+                        ):
+                            top_level_coordinates_updated_count += 1
+
+                        print(
+                            "  已寫入 Place ID："
+                            f"{write_result['place_id']}"
+                        )
+
+                        print(
+                            "  最終 Marker："
+                            f"{write_result['latitude']}, "
+                            f"{write_result['longitude']}"
+                        )
 
                     else:
+                        # 沒有推薦結果代表這筆先維持官方地址 fallback
+                        # 有推薦結果卻寫不進去才算真正的程式處理失敗
+                        if recommended_match:
+                            failure_count += 1
+                        else:
+                            place_unresolved_count += 1
+
                         print(
-                            "  沒有可信建議導航位置"
+                            "  沒有找到足夠可信的 Google Place"
                         )
 
                         print(
-                            "  原本分行座標保留不變"
+                            "  原本資料保留不變"
                         )
+
+                        # 沒有可信 Place 時保留 raw data 當導航依據
+                        # 不會為了湊 Place ID 去接受不確定的 Google 地點
+                        if navigation_locations:
+                            print(
+                                "  導航 fallback：官方地址"
+                            )
+
+                            print(
+                                "  "
+                                f"{navigation_locations[0]}"
+                            )
 
                     if (
                         processed_count
@@ -3575,33 +3347,15 @@ def main():
                             "  已儲存目前進度"
                         )
 
-                    continue
-                    # 只有一個唯一門牌也要驗證目前座標
-                    if len(navigation_locations) == 1:
-                        print(
-                            "  複雜地址解析後只有一個唯一門牌"
+                    if arguments.sleep > 0:
+                        time.sleep(
+                            arguments.sleep
                         )
-
-                        print(
-                            "  仍進行第二階段定位驗證"
-                        )
-
-                    inspect_complex_branch(
-                        bank_name,
-                        branch_name,
-                        navigation_locations,
-                        geocoding_api_key,
-                        places_api_key,
-                        arguments.sleep,
-                    )
-
-                    print(
-                        "  Dry run 不會修改資料"
-                    )
 
                     continue
 
-                # 一般 Dry run 維持原本只列資料
+                # 一般 Dry Run 維持原本只列候選
+                # 完全不呼叫 Google API
                 if arguments.dry_run:
                     print(
                         "  Dry run 不會修改資料"
@@ -3621,7 +3375,6 @@ def main():
                     )
                 )
 
-                # 第一層先用 Geocoding API
                 (
                     coordinates,
                     geocoding_error,
@@ -3630,45 +3383,9 @@ def main():
                     geocoding_api_key,
                 )
 
-                places_error = None
-
                 if coordinates:
                     geocoding_success_count += 1
 
-                    print(
-                        "  Geocoding 驗證成功"
-                    )
-
-                else:
-                    print(
-                        "  Geocoding 驗證失敗："
-                        f"{geocoding_error}"
-                    )
-
-                    # Geocoding 不可信時才使用 Places
-                    if places_api_key:
-                        print(
-                            "  改用 Places 搜尋銀行地點"
-                        )
-
-                        (
-                            coordinates,
-                            places_error,
-                        ) = request_places_search(
-                            bank_name,
-                            branch_name,
-                            geocoding_address,
-                            places_api_key,
-                        )
-
-                        if coordinates:
-                            places_success_count += 1
-
-                            print(
-                                "  Places 驗證成功"
-                            )
-
-                if coordinates:
                     branch["latitude"] = (
                         coordinates[
                             "latitude"
@@ -3683,67 +3400,14 @@ def main():
 
                     success_count += 1
 
-                    source = (
-                        coordinates.get(
-                            "source",
-                            "",
-                        )
+                    print(
+                        "  定位來源：Geocoding API"
                     )
 
-                    if (
-                        source
-                        == "geocoding"
-                    ):
-                        print(
-                            "  定位來源：Geocoding API"
-                        )
-
-                    elif (
-                        source
-                        == "places"
-                    ):
-                        print(
-                            "  定位來源：Places API"
-                        )
-
-                    google_place_name = (
-                        coordinates.get(
-                            "place_name",
-                            "",
-                        )
+                    print(
+                        "  Google 地址："
+                        f"{coordinates.get('formatted_address', '')}"
                     )
-
-                    if google_place_name:
-                        print(
-                            "  Google 地點："
-                            f"{google_place_name}"
-                        )
-
-                    formatted_address = (
-                        coordinates.get(
-                            "formatted_address",
-                            "",
-                        )
-                    )
-
-                    if formatted_address:
-                        print(
-                            "  Google 地址："
-                            f"{formatted_address}"
-                        )
-
-                    place_id = (
-                        coordinates.get(
-                            "place_id",
-                            "",
-                        )
-                    )
-
-                    if place_id:
-                        print(
-                            "  Place ID："
-                            f"{place_id}"
-                        )
 
                     print(
                         "  成功："
@@ -3751,68 +3415,108 @@ def main():
                         f"{branch['longitude']}"
                     )
 
+                else:
+                    print(
+                        "  Geocoding 驗證失敗："
+                        f"{geocoding_error}"
+                    )
+
+                    # Geocoding 已經失敗過
+                    # Places fallback 不再重打 Geocoding
                     if (
-                        old_latitude
-                        is not None
-                        or old_longitude
-                        is not None
+                        places_api_key
+                        and navigation_locations
                     ):
                         print(
-                            "  原本座標："
-                            f"{old_latitude}, "
-                            f"{old_longitude}"
+                            "  改用 Google Place 備用定位"
                         )
 
-                else:
-                    failure_count += 1
-
-                    error_parts = []
-
-                    if geocoding_error:
-                        error_parts.append(
-                            (
-                                "Geocoding："
-                                f"{geocoding_error}"
+                        resolution_result = (
+                            resolve_branch_place(
+                                bank_name,
+                                branch_name,
+                                navigation_locations,
+                                geocoding_api_key,
+                                places_api_key,
+                                arguments.sleep,
+                                allow_geocoding_fallback=False,
                             )
                         )
 
-                    if places_error:
-                        error_parts.append(
-                            (
-                                "Places："
-                                f"{places_error}"
+                        write_result = (
+                            apply_recommended_place(
+                                branch,
+                                navigation_locations,
+                                resolution_result.get(
+                                    "recommended_match"
+                                ),
                             )
                         )
 
-                    if (
-                        not places_api_key
-                    ):
-                        error_parts.append(
-                            (
-                                "Places："
-                                "沒有設定 API Key"
+                        if write_result:
+                            places_success_count += 1
+                            success_count += 1
+
+                            print(
+                                "  定位來源：Places API"
                             )
+
+                            print(
+                                "  Google 地點："
+                                f"{write_result['google_name']}"
+                            )
+
+                            print(
+                                "  Google 地址："
+                                f"{write_result['google_address']}"
+                            )
+
+                            print(
+                                "  Place ID："
+                                f"{write_result['place_id']}"
+                            )
+
+                            print(
+                                "  成功："
+                                f"{write_result['latitude']}, "
+                                f"{write_result['longitude']}"
+                            )
+
+                        else:
+                            failure_count += 1
+
+                            print(
+                                "  最後失敗："
+                                "Geocoding 與 Places "
+                                "都沒有可信結果"
+                            )
+
+                            print(
+                                "  原本座標沒有修改"
+                            )
+
+                    else:
+                        failure_count += 1
+
+                        print(
+                            "  最後失敗："
+                            "沒有可信 Geocoding 結果"
                         )
 
-                    combined_error = (
-                        " | ".join(
-                            error_parts
+                        print(
+                            "  原本座標沒有修改"
                         )
-                        or "定位失敗"
-                    )
 
+                if (
+                    old_latitude is not None
+                    or old_longitude is not None
+                ):
                     print(
-                        "  最後失敗："
-                        f"{combined_error}"
+                        "  原本座標："
+                        f"{old_latitude}, "
+                        f"{old_longitude}"
                     )
 
-                    # 兩邊都失敗時保留舊座標
-                    print(
-                        "  原本座標沒有修改"
-                    )
-
-                # 每處理指定筆數就先存一次
-                # 程式中斷時就不用全部重來
                 if (
                     processed_count
                     % arguments.save_every
@@ -3853,7 +3557,6 @@ def main():
             )
 
     finally:
-        # Dry run 完全不會寫入任何檔案
         if not arguments.dry_run:
             save_progress(
                 data_file_path,
@@ -3872,21 +3575,37 @@ def main():
         )
 
         print(
+            f"成功驗證 Place：{places_success_count}"
+        )
+
+        print(
+            f"沒有可信 Place：{place_unresolved_count}"
+        )
+
+        # API 或資料處理失敗要另外顯示
+        # 不要和真的找不到可信 Place 混在一起
+        print(
+            f"失敗：{failure_count}"
+        )
+
+        print(
             f"略過：{skipped_count}"
         )
 
-        if arguments.repair_complex:
+        if place_mode:
             print(
-                "repair-complex 已呼叫 Google API 做第二階段驗證"
+                "Place 驗證模式已呼叫 Google API"
             )
 
         print(
             "沒有修改 bank_data.json"
         )
 
-    if arguments.repair_complex:
+        return 0
+
+    if place_mode:
         print(
-            "複雜地址修復完成"
+            "Google Place 驗證完成"
         )
 
         print(
@@ -3894,18 +3613,16 @@ def main():
         )
 
         print(
-            "寫入 navigation_locations："
-            f"{navigation_locations_written_count}"
-        )
-
-        print(
-            "可信建議導航位置："
-            f"{recommended_navigation_count}"
+            f"成功寫入 Place ID：{places_success_count}"
         )
 
         print(
             "更新分行頂層座標："
             f"{top_level_coordinates_updated_count}"
+        )
+
+        print(
+            f"沒有可信 Place：{place_unresolved_count}"
         )
 
         print(

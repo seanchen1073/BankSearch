@@ -20,11 +20,28 @@ PLACES_TEXT_SEARCH_URL = (
     "https://places.googleapis.com/v1/places:searchText"
 )
 
+# 中文段數轉成阿拉伯數字
+CHINESE_NUMBER_MAP = {
+    "一": 1,
+    "二": 2,
+    "三": 3,
+    "四": 4,
+    "五": 5,
+    "六": 6,
+    "七": 7,
+    "八": 8,
+    "九": 9,
+}
+
+# 全形數字轉成半形數字
+FULLWIDTH_NUMBER_TRANSLATION = str.maketrans(
+    "０１２３４５６７８９",
+    "0123456789",
+)
 
 # Places 查過一次就先記住結果
 # 同一間分行再次開地圖時就不用再打 Google
 _PLACE_RESOLVE_CACHE = {}
-
 
 # 將 JSON 資料暫存在伺服器記憶體中
 # 避免每次 API 請求都重新讀取並解析完整 JSON
@@ -34,7 +51,6 @@ _BANK_DATA_CACHE = {
     "bank_by_code": {},
     "geocoded_branches": [],
 }
-
 
 def parse_float(value):
     """
