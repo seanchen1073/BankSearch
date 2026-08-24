@@ -18,7 +18,7 @@
 - `一銀`
 - `中信`
 
-搜尋支援 `台 / 臺` 正規化、銀行簡稱、以及滑鼠/鍵盤無縫切換選擇與 Enter 操作。
+搜尋支援 台 / 臺 正規化、銀行簡稱，以及滑鼠與鍵盤無縫切換操作。
 
 ### 分行資訊
 
@@ -117,6 +117,19 @@ sitemap.xml
 
 前端另外提供自訂 Not Found 頁面；未知網址的 HTTP Status 目前仍受 Zeabur Static Hosting 的 SPA fallback 行為影響。
 
+## 資料處理
+
+目前資料：
+
+```text
+銀行：98 家
+分行：4,554 筆
+可信 Google Place ID：2,959 筆
+官方地址 fallback：1,595 筆
+```
+
+Google Place 僅在能安全確認銀行身分時採用；無法確認時保留官方地址，避免錯誤綁定其他銀行、ATM 或錯誤位置。
+
 ## API
 
 ### 銀行列表
@@ -165,44 +178,10 @@ GET /branches/nearby/?lat={latitude}&lng={longitude}&limit=10&radius=10
 - Haversine Formula
 - In-memory Cache
 
-### Deployment
+## Deployment
 
 - Zeabur
 - GitHub
-
-## 專案架構
-
-```text
-BankSearch
-├── frontend
-│   ├── React
-│   ├── Google Maps
-│   ├── Geolocation
-│   ├── SEO
-│   └── Static Page Generator
-│
-└── backend
-    ├── Django
-    ├── Bank API
-    ├── Nearby Branch API
-    ├── Haversine Calculation
-    └── Data Cache
-```
-
-## 資料處理
-
-目前資料：
-
-```text
-銀行：98 家
-分行：4,554 筆
-可信 Google Place ID：2,959 筆
-官方地址 fallback：1,595 筆
-```
-
-Google Place 僅在能安全確認銀行身分時採用；無法確認時保留官方地址，避免錯誤綁定其他銀行、ATM 或錯誤位置。
-
-## Deployment
 
 Frontend：
 
