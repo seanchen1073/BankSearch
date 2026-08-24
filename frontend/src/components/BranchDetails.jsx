@@ -199,6 +199,8 @@ const BranchDetails = () => {
 
   const selectedBranchName = selectedBranch.name || "分行";
 
+  const selectedBranchDisplayName = String(selectedBranch.name || "").trim() || String(selectedBranch.address || "").trim() || "分行";
+
   const branchAddress = selectedBranch.address || "目前沒有地址資料";
 
   const branchPhone = selectedBranch.tel || selectedBranch.phone || selectedBranch.telephone || "目前沒有電話資料";
@@ -368,7 +370,7 @@ const BranchDetails = () => {
 
                     <h3 className="mt-1 text-xl font-bold break-words text-slate-900 sm:text-2xl">{selectedBankName}</h3>
 
-                    <p className="mt-1 text-base font-semibold break-words text-slate-600">{selectedBranchName}</p>
+                    <p className="mt-1 text-base font-semibold break-words text-slate-600">{selectedBranchDisplayName}</p>
 
                     {distanceText && (
                       <div className="mt-3 min-w-0">

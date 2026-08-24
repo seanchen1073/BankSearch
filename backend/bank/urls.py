@@ -34,14 +34,6 @@ urlpatterns = [
         name="get_nearby_branches",
     ),
 
-    # 使用者要開 Google 地圖時才查 Google Place
-    # 平常搜尋銀行和分行時不會呼叫這支 API
-    path(
-        "places/resolve/",
-        views.resolve_google_place,
-        name="resolve_google_place",
-    ),
-
     # 根據銀行代碼與分行代碼取得詳細資料
     path(
         "<str:bank_code>/<str:branch_code>/",

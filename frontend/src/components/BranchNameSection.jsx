@@ -123,7 +123,7 @@ const BranchNameSection = ({
                     {branch.code || "無代碼"}
                   </span>
 
-                  <span className="min-w-0 break-words">{branch.name}</span>
+                  <span className="min-w-0 break-words">{String(branch.name || "").trim() || String(branch.address || "").trim()}</span>
                 </li>
               );
             })

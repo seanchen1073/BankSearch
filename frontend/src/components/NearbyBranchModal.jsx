@@ -147,7 +147,9 @@ const NearbyBranchModal = () => {
           // 沿用原本搜尋欄的資料格式
           const bankValue = `${nearestBranch.bank_code} ${nearestBranch.bank_name}`;
 
-          const branchValue = `${nearestBranch.code} ${nearestBranch.name}`;
+          const branchDisplayName = String(nearestBranch.name || "").trim() || String(nearestBranch.address || "").trim();
+
+          const branchValue = [nearestBranch.code, branchDisplayName].filter(Boolean).join(" ");
 
           setSelectedBank(bankValue);
           setSelectedBranch(nearestBranch);

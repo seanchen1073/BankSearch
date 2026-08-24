@@ -40,7 +40,9 @@ const BankingForm = () => {
   // 統一處理分行搜尋框顯示文字
   // 沒有分行代碼時只顯示分行名稱避免前面多一個空白
   const formatBranchSearchTerm = (branch) => {
-    return [branch?.code, branch?.name].filter(Boolean).join(" ");
+    const branchDisplayName = String(branch?.name || "").trim() || String(branch?.address || "").trim();
+
+    return [branch?.code, branchDisplayName].filter(Boolean).join(" ");
   };
 
   // 安全解碼網址裡的中文名稱
@@ -541,10 +543,10 @@ const BankingForm = () => {
     if (selectedBank) {
       const filtered = branchData.filter((branch) => {
         const branchName = String(branch.name || "").toLowerCase();
-
         const branchCode = String(branch.code || "").toLowerCase();
+        const branchAddress = String(branch.address || "").toLowerCase();
 
-        return branchName.includes(normalizedSearchTerm) || branchCode.includes(normalizedSearchTerm);
+        return branchName.includes(normalizedSearchTerm) || branchCode.includes(normalizedSearchTerm) || branchAddress.includes(normalizedSearchTerm);
       });
 
       setFilteredBranches(filtered);

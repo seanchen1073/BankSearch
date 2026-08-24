@@ -13,9 +13,9 @@ load_dotenv(BASE_DIR / ".env")
 # Google Places API 金鑰
 GOOGLE_PLACES_API_KEY = os.getenv("GOOGLE_PLACES_API_KEY", "")
 
-SECRET_KEY = 'your_secret_key'
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-only-secret-key")
 
-DEBUG = True
+DEBUG = os.environ.get("DJANGO_DEBUG", "False").lower() == "true"
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'banksearch-backend.zeabur.app']
 

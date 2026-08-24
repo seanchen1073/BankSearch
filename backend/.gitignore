@@ -25,3 +25,4 @@ media/
 
 # 忽略銀行資料備份
 bank/bank_data_backup_*.json
+bank/bank_data.backup-*.json
