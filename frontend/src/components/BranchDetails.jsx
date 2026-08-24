@@ -147,11 +147,16 @@ const BranchDetails = () => {
     return `距離你約 ${distanceKilometers.toFixed(distanceKilometers >= 10 ? 0 : 1)} 公里`;
   };
 
+  // 首頁尚未選擇銀行時不顯示查詢結果區
+  if (!selectedBank && !bankCode) {
+    return null;
+  }
+
   // 已選擇銀行但尚未選擇分行
   if (selectedBank && !selectedBranch) {
     return (
-      <section className="px-4 py-6 sm:px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto">
+      <section className="px-4 pt-6 sm:px-6 lg:px-8">
+        <div className="w-full max-w-5xl mx-auto">
           <div className="flex items-center gap-3 px-4 py-3 border border-blue-200 bg-blue-50 rounded-2xl">
             <span className="flex items-center justify-center w-10 h-10 text-blue-700 bg-blue-100 shrink-0 rounded-xl">
               <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">

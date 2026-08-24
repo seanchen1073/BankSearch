@@ -151,7 +151,9 @@ const Header = () => {
             本站目前僅提供銀行分行資料，暫不包含郵局及農漁會
           </p>
 
-          <h1 className="max-w-4xl mx-auto mt-5 text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">全台銀行與分行查詢系統</h1>
+          <h1 className="max-w-4xl mx-auto mt-5 text-[26px] font-bold tracking-tight text-white min-[360px]:text-3xl sm:text-4xl lg:text-5xl">
+            全台銀行與分行查詢系統
+          </h1>
 
           <p className="max-w-3xl mx-auto mt-5 text-base leading-7 text-blue-100 sm:text-lg sm:leading-8">
             快速查詢全台銀行與分行、找到最近的服務據點、一鍵開啟 Google 地圖導航

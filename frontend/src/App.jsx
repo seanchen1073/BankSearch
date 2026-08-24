@@ -37,11 +37,9 @@ function App() {
 
             {/* 選擇分行後顯示詳細資料與地圖 */}
             <Routes>
-              <Route path="/" element={null} />
-
+              <Route path="/" element={<BranchDetails />} />
               <Route path="/:bankCode/:branchCode/:names" element={<BranchDetails />} />
               <Route path="/:bankCode/:names" element={<BranchDetails />} />
-
               <Route path="*" element={<NotFound />} />
             </Routes>
 

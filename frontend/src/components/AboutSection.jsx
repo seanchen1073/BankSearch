@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
+
+import { BankContext } from "../contexts/BankContext";
 
 const features = [
   {
@@ -33,14 +35,18 @@ const features = [
 ];
 
 const AboutSection = () => {
+  const { selectedBank, selectedBranch } = useContext(BankContext);
+
+  // 只有選好銀行但還沒選分行時縮短與提示區的距離
+  const isWaitingForBranch = selectedBank && !selectedBranch;
+
   return (
-    <section id="about" className="px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+    <section id="about" className={isWaitingForBranch ? "px-4 pt-6 pb-16 sm:px-6 sm:pt-6 sm:pb-20 lg:px-8" : "px-4 py-16 sm:px-6 sm:py-20 lg:px-8"}>
       <div className="max-w-6xl mx-auto overflow-hidden bg-white border shadow-lg rounded-3xl border-slate-200 shadow-slate-900/5">
         <div className="grid items-center lg:grid-cols-[0.9fr_1.1fr]">
           {/* 左側示意圖 */}
           <div className="relative min-h-[300px] overflow-hidden bg-gradient-to-br from-blue-50 via-sky-50 to-indigo-100 p-8 sm:min-h-[360px] sm:p-10">
             <div className="absolute rounded-full -left-16 -top-16 h-52 w-52 bg-blue-300/30 blur-3xl" />
-
             <div className="absolute rounded-full -bottom-20 -right-14 h-60 w-60 bg-indigo-300/30 blur-3xl" />
 
             <div className="relative flex h-full min-h-[250px] items-center justify-center">
@@ -53,13 +59,11 @@ const AboutSection = () => {
                     <div className="h-20 overflow-hidden rounded-lg bg-gradient-to-br from-blue-100 to-blue-200">
                       <svg viewBox="0 0 120 80" className="w-full h-full" fill="none" aria-hidden="true">
                         <path d="M10 62 35 35l20 12 22-25 33 22" stroke="#2563eb" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
-
                         <circle cx="77" cy="22" r="8" fill="#dc2626" />
                       </svg>
                     </div>
 
                     <div className="w-20 h-2 mt-3 rounded bg-slate-200" />
-
                     <div className="w-16 h-2 mt-2 rounded bg-slate-200" />
                   </div>
                 </div>
@@ -80,12 +84,10 @@ const AboutSection = () => {
                   </div>
 
                   <div className="h-3 mt-5 rounded-full bg-slate-200" />
-
                   <div className="w-4/5 h-3 mt-3 rounded-full bg-slate-200" />
 
                   <div className="flex gap-2 mt-5">
                     <span className="flex-1 h-8 bg-blue-100 rounded-lg" />
-
                     <span className="flex-1 h-8 rounded-lg bg-emerald-100" />
                   </div>
                 </div>
