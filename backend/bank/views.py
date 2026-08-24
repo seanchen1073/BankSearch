@@ -127,17 +127,20 @@ def load_bank_data():
                 continue
 
             geocoded_branches.append(
-                {
-                    "bank_code": bank_code,
-                    "bank_name": bank_name,
-                    "code": branch.get("code"),
-                    "name": branch.get("name"),
-                    "address": branch.get("address"),
-                    "tel": branch.get("tel"),
-                    "latitude": latitude,
-                    "longitude": longitude,
-                }
-            )
+            {
+                "bank_code": bank_code,
+                "bank_name": bank_name,
+                "code": branch.get("code"),
+                "name": branch.get("name"),
+                "address": branch.get("address"),
+                "tel": branch.get("tel"),
+                "place_id": str(
+                    branch.get("place_id") or ""
+                ).strip(),
+                "latitude": latitude,
+                "longitude": longitude,
+            }
+        )
 
     # 更新伺服器記憶體中的快取
     _BANK_DATA_CACHE.update(
@@ -209,6 +212,13 @@ def build_branch_detail(bank, branch):
         "tel": branch.get("tel"),
     }
 
+    place_id = str(
+        branch.get("place_id") or ""
+    ).strip()
+
+    if place_id:
+        result["place_id"] = place_id
+
     latitude = parse_float(branch.get("latitude"))
     longitude = parse_float(branch.get("longitude"))
 
@@ -258,7 +268,6 @@ def haversine_distance_meters(
     )
 
     return earth_radius_meters * central_angle
-
 
 def normalize_place_name(value):
     """

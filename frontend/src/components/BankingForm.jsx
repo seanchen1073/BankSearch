@@ -459,12 +459,21 @@ const BankingForm = () => {
 
     const bankString = `${bank.code} ${bank.name}`;
 
+    // 只有真的換成另一家銀行時才清除舊分行
     if (bankString !== selectedBank) {
       setSelectedBank(bankString);
       setBankSearchTerm(bankString);
 
       setSelectedBranch(null);
       setBranchSearchTerm("");
+
+      // 使用者換銀行後舊分行網址已經失效
+      // 直接回首頁避免網址還留著上一間分行
+      if (location.pathname !== "/") {
+        navigate("/", {
+          replace: true,
+        });
+      }
     }
 
     setActiveDropdown(null);

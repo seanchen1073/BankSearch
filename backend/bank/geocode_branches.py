@@ -279,7 +279,6 @@ def extract_administrative_prefix(address):
 
     return prefix_match.group(1)
 
-
 def extract_city_district_hint(address):
     """
     取得縣市與行政區作為 Places 搜尋提示
@@ -290,6 +289,14 @@ def extract_city_district_hint(address):
 
     if not address_text:
         return ""
+
+    # 郵遞區號不屬於行政區名稱
+    # 避免五碼與三碼郵遞區號不同造成地址驗證失敗
+    address_text = re.sub(
+        r"^\d{3,6}",
+        "",
+        address_text,
+    )
 
     hint_match = re.match(
         r"^(.+?(?:縣|市).+?(?:區|鄉|鎮|市))",
@@ -979,6 +986,30 @@ def normalize_place_name(value):
         "商業銀行",
         "銀行",
     )
+
+    # 外商銀行的來源地法律前綴在 Google 名稱裡可能會被省略
+    # 只影響名稱比對，不會修改官方銀行名稱
+    foreign_company_prefixes = [
+        "新加坡商",
+        "香港商",
+        "荷蘭商",
+        "瑞士商",
+        "美商",
+        "日商",
+        "英商",
+        "法商",
+        "德商",
+        "澳商",
+        "泰商",
+        "菲商",
+    ]
+
+    for prefix in foreign_company_prefixes:
+        if text.startswith(prefix):
+            text = text[
+                len(prefix):
+            ]
+            break
 
     removable_words = [
         "金融控股股份有限公司",
@@ -1916,14 +1947,10 @@ def evaluate_branch_place_candidate(
         in place_types
     )
 
-    # 至少要有銀行名稱或分行名稱其中一項身分訊號
-    # Place type 只能加強可信度，不能單獨證明是這一家銀行
-    identity_matches = (
-        bank_name_matches
-        or branch_identity_matches
-    )
-
-    if not identity_matches:
+    # 銀行身分一定要先吻合
+    # 分行名稱只能用來加強同一家銀行內的判斷
+    # 不能因為地址相同或分行名稱相似就綁到其他銀行
+    if not bank_name_matches:
         return None
 
     place_id = str(

@@ -3,7 +3,6 @@ import SEO from "./seo.jsx";
 import { useNavigate, useParams } from "react-router-dom";
 
 import BankMap from "./BankMap";
-import { resolveGooglePlace } from "./BankGetApi.jsx";
 import { BankContext } from "../contexts/BankContext";
 
 const BranchDetails = () => {
@@ -33,9 +32,6 @@ const BranchDetails = () => {
 
   // 記錄目前已複製的項目
   const [copiedItem, setCopiedItem] = useState("");
-
-  // 記錄 Google 地圖是不是正在準備
-  const [isOpeningGoogleMaps, setIsOpeningGoogleMaps] = useState(false);
 
   // 選擇分行後自動捲動到結果區
   useEffect(() => {
@@ -154,18 +150,22 @@ const BranchDetails = () => {
   // 已選擇銀行但尚未選擇分行
   if (selectedBank && !selectedBranch) {
     return (
-      <section className="px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
-        <div className="max-w-5xl px-6 py-10 mx-auto text-center border border-blue-200 shadow-sm rounded-2xl bg-blue-50">
-          <span className="flex items-center justify-center mx-auto text-blue-700 bg-blue-100 h-14 w-14 rounded-2xl">
-            <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-              <path d="M12 21s6-5.1 6-11a6 6 0 1 0-12 0c0 5.9 6 11 6 11Z" />
-              <circle cx="12" cy="10" r="2" />
-            </svg>
-          </span>
+      <section className="px-4 py-6 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center gap-3 px-4 py-3 border border-blue-200 bg-blue-50 rounded-2xl">
+            <span className="flex items-center justify-center w-10 h-10 text-blue-700 bg-blue-100 shrink-0 rounded-xl">
+              <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <path d="M12 21s6-5.1 6-11a6 6 0 1 0-12 0c0 5.9 6 11 6 11Z" />
+                <circle cx="12" cy="10" r="2" />
+              </svg>
+            </span>
 
-          <h2 className="mt-4 text-xl font-bold text-slate-900">請選擇分行</h2>
+            <div className="min-w-0">
+              <p className="text-sm font-bold text-slate-900">請選擇分行</p>
 
-          <p className="mt-2 text-sm leading-6 text-slate-600">銀行已選擇完成 請在上方分行欄位選擇要查詢的分行</p>
+              <p className="mt-0.5 text-sm leading-6 text-slate-600">選擇分行後將顯示分行資訊與 Google 地圖</p>
+            </div>
+          </div>
         </div>
       </section>
     );
@@ -223,25 +223,21 @@ const BranchDetails = () => {
 
   // 組出最後要開啟的 Google Maps 網址
   // 有可信 Place ID 就直接指定正式 Google Place
-  // 沒有 Place ID 才回到官方原始地址
-  const createGoogleMapsUrl = (placeResult = null) => {
-    const placeId = String(selectedBranch.place_id || placeResult?.place_id || "").trim();
-
-    const googleName = String(placeResult?.google_name || branchDisplayName || "").trim();
+  // 沒有 Place ID 就使用官方原始地址
+  const createGoogleMapsUrl = () => {
+    const placeId = String(selectedBranch.place_id || "").trim();
 
     // 附近分行模式會直接從使用者目前位置開始導航
     if (isNearbySearch && userLocation) {
       const originLatitude = Number(userLocation.lat);
-
       const originLongitude = Number(userLocation.lng);
 
       if (Number.isFinite(originLatitude) && Number.isFinite(originLongitude)) {
         const originValue = `${originLatitude},${originLongitude}`;
 
         // 有 Place ID 就讓 Google Maps 直接辨識正式分行
-        // Google Maps 會自行呈現 Place 名稱與地址
         if (placeId) {
-          const destinationName = googleName || branchDisplayName || fallbackNavigationAddress;
+          const destinationName = branchDisplayName || fallbackNavigationAddress;
 
           if (!destinationName) {
             return null;
@@ -257,7 +253,7 @@ const BranchDetails = () => {
           );
         }
 
-        // 沒有可信 Place ID 時以官方原始地址為主
+        // 沒有可信 Place ID 時使用官方原始地址
         if (fallbackNavigationAddress) {
           return (
             "https://www.google.com/maps/dir/" +
@@ -274,7 +270,7 @@ const BranchDetails = () => {
 
     // 一般查詢有 Place ID 就直接開正式 Google Place
     if (placeId) {
-      const placeQuery = googleName || branchDisplayName || fallbackNavigationAddress;
+      const placeQuery = branchDisplayName || fallbackNavigationAddress;
 
       if (!placeQuery) {
         return null;
@@ -296,73 +292,23 @@ const BranchDetails = () => {
     return null;
   };
 
-  // 左側按鈕也使用 Google Place 優先的邏輯
-  // 已經有 Place ID 時就不再重打 API
-  const handleOpenGoogleMaps = async () => {
-    if (isOpeningGoogleMaps) {
+  // 使用目前分行資料直接開啟 Google 地圖
+  const handleOpenGoogleMaps = () => {
+    const googleMapsUrl = createGoogleMapsUrl();
+
+    if (!googleMapsUrl) {
       return;
     }
 
-    setIsOpeningGoogleMaps(true);
-
-    // 先開空白分頁避免等待 API 時被瀏覽器擋掉
-    const mapWindow = window.open("about:blank", "_blank");
+    const mapWindow = window.open(googleMapsUrl, "_blank");
 
     if (mapWindow) {
       mapWindow.opener = null;
+      return;
     }
 
-    try {
-      let placeResult = null;
-
-      // bank_data.json 還沒有 Place ID 的舊資料
-      // 才暫時透過目前 resolver 查 Google Place
-      if (!selectedBranch.place_id) {
-        placeResult = await resolveGooglePlace(selectedBankCode, selectedBranchCode, selectedBranchName);
-      }
-
-      const googleMapsUrl = createGoogleMapsUrl(placeResult);
-
-      if (!googleMapsUrl) {
-        if (mapWindow && !mapWindow.closed) {
-          mapWindow.close();
-        }
-
-        return;
-      }
-
-      if (mapWindow && !mapWindow.closed) {
-        mapWindow.location.href = googleMapsUrl;
-
-        return;
-      }
-
-      // 新分頁被瀏覽器擋掉時就在目前頁面開啟
-      window.location.href = googleMapsUrl;
-    } catch (error) {
-      console.error("開啟 Google 地圖失敗", error);
-
-      // Place 查詢失敗時就回到官方原始地址
-      const fallbackGoogleMapsUrl = createGoogleMapsUrl();
-
-      if (!fallbackGoogleMapsUrl) {
-        if (mapWindow && !mapWindow.closed) {
-          mapWindow.close();
-        }
-
-        return;
-      }
-
-      if (mapWindow && !mapWindow.closed) {
-        mapWindow.location.href = fallbackGoogleMapsUrl;
-
-        return;
-      }
-
-      window.location.href = fallbackGoogleMapsUrl;
-    } finally {
-      setIsOpeningGoogleMaps(false);
-    }
+    // 新分頁被瀏覽器擋掉時就在目前頁面開啟
+    window.location.href = googleMapsUrl;
   };
 
   return (
@@ -523,14 +469,12 @@ const BranchDetails = () => {
                   <button
                     type="button"
                     onClick={handleOpenGoogleMaps}
-                    disabled={isOpeningGoogleMaps}
-                    className="inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-bold text-white transition bg-blue-700 min-h-12 rounded-xl hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-200 disabled:cursor-wait disabled:bg-blue-600"
+                    className="inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-bold text-white transition bg-blue-700 min-h-12 rounded-xl hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-200"
                   >
                     <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                       <path d="m4 4 16 7-7 3-3 6-6-16Z" />
                     </svg>
-
-                    {isOpeningGoogleMaps ? "正在開啟 Google 地圖" : "開啟 Google 地圖"}
+                    開啟 Google 地圖
                   </button>
 
                   <button
@@ -569,7 +513,6 @@ const BranchDetails = () => {
                   address={selectedBranch.address}
                   latitude={selectedBranch.latitude}
                   longitude={selectedBranch.longitude}
-                  bankCode={selectedBankCode}
                   bankName={selectedBankName}
                   selectedBranch={selectedBranch}
                   userLocation={userLocation}
